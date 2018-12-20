@@ -1,0 +1,85 @@
+
+R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Copyright (C) 2018 The R Foundation for Statistical Computing
+Platform: x86_64-redhat-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library('RMySQL')
+Loading required package: DBI
+> library('stringr')
+> 
+> outDir="/home/exp/specl-exp/data2/out/"
+> 
+> db <- dbConnect(MySQL(), 
++                 user='exp',
++                 password='go_exp',
++                 dbname='beta',
++                 host='specl.socsci.uci.edu')
+> 
+> session=dbGetQuery(db,
++ "SELECT sessionID, memberID, experiment.name as exptName, participant.*
++ FROM session 
++ JOIN experiment ON session.experimentID=experiment.experimentID
++ JOIN participant ON session.participantID=participant.participantID")
+Warning messages:
+1: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 0 imported as numeric
+2: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 1 imported as numeric
+3: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 3 imported as numeric
+4: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 5 imported as numeric
+5: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 6 imported as numeric
+6: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 10 imported as numeric
+7: In .local(conn, statement, ...) :
+  unrecognized MySQL field type 7 in column 11 imported as character
+> write.table(file=paste(outDir,"session.info",sep=""),
++             session,quote=F,row.names=F)
+> 
+> experiment=dbGetQuery(db,"SELECT * FROM experiment")
+Warning messages:
+1: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 0 imported as numeric
+2: In .local(conn, statement, ...) :
+  Unsigned INTEGER in col 2 imported as numeric
+> write.table(file=paste(outDir,"experiment.info",sep=""),
++             experiment,quote=F,row.names=F)
+> 
+> tableList=dbGetQuery(db,"SHOW TABLES LIKE 'out__%';")
+> 
+> queryString=paste("Select * FROM ",tableList[,1],sep=" ")
+> outString=paste(outDir,tableList[,1],".dat",sep="")
+> 
+> for (i in 1:length(tableList[,1])){
++ 	print(i)
++ 	tabDat=dbGetQuery(db,queryString[i])
++ 	write.table(file=str_remove(outString[i], "out__"),
++ 		tabDat,quote=F,row.names=F)
++ 	}
+[1] 1
+[1] 2
+There were 19 warnings (use warnings() to see them)
+> 
+> dbDisconnect(db) 
+[1] TRUE
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  0.592   0.064   0.896 
