@@ -1,4 +1,4 @@
-R CMD BATCH --slave /home/exp/upload/dumpData2.R
+Rscript /home/exp/extractData/extractData2.R
 git add *
 git commit -am "automatic update"
 git push
