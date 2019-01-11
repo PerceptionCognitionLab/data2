@@ -38,3 +38,7 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 37 1 as1 13 1992 1 1 Right No No 1 2018-12-10 13:41:58
 38 1 as1 23 1985 2 1 Right No Yes 1 2019-01-10 12:37:10
 39 1 as1 24 1984 2 8 Right No Yes 1 2019-01-11 11:19:27
+40 1 as1 11 1966 2 6 Left No Yes 1 2018-12-09 14:58:03
+41 2 as1 25 1998 1 4 Right No Yes 1 2019-01-11 14:58:52
+42 1 as1 26 1999 2 1 Right No Yes 1 2019-01-11 15:00:11
+43 2 as1 27 1997 3 1 Right No Yes 1 2019-01-11 15:02:15
