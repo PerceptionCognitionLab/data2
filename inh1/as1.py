@@ -200,7 +200,7 @@ window.flip()
 event.waitKeys()
 
 for t in range(pracN):				 
-	out=doTrial(cond[t],35,20)
+	out=doTrial(pracCond[t],35,20)
 
 warmUpDoneTxt.draw()
 window.flip()

@@ -1,5 +1,10 @@
 ### Program for creating the flanker effect stimuli
 
+
+
+# colors!
+invertColors=TRUE
+
 ### general variables
 background=c(1:4,6:9)
 wbackground=c(1,3,4,6,7,9)
@@ -25,7 +30,7 @@ myBox=function(pos){
   x2=x[pos]+c(z0,z1,z1,z0,z1,z0)
   y1=y[pos]+c(0,1,1,0,0,0)
   y2=y[pos]+c(1,1,0,0,1,1)
-  #segments(x1,y1,x2,y2,lwd=7)
+  segments(x1,y1,x2,y2,lwd=7)
 }
 
 myC=function(pos){
@@ -86,6 +91,7 @@ the=function(filename,center){
 myArray=function(filename,center,surround){
   jpeg(filename,width=320,height=480)
   par(mar=c(0,0,0,0))
+  if (invertColors) par(fg='white',bg='black')
   plot(c(0,3*dist),c(0,3*dist),axes=F,typ='n')
   for (i in background) 
     myLet(surround/2,i)
@@ -93,20 +99,57 @@ myArray=function(filename,center,surround){
   dev.off()
 }
 
+myArray0=function(filename,center){
+  jpeg(filename,width=320,height=480)
+  par(mar=c(0,0,0,0))
+  if (invertColors) par(fg='white',bg='black')  
+  plot(c(0,3*dist),c(0,3*dist),axes=F,typ='n')
+  myLet(center/2,5)
+  dev.off()
+}
+
+
+myArrayBox=function(filename,center,surround){
+  jpeg(filename,width=320,height=480)
+  par(mar=c(0,0,0,0))
+  if (invertColors) par(fg='white',bg='black')
+  plot(c(0,3*dist),c(0,3*dist),axes=F,typ='n')
+  for (i in background) 
+    myBox(i)
+  myLet(center/2,5)
+  dev.off()
+}
+
+
+
 ### LOOPS TO MAKE THE STIMULI
 ### Frame is all A's
-#for ( i in 0:20){
-#  filename=paste("FA_T",i,".jpeg",sep="")
-#  cen=i/20
-#  myArray(filename,center=cen,surround=1)
-#}
+for ( i in 0:20){
+  filename=paste("FA_T",i,".jpeg",sep="")
+  cen=i/20
+  myArray(filename,center=cen,surround=1)
+}
 
 ### Frame is all H's
-#for ( i in 0:20){
-#  filename=paste("FH_T",i,".jpeg",sep="")
-#  cen=i/20
-#  myArray(filename,center=cen,surround=0)
-#}
+for ( i in 0:20){
+  filename=paste("FH_T",i,".jpeg",sep="")
+  cen=i/20
+  myArray(filename,center=cen,surround=0)
+}
+
+### Frame is w/o background
+for ( i in 0:20){
+  filename=paste("T",i,".jpeg",sep="")
+  cen=i/20
+  myArray0(filename,center=cen)
+}
+
+### Frame is box background
+for ( i in 0:20){
+  filename=paste("X_T",i,".jpeg",sep="")
+  cen=i/20
+  myArrayBox(filename,center=cen)
+}
 
 ### Frame is "CAT"
 for ( i in 0:20){
