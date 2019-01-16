@@ -26,12 +26,12 @@ createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
     "  `datID` INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,"
     "  `sessionID` INT(6) UNSIGNED NOT NULL,"
-    "  `task` INT(2) UNSIGNED NOT NULL,"  
-    "  `diff` INT(2) UNSIGNED NOT NULL,"  
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `bigL` INT(2) UNSIGNED NOT NULL,"
-    "  `smallL` INT(2) UNSIGNED NOT NULL,"
+    "  `background` INT(2) UNSIGNED NOT NULL,"
+    "  `target` INT(2) UNSIGNED NOT NULL,"
+    "  `difficulty` INT(2) UNSIGNED NOT NULL,"
+    "  `forePeriod` INT(4) UNSIGNED NOT NULL,"
     "  `resp` int(1) UNSIGNED NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
@@ -40,7 +40,7 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `task`, `diff`, `block`, `trial`, `bigL`, `smallL`, `resp`, `rt`)"
+     "`sessionID`, `block`, `trial`, `background`, `target`, `difficulty`, `forePeriod`, `resp`, `rt`)"
      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 #####################
@@ -73,7 +73,7 @@ fpP=.35
 # Display Elements
 
 def code(back,targ,difficulty):
-	return(back*6+targ*3+difficulty)
+	return(back*4+targ*4+difficulty)
 
 
 def decode(cond):
@@ -161,14 +161,14 @@ warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to
 N=12*4
 cond=range(N)
 for n in range(N):
-	cond[n]=n%12
+	cond[n]=n%4
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
 pracN=12
 pracCond=range(pracN)
 for n in range(pracN):
-	pracCond[n]=n%4+8
+	pracCond[n]=n%4
 random.shuffle(pracCond)
 fpPrac = numpy.random.geometric(p=fpP, size=pracN)+30
 
