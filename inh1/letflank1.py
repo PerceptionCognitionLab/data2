@@ -120,15 +120,13 @@ def doTrial(cond,fp):
 		image=filedir+filename[cond])
 	(back,targ,difficulty) = decode(cond)
 	respInt=-1
-	duration=[1,fp,3,1]
+	duration=[1,fp,1]
 	times=numpy.cumsum(duration)
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
 			blank.draw()		
 		if (times[1]<=frame<times[2]): 
 			stim.draw()
-		if (times[2]<=frame<times[3]): 
-			blank.draw()	
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -151,6 +149,7 @@ def doTrial(cond,fp):
 		correct2.play()
 	else: 
 		error.play()
+		core.wait(2.0)
 	return(respInt,rt)
 
 
@@ -163,7 +162,7 @@ def doTrial(cond,fp):
 N=36*6
 cond=range(N)
 for n in range(N):
-	cond[n]=n%18
+	cond[n]=n%12
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
