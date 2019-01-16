@@ -233,7 +233,7 @@ for l in range(L):
 		window.flip()
 		event.waitKeys()				 	
 		for t in range(N):
-			(blk,trl) = divmod(t,8)
+			(blk,trl) = divmod(t,20)
 			if trl==0 and blk>0:
 				breakTxt.draw()
 				window.flip()
