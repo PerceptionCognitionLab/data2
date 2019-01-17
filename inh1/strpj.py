@@ -72,29 +72,33 @@ fpP=.35
 ######################
 # Display Elements
 
-def code(back,targ,difficulty):
-	return(back*4+targ*4+difficulty)
+def code(word,targ):
+	return(word*3+targ*)
 
 
 def decode(cond):
-        (back,temp) = divmod(cond,6)
-        (targ,difficulty) = divmod(temp,3)
-        return(back,targ,difficulty)
+        (word,prop) = divmod(cond,3)
+        return(back,targ)
 
-filename=[]
+red=[]
+green=[]
+blue=[]
+yellow=[]
 
-filename.append("SJ_GR_45.png")
-filename.append("SJ_GR_50.png")
-filename.append("SJ_GR_55.png")
-filename.append("SJ_RG_45.png")
-filename.append("SJ_RG_50.png")
-filename.append("SJ_RG_55.png")
-filename.append("SJ_BY_45.png")
-filename.append("SJ_BY_50.png")
-filename.append("SJ_BY_55.png")
-filename.append("SJ_YB_45.png")
-filename.append("SJ_YB_55.png")
-filename.append("SJ_YB_45.png")
+
+
+green.append("SJ_GR_45.png")
+green.append("SJ_GR_50.png")
+green.append("SJ_GR_55.png")
+red.append("SJ_RG_45.png")
+red.append("SJ_RG_50.png")
+red.append("SJ_RG_55.png")
+blue.append("SJ_BY_45.png")
+blue.append("SJ_BY_50.png")
+blue.append("SJ_BY_55.png")
+yellow.append("SJ_YB_45.png")
+yellow.append("SJ_YB_55.png")
+yellow.append("SJ_YB_45.png")
 
 filedir='stroopstim/'
 
@@ -108,7 +112,7 @@ def doTrial(cond,fp):
 	stim=visual.ImageStim(
 		win=window,
 		image=filedir+filename[cond])
-	(back,targ,difficulty) = decode(cond)
+	(back,targ) = decode(cond)
 	respInt=-1
 	duration=[1,fp,1]
 	times=numpy.cumsum(duration)
@@ -124,10 +128,15 @@ def doTrial(cond,fp):
 	if (response==abortKey): 
 		exit()
 	rt = timer.getTime()
-	if (response=='r'):
-		respInt=0
 	if (response=='g'):
+		respInt=0
+	if (response=='r'):
 		respInt=1
+	if (response=='b'):
+		respInt=2
+	if (response=='y'):
+		respInt=3
+
 	if (respInt== -1):
 		wrongKeyText.draw()
 		window.flip()
@@ -140,6 +149,7 @@ def doTrial(cond,fp):
 	else: 
 		error.play()
 		core.wait(2.0)
+	
 	return(respInt,rt)
 
 
@@ -152,16 +162,16 @@ def doTrial(cond,fp):
 # Helper Text
 
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys F and J\nAny key to begin the PRACTICE ROUND", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys F (Red/Blue) and J (Green/Yellow) \nAny key to begin the PRACTICE ROUND", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to continue", pos = (0,0))
 
 #########################
 # Session Global Settings
 
-N=12*4
+N=12*2
 cond=range(N)
 for n in range(N):
-	cond[n]=n%4
+	cond[n]=n%12
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
