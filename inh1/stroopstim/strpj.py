@@ -46,9 +46,9 @@ insertTableStatement = (
 #####################
 # Initialize 
 if useDB: 
-	sessionID=startExp(expName,createTableStatement,dbConf)
+    sessionID=startExp(expName,createTableStatement,dbConf)
 else:
-	sessionID=1	
+    sessionID=1    
 
 window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
 mouse = event.Mouse(visible=False)
@@ -72,85 +72,82 @@ fpP=.35
 ######################
 # Display Elements
 
-def code(word,targ):
-	return(word*3+targ*)
+def code(word,prop):
+    return(word*4+prop*2)
 
 
 def decode(cond):
-        (word,prop) = divmod(cond,3)
-        return(back,targ)
+    (word,temp) = divmod(cond,4)
+    (x,prop) = divmod(temp,2)
+    return(word,prop)
 
-red=[]
-green=[]
-blue=[]
-yellow=[]
+filename=[]
 
 
 
-green.append("SJ_GR_45.png")
-green.append("SJ_GR_50.png")
-green.append("SJ_GR_55.png")
-red.append("SJ_RG_45.png")
-red.append("SJ_RG_50.png")
-red.append("SJ_RG_55.png")
-blue.append("SJ_BY_45.png")
-blue.append("SJ_BY_50.png")
-blue.append("SJ_BY_55.png")
-yellow.append("SJ_YB_45.png")
-yellow.append("SJ_YB_55.png")
-yellow.append("SJ_YB_45.png")
+filename.append("SJ_RG_45.png")
+filename.append("SJ_RG_52.png")
+filename.append("SJ_RG_48.png")
+filename.append("SJ_RG_55.png")
+filename.append("SJ_GR_45.png")
+filename.append("SJ_GR_55.png")
+filename.append("SJ_GR_48.png")
+filename.append("SJ_GR_52.png")
+filename.append("SJ_BY_45.png")
+filename.append("SJ_BY_52.png")
+filename.append("SJ_BY_48.png")
+filename.append("SJ_BY_55.png")
+filename.append("SJ_YB_45.png")
+filename.append("SJ_YB_52.png")
+filename.append("SJ_YB_48.png")
+filename.append("SJ_YB_55.png")
 
 filedir='stroopstim/'
 
-
+let=['f','j']
 blank=visual.TextStim(window, text = "", pos = (0,0))
 
 #####################
 
 def doTrial(cond,fp):
-		
-	stim=visual.ImageStim(
-		win=window,
-		image=filedir+filename[cond])
-	(back,targ) = decode(cond)
-	respInt=-1
-	duration=[1,fp,1]
-	times=numpy.cumsum(duration)
-	for frame in range(max(times)):
-		if (times[0]<=frame<times[1]):
-			blank.draw()		
-		if (times[1]<=frame<times[2]): 
-			stim.draw()	
-		window.flip()
-	timer.reset()
-	responseList = event.waitKeys()
-	response = responseList[0][0]
-	if (response==abortKey): 
-		exit()
-	rt = timer.getTime()
-	if (response=='g'):
-		respInt=0
-	if (response=='r'):
-		respInt=1
-	if (response=='b'):
-		respInt=2
-	if (response=='y'):
-		respInt=3
-
-	if (respInt== -1):
-		wrongKeyText.draw()
-		window.flip()
-		wrongKey.play()
-		event.waitKeys()
-	elif (respInt==targ):
-		correct1.play()
-		core.wait(0.1)
-		correct2.play()
-	else: 
-		error.play()
-		core.wait(2.0)
-	
-	return(respInt,rt)
+        
+    stim=visual.ImageStim(
+        win=window,
+        image=filedir+filename[cond])
+    (word,prop) = decode(cond)
+    respInt=-1
+    duration=[1,fp,1]
+    times=numpy.cumsum(duration)
+    for frame in range(max(times)):
+        if (times[0]<=frame<times[1]):
+            blank.draw()        
+        if (times[1]<=frame<times[2]): 
+            stim.draw()    
+        window.flip()
+    timer.reset()
+    responseList = event.waitKeys()
+    response = responseList[0][0]
+    if (response==abortKey): 
+        exit()
+    rt = timer.getTime()
+    if (response==let[0]):
+        respInt=0
+    if (response==let[1]):
+        respInt=1
+    if (respInt== -1):
+        wrongKeyText.draw()
+        window.flip()
+        wrongKey.play()
+        event.waitKeys()
+    elif (prop == 1 and ((word==0 and respInt==0) or (word==1 and respInt==1) or (word==2 and respInt==0) or (word==3 and respInt==1))):
+        correct1.play()
+        core.wait(0.1)
+        correct2.play()
+    else: 
+        error.play()
+        core.wait(0.8)
+    
+    return(respInt,rt)
 
 
 
@@ -164,21 +161,24 @@ def doTrial(cond,fp):
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
 startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys F (Red/Blue) and J (Green/Yellow) \nAny key to begin the PRACTICE ROUND", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to continue", pos = (0,0))
+rgTxt=visual.TextStim(window, text = "Red (press f)      or       Green (press j)\n\nAny key to continue." , pos = (0,0))
+modTxt=visual.TextStim(window, text = "Blue (press f)      or       Yellow (press j)\n\nAny key to continue." , pos = (0,0))
 
 #########################
 # Session Global Settings
 
-N=12*2
+N=16*2
+
 cond=range(N)
 for n in range(N):
-	cond[n]=n%12
+    cond[n]=n%16
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
-pracN=12
+pracN=1
 pracCond=range(pracN)
 for n in range(pracN):
-	pracCond[n]=n%4
+    pracCond[n]=n%4
 random.shuffle(pracCond)
 fpPrac = numpy.random.geometric(p=fpP, size=pracN)+30
 
@@ -189,28 +189,28 @@ startTxt.draw()
 window.flip()
 event.waitKeys()
 
-for t in range(pracN):				 
-	out=doTrial(pracCond[t],fpPrac[t])
+for t in range(pracN):                 
+    out=doTrial(pracCond[t],fpPrac[t])
 
 warmUpDoneTxt.draw()
 window.flip()
 event.waitKeys()
 
 for t in range(N):
-	(blk,trl) = divmod(t,36)
-	if trl==0 and blk>0:
-		breakTxt.draw()
-		window.flip()
-		event.waitKeys()				 
-	out=doTrial(cond[t],fp[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
-	(back,targ,difficulty) = decode(cond[t])
-	#print (back,targ,difficulty)
-	addData = (sessionID, blk, t, back, targ, difficulty, int(fp[t]), out[0], rt)
-	if useDB:
-		insertDatTable(insertTableStatement,addData,dbConf)
-	else:
-		print(addData)	
+    (blk,trl) = divmod(t,12)
+    if trl==0 and blk>0:
+        breakTxt.draw()
+        window.flip()
+        event.waitKeys()                 
+    out=doTrial(cond[t],fp[t])
+    rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+    (word,prop) = decode(cond[t])
+    print (word,prop)
+    addData = (sessionID, blk, t, word, prop, int(fp[t]), out[0], rt)
+    if useDB:
+        insertDatTable(insertTableStatement,addData,dbConf)
+    else:
+        print(addData)    
 
 
 
@@ -227,8 +227,7 @@ hz=round(window.getActualFrameRate())
 size=window.size
 window.close()
 if useDB:
-	stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
+    stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 
 
 core.quit()
-
