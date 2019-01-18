@@ -90,24 +90,24 @@ def decode(cond):
 
 filename=[]
 
-filename.append("FA_T15.jpeg")
 filename.append("FA_T14.jpeg")
 filename.append("FA_T13.jpeg")
-filename.append("FA_T8.jpeg")
+filename.append("FA_T12.jpeg")
 filename.append("FA_T9.jpeg")
 filename.append("FA_T10.jpeg")
-filename.append("FH_T15.jpeg")
+filename.append("FA_T11.jpeg")
 filename.append("FH_T14.jpeg")
 filename.append("FH_T13.jpeg")
-filename.append("FH_T8.jpeg")
+filename.append("FH_T12.jpeg")
 filename.append("FH_T9.jpeg")
 filename.append("FH_T10.jpeg")
-filename.append("T15.jpeg")
+filename.append("FH_T11.jpeg")
 filename.append("T14.jpeg")
 filename.append("T13.jpeg")
-filename.append("T8.jpeg")
+filename.append("T12.jpeg")
 filename.append("T9.jpeg")
 filename.append("T10.jpeg")
+filename.append("T11.jpeg")
 filedir='ahMorphStim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))

@@ -18,7 +18,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = beta
 expName='globloc1'
 
@@ -193,7 +193,7 @@ warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nIn the rem
 
 L=2
 R=3
-N=8
+N=20
 condT=range(L*R)
 random.shuffle(condT)
 
@@ -203,7 +203,7 @@ for n in range(N):
 random.shuffle(cond)
 
 pracCondT=2
-pracN=4*1
+pracN=4*3
 pracCond=range(pracN)
 for n in range(pracN):
 	pracCond[n]=n%4
@@ -255,7 +255,7 @@ for b in range(L*R):
 	filename=gName[diff]
 	random.shuffle(cond)				 	
 	for t in range(N):
-		(blk,trl) = divmod(t,20)
+		(blk,trl) = divmod(t,40)
 		if trl==0 and blk>0:
 			breakTxt.draw()
 			window.flip()
