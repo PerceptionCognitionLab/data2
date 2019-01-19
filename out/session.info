@@ -50,6 +50,8 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 51 3 letflank1 22 1992 1 6 Left No No 1 2019-01-07 13:50:16
 56 2 letflank1 13 1992 1 1 Right No No 1 2018-12-10 13:41:58
 57 2 letflank1 14 1992 2 8 Right No Yes 1 2018-12-10 16:29:38
+64 1 letflank1 25 1998 1 4 Right No Yes 1 2019-01-11 14:58:52
+68 1 letflank1 27 1997 3 1 Right No Yes 1 2019-01-11 15:02:15
 48 3 globloc1 22 1992 1 6 Left No No 1 2019-01-07 13:50:16
 49 3 globloc1 22 1992 1 6 Left No No 1 2019-01-07 13:50:16
 50 1 globloc1 11 1966 2 6 Left No Yes 1 2018-12-09 14:58:03
@@ -62,3 +64,6 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 58 3 strpj1 22 1992 1 6 Left No No 1 2019-01-07 13:50:16
 59 2 strpj1 13 1992 1 1 Right No No 1 2018-12-10 13:41:58
 63 2 strpj1 13 1992 1 1 Right No No 1 2018-12-10 13:41:58
+65 2 strpj1 27 1997 3 1 Right No Yes 1 2019-01-11 15:02:15
+66 2 strpj1 27 1997 3 1 Right No Yes 1 2019-01-11 15:02:15
+67 1 strpj1 11 1966 2 6 Left No Yes 1 2018-12-09 14:58:03

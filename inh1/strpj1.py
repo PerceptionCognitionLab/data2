@@ -18,7 +18,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = beta
 expName='strpj1'
 
@@ -70,8 +70,11 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 ######################
 # Display Elements
 
-def code(word,prop):
-	return(word*4+prop*2)
+def code(rg,by,prop):
+	return(rg*4+by*2)
+
+#def code(word,prop):
+#	return(word*4+prop*2)
 
 
 def decode(cond):
