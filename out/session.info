@@ -1,4 +1,4 @@
-sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush colorBlind highSchoolUS poolID lastModified
+sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush colorBlind highSchoolUS poolID lastModifiedDay lastModifiedYear
 1 1 test1 14 1992 2 8 Right No Yes 1 2018-12-10 16:29:38
 2 1 test1 11 1966 2 6 Left No Yes 1 2018-12-09 14:58:03
 3 1 test1 11 1966 2 6 Left No Yes 1 2018-12-09 14:58:03
