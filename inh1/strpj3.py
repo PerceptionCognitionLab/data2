@@ -18,7 +18,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = beta
 expName='strpj1'
 
@@ -77,7 +77,9 @@ def code(prop,word):
 def decode(cond):
         (prop,word) = divmod(cond,3)
         return(prop,word)
-
+stimTime=7
+fpEvent = 1
+stimEvent =2
 
 filename=[]
 
@@ -102,8 +104,10 @@ mask1=visual.TextStim(window,text="",pos = (0,0))
 #####################
 
 
-def doTrial(cond):
-	duration=[1,30,1]	
+def doTrial(cond,fpTime,stimTime):
+	duration=[1,10,30,10,1]
+	duration[fpEvent] = fpTime
+	duration[stimEvent] = stimTime	
 	stim=visual.ImageStim(
 		win=window,
 		image=filedir+filename[cond])
@@ -115,7 +119,9 @@ def doTrial(cond):
 		if (times[0]<=frame<times[1]):
 			blank.draw()		
 		if (times[1]<=frame<times[2]): 
-			stim.draw()		
+			stim.draw()
+		if (times[2]<=frame<times[3]): 
+			mask1.draw()		
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -184,7 +190,7 @@ window.flip()
 event.waitKeys()
 
 for t in range(pracN):				 
-	out=doTrial(pracCond[t])
+	out=doTrial(pracCond[t],35,20)
 
 warmUpDoneTxt.draw()
 window.flip()
@@ -196,7 +202,7 @@ for t in range(N):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()				 
-	out=doTrial(cond[t])
+	out=doTrial(cond[t],20,stimTime)
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	(prop,word) = decode(cond[t])
 	addData = (sessionID, blk, t, word, prop, out[0], rt)
