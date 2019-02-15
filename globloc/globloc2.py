@@ -1,5 +1,3 @@
-from psychopy import prefs
-prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os
@@ -195,7 +193,7 @@ warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nIn the rem
 
 L=2
 R=3
-N=10
+N=100
 condT=range(L*R)
 random.shuffle(condT)
 

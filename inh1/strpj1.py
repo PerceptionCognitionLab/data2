@@ -1,3 +1,5 @@
+from psychopy import prefs
+prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os
@@ -48,7 +50,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = "#5C6C7C", fullscr = False,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -70,60 +72,52 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 ######################
 # Display Elements
 
-def code(rg,by,prop):
-	return(rg*4+by*2)
-
-#def code(word,prop):
-#	return(word*4+prop*2)
+def code(prop,word):
+	return(prop*3+word*3)
 
 
 def decode(cond):
-        (word,temp) = divmod(cond,4)
-	(x,prop) = divmod(temp,2)
-        return(word,prop)
+        (prop,word) = divmod(cond,3)
+        return(prop,word)
+
 
 filename=[]
 
 
-filename.append("SJ_RG_40.png")
-filename.append("SJ_RG_55.png")
-filename.append("SJ_RG_45.png")
-filename.append("SJ_RG_60.png")
-filename.append("SJ_GR_40.png")
-filename.append("SJ_GR_55.png")
-filename.append("SJ_GR_45.png")
-filename.append("SJ_GR_60.png")
-filename.append("SJ_BY_40.png")
-filename.append("SJ_BY_55.png")
-filename.append("SJ_BY_45.png")
-filename.append("SJ_BY_60.png")
-filename.append("SJ_YB_40.png")
-filename.append("SJ_YB_55.png")
-filename.append("SJ_YB_45.png")
-filename.append("SJ_YB_60.png")
+filename.append("SJ_RGB433.png")
+filename.append("SJ_GRB433.png")
+filename.append("SJ_BGR433.png")
 
-filedir='stroopstim/'
+filename.append("SJ_RGB343.png")
+filename.append("SJ_GRB343.png")
+filename.append("SJ_BGR343.png")
 
-let=['f','j']
+filename.append("SJ_RGB334.png")
+filename.append("SJ_GRB334.png")
+filename.append("SJ_BGR334.png")
+
+filedir='stroopstim/stim_3c/'
+
+let=['1','2','3']
 blank=visual.TextStim(window, text = "", pos = (0,0))
-
+mask1=visual.TextStim(window,text="",pos = (0,0))
 #####################
 
 
 def doTrial(cond):
-		
+	duration=[1,30,1]	
 	stim=visual.ImageStim(
 		win=window,
 		image=filedir+filename[cond])
-	(word,prop) = decode(cond)
+	(prop,word) = decode(cond)
 	respInt=-1
-	duration=[1,30,1]
+
 	times=numpy.cumsum(duration)
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
 			blank.draw()		
 		if (times[1]<=frame<times[2]): 
-			stim.draw()	
+			stim.draw()		
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -135,12 +129,14 @@ def doTrial(cond):
 		respInt=0
 	if (response==let[1]):
 		respInt=1
+	if (response==let[2]):
+		respInt=2
 	if (respInt== -1):
 		wrongKeyText.draw()
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif ((prop==1 and ((word==0 and respInt==0) or (word==1 and respInt==1) or (word==2 and respInt==0) or (word==3 and respInt==1))) or (prop==0 and ((word==0 and respInt==1) or (word==1 and respInt==0) or (word==2 and respInt==1) or (word==3 and respInt==0)))):
+	elif ((prop==0 and respInt==0) or (prop==1 and respInt==1) or (prop==2 and respInt==2)):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
@@ -160,25 +156,24 @@ def doTrial(cond):
 # Helper Text
 
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys F (Red/Blue) and J (Green/Yellow) \nAny key to begin the PRACTICE ROUND", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys 1 (Red), 2 (Green) and 3 (Blue) \nAny key to begin the PRACTICE ROUND", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to continue", pos = (0,0))
 
 
 #########################
 # Session Global Settings
 
-N=16*4
-
+N=9*5
 cond=range(N)
 for n in range(N):
-	cond[n]=n%16
+	cond[n]=n%9
 random.shuffle(cond)
 
 
 pracN=5
 pracCond=range(pracN)
 for n in range(pracN):
-	pracCond[n]=n%16
+	pracCond[n]=n%9
 random.shuffle(pracCond)
 
 
@@ -197,14 +192,14 @@ window.flip()
 event.waitKeys()
 
 for t in range(N):
-	(blk,trl) = divmod(t,16)
+	(blk,trl) = divmod(t,15)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()				 
 	out=doTrial(cond[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
-	(word,prop) = decode(cond[t])
+	(prop,word) = decode(cond[t])
 	addData = (sessionID, blk, t, word, prop, out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)

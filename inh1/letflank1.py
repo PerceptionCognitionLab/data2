@@ -1,3 +1,5 @@
+from psychopy import prefs
+prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os

@@ -1,3 +1,5 @@
+from psychopy import prefs
+prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os
@@ -11,7 +13,6 @@ import numpy
 SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
-
 
 #####################
 # Experiment Settings
@@ -168,7 +169,7 @@ def doTrial(cond,fpTime,targTime):
 #########################
 # Session Global Settings
 
-N=160
+N=40
 cond=range(N)
 for n in range(N):
 	cond[n]=n%32

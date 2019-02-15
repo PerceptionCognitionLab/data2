@@ -161,8 +161,7 @@ warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to
 #########################
 # Session Global Settings
 
-N=9*10
-
+N=9*5
 cond=range(N)
 for n in range(N):
 	cond[n]=n%9
