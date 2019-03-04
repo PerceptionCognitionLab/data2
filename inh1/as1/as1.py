@@ -20,7 +20,7 @@ from expLib import *
 
 
 useDB=True
-dbConf = beta
+dbConf = exp
 expName='as1'
 
 createTableStatement = (
@@ -56,7 +56,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -169,7 +169,7 @@ def doTrial(cond,fpTime,targTime):
 #########################
 # Session Global Settings
 
-N=40
+N=320
 cond=range(N)
 for n in range(N):
 	cond[n]=n%32
@@ -210,7 +210,7 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,40)
+	(blk,trl) = divmod(t,64)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()

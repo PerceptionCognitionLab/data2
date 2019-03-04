@@ -1,3 +1,5 @@
+from psychopy import prefs
+prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os
@@ -19,8 +21,8 @@ from expLib import *
 
 
 useDB=True
-dbConf = beta
-expName='globloc1'
+dbConf = exp
+expName='gl1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -50,7 +52,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1680,1050), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -97,7 +99,7 @@ let=['f','j']
 
 gName=[easy,mod,dif]
 
-filedir='stim/'
+filedir='../stim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 LeftLet = ['H', 'S', 'A','S']
@@ -183,7 +185,7 @@ startLrg=visual.TextStim(window, text = "Identify the LARGE letter\n\nPress any 
 startSml=visual.TextStim(window, text = "Identify the SMALL letter\n\nPress any key to start", pos = (0,0))
 
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-largeBreak=visual.TextStim(window, text = "Take a long Break\nWait for the next task", pos = (0,0))
+largeBreak=visual.TextStim(window, text = "Take a long Break\nWait for the next message", pos = (0,0))
 
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nIn the remaining trials there will also be background noise\n Identify the LARGE letter, or the SMALL letters that make the large letter.\n\nAny key to continue", pos = (0,0))
 
