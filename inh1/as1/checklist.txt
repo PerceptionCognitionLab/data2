@@ -11,7 +11,7 @@ PREPARE THE LABS
 - candy, sanitizer, tissues on desk
 
 PREPARE AS1
-- set directory to ~/specl-exp/data2/as1/as1
+- set directory to ~/specl-exp/data2/inh1/as1
 - run: python as1.py
 - check if the experiment is ' as1' 
 
@@ -41,7 +41,5 @@ AFTER
 - debrief participant with information about experiment
 a. ask how they found the task
 b. our goal is to study how people respond in the face of distraction
-
-
- the difference in response times between the two kinds of trials (congruent(arrow) and incongruent(circle))
+c. the difference in response times between the two kinds of trials (congruent(arrow) and incongruent(circle))
 
