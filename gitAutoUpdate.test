@@ -1,6 +1,0 @@
-set -x
-Rscript /home/exp/extractData/extractData2.R
-git add *
-git commit -am "automatic update"
-git push
-
