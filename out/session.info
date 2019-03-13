@@ -13,6 +13,10 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 20 2 gl1 10 1998 1 4 Right No Yes 1 2019-03-07 16:02:32
 23 2 gl1 11 1999 1 6 Right No Yes 1 2019-03-12 15:46:38
 24 2 gl1 12 1997 1 1 Right No Yes 1 2019-03-12 15:57:33
+32 4 gl1 14 1993 2 1 Right No Yes 1 2019-03-13 15:06:02
+33 4 gl1 15 2000 2 1 Right No Yes 1 2019-03-13 15:13:58
+36 4 gl1 16 2000 2 3 Right No Yes 1 2019-03-13 16:00:56
+37 4 gl1 17 1988 2 3 Right No Yes 1 2019-03-13 16:08:09
 3 2 as1 2 1999 2 1 Right No Yes 1 2019-03-04 13:16:01
 4 2 as1 2 1999 2 1 Right No Yes 1 2019-03-04 13:16:01
 6 2 as1 3 1999 1 7 Right No Yes 1 2019-03-05 15:51:59
@@ -25,3 +29,10 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 25 2 as1 11 1999 1 6 Right No Yes 1 2019-03-12 15:46:38
 26 2 as1 11 1999 1 6 Right No Yes 1 2019-03-12 15:46:38
 27 2 as1 12 1997 1 1 Right No Yes 1 2019-03-12 15:57:33
+28 5 as1 13 1997 3 1 Right No Yes 1 2019-03-12 16:37:47
+29 2 as1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+30 2 as1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+31 2 as1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+34 4 as1 14 1993 2 1 Right No Yes 1 2019-03-13 15:06:02
+35 4 as1 15 2000 2 1 Right No Yes 1 2019-03-13 15:13:58
+38 4 as1 16 2000 2 3 Right No Yes 1 2019-03-13 16:00:56
