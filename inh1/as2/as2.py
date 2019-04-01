@@ -20,8 +20,8 @@ from expLib import *
 
 
 useDB=True
-dbConf = beta
-expName='as1'
+dbConf = exp
+expName='as2'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("

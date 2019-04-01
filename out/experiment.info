@@ -1,3 +1,5 @@
 experimentID name irbID directory
 1 gl1 1 data2/globloc/gl1
 2 as1 1 data2/inh1/as1
+3 as2 1 data2/inh1/as2
+4 gl2 1 data2/globloc/gl2
