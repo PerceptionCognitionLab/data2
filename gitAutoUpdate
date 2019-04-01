@@ -1,4 +1,5 @@
 Rscript /home/exp/extractData/extractData2.R
+cd /home/exp/specl-exp/data2
 git add *
 git commit -am "automatic update"
 git push
