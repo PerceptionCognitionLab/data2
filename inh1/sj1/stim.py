@@ -52,7 +52,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -147,7 +147,7 @@ def doTrial(cond,fp):
 		correct2.play()
 	else: 
 		error.play()
-		core.wait(10)
+		core.wait(3)
 	
 	return(respInt,rt)
 
