@@ -1,6 +1,7 @@
 from psychopy import prefs
 prefs.general['audioLib'] = ['pygame']
 from psychopy import core, visual, sound, event
+from PIL import Image
 import mysql.connector
 import os
 import random
@@ -74,40 +75,25 @@ fpP=.35
 ######################
 # Display Elements
 
-def code(word,prop):
-	return(word*4+prop*2)
+blank=visual.TextStim(window, text = "", pos = (0,0))
+img = Image.open('/home/exp/specl-exp/data2/inh1/sj1/stim/green.png')
+img = img.convert('RGBA')
+list = 0.45,0.55
+p = random.choice(list) 
+data = numpy.array(img)
+data[data>0] = (numpy.random.binomial(1, p, numpy.size(data[data>0]))+250)
 
 
-def decode(cond):
-        (word,temp) = divmod(cond,4)
-	(x,prop) = divmod(temp,2)
-        return(word,prop)
+red, green, blue, alpha = data.T
+black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == 250)
+data[..., :-1][black_areas.T] = (0, 0, 255)
+black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == 251)
+data[..., :-1][black_areas.T] = (0, 255, 0)
+img1 = Image.fromarray(data)
+img1.show()
 
-filename=[]
-
-
-
-filename.append("SJ_RG_45.png")
-filename.append("SJ_RG_52.png")
-filename.append("SJ_RG_48.png")
-filename.append("SJ_RG_55.png")
-filename.append("SJ_GR_45.png")
-filename.append("SJ_GR_55.png")
-filename.append("SJ_GR_48.png")
-filename.append("SJ_GR_52.png")
-filename.append("SJ_BY_45.png")
-filename.append("SJ_BY_52.png")
-filename.append("SJ_BY_48.png")
-filename.append("SJ_BY_55.png")
-filename.append("SJ_YB_45.png")
-filename.append("SJ_YB_52.png")
-filename.append("SJ_YB_48.png")
-filename.append("SJ_YB_55.png")
-
-filedir='stroopstim/'
 
 let=['f','j']
-blank=visual.TextStim(window, text = "", pos = (0,0))
 
 #####################
 
@@ -115,7 +101,7 @@ def doTrial(cond,fp):
 		
 	stim=visual.ImageStim(
 		win=window,
-		image=filedir+filename[cond])
+		image=)
 	(word,prop) = decode(cond)
 	respInt=-1
 	duration=[1,fp,1]
