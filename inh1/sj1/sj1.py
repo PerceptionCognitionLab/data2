@@ -21,7 +21,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='sj1'
 
@@ -52,7 +52,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1680, 1050), rgb = "grey", fullscr = False,)
+window=visual.Window(units= "pix", size =(1680, 1050), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -91,19 +91,19 @@ def stimulus(w):
     	im = im.convert('RGBA')
     	data = numpy.array(im)
     	length = len(data[numpy.where(data>0)])
-    	K = int(.35*length)
-    	L = int(.33*length)
+    	K = int(.36*length)
+    	L = int(.32*length)
     	arr = numpy.array([1] * K + [2]*L + [3]*(length - K - L))+250
     	numpy.random.shuffle(arr)
     	data[data>0]=arr
     	y = [1,2,3]
     	x = numpy.random.choice(y, 3, replace=False)+250
     	if (x[0] == 251):
-       		col = 'red'
+       		col = 1
     	elif (x[1] == 251):
-        	col = 'green'
+        	col = 2
     	else: 
-       		col = 'blue'
+       		col = 3
     	red, green, blue, alpha = data.T
     	black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
     	data[..., :-1][black_areas.T] = (255, 0, 0)
@@ -114,10 +114,10 @@ def stimulus(w):
     	return(data,col)
 	
 
-let=['r','g','b']
+let=['1','2','3']
 
 #####################
-blank=visual.TextStim(window, text = "+++", pos = (0,0))
+blank=visual.TextStim(window, text = "", pos = (0,0))
 
 
 def doTrial(cond):
@@ -154,7 +154,7 @@ def doTrial(cond):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif ((col=='red' and respInt==0) or (col=='green' and respInt==1) or (col=='blue' and respInt==2)):
+	elif ((col==1 and respInt==0) or (col==2 and respInt==1) or (col==3 and respInt==2)):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
@@ -174,9 +174,9 @@ def doTrial(cond):
 # Helper Text
 
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys R G B \nAny key to begin the PRACTICE ROUND", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome\nPosition your hands on the keys 1 (red) 2 (green) and 3 (blue)  \nAny key to begin the PRACTICE ROUND", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\nAny key to continue", pos = (0,0))
-rgTxt=visual.TextStim(window, text = "Red (press R),  Blue (press B)    or  Green (press j)\n\nAny key to continue." , pos = (0,0))
+rgTxt=visual.TextStim(window, text = "Position your hands on the keys 1 (red) 2 (green) and 3 (blue) \n\nAny key to continue." , pos = (0,0))
 
 
 #########################
