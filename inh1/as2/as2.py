@@ -20,7 +20,7 @@ from expLib import *
 
 
 useDB=True
-dbConf = exp
+dbConf = beta
 expName='as2'
 
 createTableStatement = (
@@ -176,9 +176,7 @@ for n in range(N):
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 pracN=16
-pracCond=range(pracN)
-for n in range(pracN):
-	pracCond[n]=n%32
+pracCond=range(32)
 random.shuffle(pracCond)
 
 
