@@ -20,7 +20,7 @@ from expLib import *
 
 
 useDB=True
-dbConf = beta
+dbConf = exp
 expName='as2'
 
 createTableStatement = (

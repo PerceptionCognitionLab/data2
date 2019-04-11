@@ -34,7 +34,7 @@ createTableStatement = (
     "  `trial` INT(2) UNSIGNED NOT NULL,"
     "  `word` INT(2) UNSIGNED NOT NULL,"
     "  `col` INT(2) UNSIGNED NOT NULL,"
-    "  `resp` int(1) UNSIGNED NOT NULL,"
+    "  `resp` int(1) NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
     ") ENGINE=InnoDB")
@@ -83,11 +83,11 @@ def word():
 
 def stimulus(w):
     	if (w == 1):
-        	im = Image.open('red.png')
+        	im = Image.open('red_s.png')
     	elif (w == 2):
-        	im = Image.open('green.png')
+        	im = Image.open('green_s.png')
     	else : 
-        	im = Image.open('blue.png')
+        	im = Image.open('blue_s.png')
     	im = im.convert('RGBA')
     	data = numpy.array(im)
     	length = len(data[numpy.where(data>0)])
