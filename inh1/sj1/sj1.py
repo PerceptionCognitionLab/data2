@@ -212,7 +212,7 @@ window.flip()
 event.waitKeys()
 
 for t in range(N):
-	(blk,trl) = divmod(t,40)
+	(blk,trl) = divmod(t,80)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
