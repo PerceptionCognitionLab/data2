@@ -91,8 +91,8 @@ def stimulus(w):
     	im = im.convert('RGBA')
     	data = numpy.array(im)
     	length = len(data[numpy.where(data>0)])
-    	K = int(.36*length)
-    	L = int(.32*length)
+    	K = int(.37*length)
+    	L = int(.315*length)
     	arr = numpy.array([1] * K + [2]*L + [3]*(length - K - L))+250
     	numpy.random.shuffle(arr)
     	data[data>0]=arr
