@@ -19,9 +19,9 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
-expName='acstr'
+expName='acstr1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -29,12 +29,13 @@ createTableStatement = (
     "  `sessionID` INT(6) UNSIGNED NOT NULL,"
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `target` INT(2) UNSIGNED NOT NULL,"
-    "  `cue` INT(2) UNSIGNED NOT NULL,"
-    "  `location` INT(2) UNSIGNED NOT NULL,"
-    "  `forePeriod` INT(4) UNSIGNED NOT NULL,"
-    "  `targetTime` INT(4) UNSIGNED NOT NULL,"
-    "  `resp` int(1) NOT NULL,"
+    "  `WordInt` INT(1) UNSIGNED NOT NULL,"
+    "  `ColorInt` INT(1) UNSIGNED NOT NULL,"
+    "  `Int1` INT(1) UNSIGNED NOT NULL,"
+    "  `Int2` INT(1) UNSIGNED NOT NULL,"
+    "  `Int3` INT(1) UNSIGNED NOT NULL,"
+    "  `Int4` INT(1) UNSIGNED NOT NULL,"
+    "  `Response` INT(1) NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
     ") ENGINE=InnoDB")
@@ -42,8 +43,8 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `target`, `cue`, `location`, `forePeriod`, `targetTime`, `resp`, `rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `WordInt`, `ColorInt`, `Int1`, `Int2`, `Int3`, `Int4`,  `Response`, `rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 
 ############################################################
@@ -87,7 +88,7 @@ poslist=[(-400,300), (400,300), (-400, -300), (400,-300)]
 arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
-duration = [1,60,-1,40,30,0,1,1]
+duration = [1,60,-1,20,10,0,1,1]
 fpEvent = 2
 targEvent =5
 targTime=7
@@ -220,7 +221,7 @@ def doTrial(cond,fpTime,targTime):
 #########################
 # Session Global Settings
 
-N=40
+N=128
 cond=range(N)
 for n in range(N):
 	cond[n]=n%32
