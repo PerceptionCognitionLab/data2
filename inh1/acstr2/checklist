@@ -1,0 +1,45 @@
+acstr2 experimenter checklist
+
+
+PREPARE THE LABS
+- front door to lab is open
+- computer is on and signed in
+- light in cubicle is on the brightest setting
+- computer screen is at the lowest position and at lowest position on the stand, and lined up at 12 inch tape mark on desk
+- chair is in a natural place so they can enter their demographics
+- keyboard mask is nearby (labelled labA and labB)
+- candy, sanitizer, tissues on desk
+
+PREPARE acstr2
+- set directory to ~/specl-exp/data2/inh1/acstr2
+- run: python acstr2.py
+- check if the experiment is ' acstr2' 
+
+PARTICIPANT COMES IN
+- check if they are who signed up
+- irb consent
+- let participant sign in and give demographics 
+- place keyboard mask
+- Explain experiment.  
+  a. Direct attention to box in corner corresponding to the color the word in the center is written in.
+  b. need to read the number before it's masked by the # symbol
+  c. always use the four keys provided
+  d. try to be accurate, if you make a mistake you get a 1 second time out
+  e. 4 blocks total, feel free to rest between blocks as long as you wish
+  f. takes about 15 minutes, tops.
+  g. tell them there will be a note on the screen when they are done
+  h. thank them again for their efforts
+- stay for a few practice trials, then shut the door
+
+
+AFTER
+
+- lead them out to the main room, ask them to wait
+- Press 9 to end
+- note any comments or concerns in final dialog screen
+- close the experiment screen
+- debrief participant with information about experiment
+a. ask how they found the task
+b. our goal is to study how people respond in the face of distraction
+c. the difference in accuracy between the two kinds of trials (congruent(Color of word matches word) and incongruent(Doesn't match))
+

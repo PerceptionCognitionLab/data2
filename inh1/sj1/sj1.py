@@ -21,7 +21,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='sj1'
 
@@ -191,7 +191,7 @@ def doTrial(cond):
 		error.play()
 		core.wait(2)
 	
-	return(respInt,rt,z,col)
+	return(respInt,rt,z[0],col)
 
 
 

@@ -103,6 +103,7 @@ arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
 	(loc,cue) = divmod(temp,2)
+	cue=numpy.random.rand()<.3
 	return(targ,cue,loc)
 
 def doTrial(cond,fpTime,targTime):

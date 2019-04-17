@@ -19,7 +19,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='acstr2'
 
@@ -128,7 +128,7 @@ c4=visual.TextStim(window, text="YELLOW", pos=poslistcorners[3], height=cornsize
 c1.size=.5
 
 cstrings=["RED", "GREEN", "BLUE", "YELLOW"]
-ccols=[(1,0,0), (0, 1, 0), (0, 0, 1), (1, 1, 0)]
+ccols=[(1,0,.2), (0, 1, 0), (0, .3, 1), (1, 1, 0)]
 
 
 
@@ -249,6 +249,7 @@ def doTrial(cond,fpTime,targTime):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
+		iscorrect=2
 	elif (respInt==leint):
 		correct1.play()
 		core.wait(0.1)
@@ -266,13 +267,15 @@ def doTrial(cond,fpTime,targTime):
 #########################
 # Session Global Settings
 
-N=128
+N=320
+perccong=.7
+
 cond=range(N)
 for n in range(N):
-	if n%3==0:
-		cond[n]=0
-	else:
+	if n<(perccong*N):
 		cond[n]=1
+	else:
+		cond[n]=0
 
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
@@ -317,7 +320,7 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,64)
+	(blk,trl) = divmod(t,80)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
