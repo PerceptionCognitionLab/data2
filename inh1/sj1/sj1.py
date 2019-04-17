@@ -107,11 +107,11 @@ def stimulus(w,im):
     		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
     		data[..., :-1][black_areas.T] = (0, 0, 255)
 		if (x[0]==251):
-			col = 'red'
+			col = '1'
 		elif (x[1]==251):
-			col = 'green'
+			col = '2'
 		elif (x[2]==251):
-			col = 'blue'
+			col = '3'
     	elif (w==2):
         	x = numpy.random.choice(y, 3, p=[.7,.15,.15], replace=False)+250
 		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[1])
@@ -121,11 +121,11 @@ def stimulus(w,im):
     		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
     		data[..., :-1][black_areas.T] = (0, 0, 255)
 		if (x[0]==251):
-			col = 'green'
+			col = '2'
 		elif (x[1]==251):
-			col = 'red'
+			col = '1'
 		elif (x[2]==251):
-			col = 'blue'
+			col = '3'
     	elif (w==3): 
         	x = numpy.random.choice(y, 3, p=[.7,.15,.15], replace=False)+250
 		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
@@ -135,11 +135,11 @@ def stimulus(w,im):
     		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
     		data[..., :-1][black_areas.T] = (0, 0, 255)
 		if (x[0]==251):
-			col = 'blue'
+			col = '3'
 		elif (x[1]==251):
-			col = 'green'
+			col = '2'
 		elif (x[2]==251):
-			col = 'red'
+			col = '1'
 
     	return(data,col)
 
@@ -183,7 +183,7 @@ def doTrial(cond):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif ((col=='red' and respInt==0) or (col=='green' and respInt==1) or (col=='blue' and respInt==2)):
+	elif ((col=='1' and respInt==0) or (col=='2' and respInt==1) or (col=='3' and respInt==2)):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
