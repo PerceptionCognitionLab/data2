@@ -21,7 +21,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='sj1'
 
@@ -77,17 +77,17 @@ fpP=.35
 
 
 def word():
-	w = [1,2,3]
-	w = numpy.random.choice(w)
-    	return (w)
-
-def stimulus(w):
+    	w = [1,2,3]
+    	w = numpy.random.choice(w)
     	if (w == 1):
-        	im = Image.open('red_s.png')
-    	elif (w == 2):
-        	im = Image.open('green_s.png')
-    	else : 
-        	im = Image.open('blue_s.png')
+       		im = Image.open('red.png')
+   	elif (w == 2):
+        	im = Image.open('green.png')
+    	elif (w == 3): 
+        	im = Image.open('blue.png')
+    	return (w,im)
+
+def stimulus(w,im):
     	im = im.convert('RGBA')
     	data = numpy.array(im)
     	length = len(data[numpy.where(data>0)])
@@ -97,22 +97,51 @@ def stimulus(w):
     	numpy.random.shuffle(arr)
     	data[data>0]=arr
     	y = [1,2,3]
-    	x = numpy.random.choice(y, 3, replace=False)+250
-    	if (x[0] == 251):
-       		col = 1
-    	elif (x[1] == 251):
-        	col = 2
-    	else: 
-       		col = 3
     	red, green, blue, alpha = data.T
-    	black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
-    	data[..., :-1][black_areas.T] = (255, 0, 0)
-    	black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[1])
-    	data[..., :-1][black_areas.T] = (0, 255, 0)
-    	black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
-    	data[..., :-1][black_areas.T] = (0, 0, 255)
+    	if (w ==1):
+        	x = numpy.random.choice(y, 3, p=[.7,.15,.15], replace=False)+250
+		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
+    		data[..., :-1][black_areas.T] = (255, 0, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[1])
+    		data[..., :-1][black_areas.T] = (0, 255, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
+    		data[..., :-1][black_areas.T] = (0, 0, 255)
+		if (x[0]==251):
+			col = 'red'
+		elif (x[1]==251):
+			col = 'green'
+		elif (x[2]==251):
+			col = 'blue'
+    	elif (w==2):
+        	x = numpy.random.choice(y, 3, p=[.7,.15,.15], replace=False)+250
+		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[1])
+    		data[..., :-1][black_areas.T] = (255, 0, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
+    		data[..., :-1][black_areas.T] = (0, 255, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
+    		data[..., :-1][black_areas.T] = (0, 0, 255)
+		if (x[0]==251):
+			col = 'green'
+		elif (x[1]==251):
+			col = 'red'
+		elif (x[2]==251):
+			col = 'blue'
+    	elif (w==3): 
+        	x = numpy.random.choice(y, 3, p=[.7,.15,.15], replace=False)+250
+		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[2])
+    		data[..., :-1][black_areas.T] = (255, 0, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[1])
+    		data[..., :-1][black_areas.T] = (0, 255, 0)
+    		black_areas = (red == 0) & (blue == 0) & (green == 0) & (alpha == x[0])
+    		data[..., :-1][black_areas.T] = (0, 0, 255)
+		if (x[0]==251):
+			col = 'blue'
+		elif (x[1]==251):
+			col = 'green'
+		elif (x[2]==251):
+			col = 'red'
+
     	return(data,col)
-	
 
 let=['1','2','3']
 
@@ -123,7 +152,7 @@ blank=visual.TextStim(window, text = "", pos = (0,0))
 def doTrial(cond):
 	duration=[1,30,1]	
 	z = word()
-	j = stimulus(z)
+	j = stimulus(z[0],z[1])
 	col = j[1]
 	image = j[0]
 
@@ -154,7 +183,7 @@ def doTrial(cond):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif ((col==1 and respInt==0) or (col==2 and respInt==1) or (col==3 and respInt==2)):
+	elif ((col=='red' and respInt==0) or (col=='green' and respInt==1) or (col=='blue' and respInt==2)):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()

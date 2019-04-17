@@ -21,7 +21,7 @@ from expLib import *
 
 useDB=True
 dbConf = exp
-expName='acstr2'
+expName='acstr1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -31,9 +31,10 @@ createTableStatement = (
     "  `trial` INT(2) UNSIGNED NOT NULL,"
     "  `WordInt` INT(1) UNSIGNED NOT NULL,"
     "  `ColorInt` INT(1) UNSIGNED NOT NULL,"
-    "  `TrueInt` INT(1) UNSIGNED NOT NULL,"
-    "  `Cong` INT(1) UNSIGNED NOT NULL,"
-    "  `Correct` INT(1) UNSIGNED NOT NULL,"
+    "  `Int1` INT(1) UNSIGNED NOT NULL,"
+    "  `Int2` INT(1) UNSIGNED NOT NULL,"
+    "  `Int3` INT(1) UNSIGNED NOT NULL,"
+    "  `Int4` INT(1) UNSIGNED NOT NULL,"
     "  `Response` INT(1) NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
@@ -42,8 +43,8 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `WordInt`, `ColorInt`, `TrueInt`, `Cong`, `Correct`,  `Response`, `rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `WordInt`, `ColorInt`, `Int1`, `Int2`, `Int3`, `Int4`,  `Response`, `rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 
 ############################################################
@@ -142,29 +143,17 @@ def doTrial(cond,fpTime,targTime):
 	(targ,cue,loc) = decode(cond)
 	target=visual.TextStim(window, text = targets[targ],pos=pos[loc])
 	respInt=-1
-	
-	if (cond):
-		w=numpy.random.randint(4)
-		c=w
-	else:
-		w=numpy.random.randint(4)
-		c=numpy.random.randint(3)
-		if (c==w):
-			c+=1
 
-	#w=numpy.random.randint(4)
-	#c=numpy.random.randint(4)
+	w=numpy.random.randint(4)
+	c=numpy.random.randint(4)
 	cw=colword(w,c)
 
-	leint=numpy.random.randint(4)
-	leperm=['X', 'X', 'X', 'X']
-	leperm[c]=leint+1
-#	leperm=numpy.random.permutation(4)
+	leperm=numpy.random.permutation(4)
 	
-	n1=visual.TextStim(window, text=str(leperm[0]), pos=poslist[0], height=numsize)
-	n2=visual.TextStim(window, text=str(leperm[1]), pos=poslist[1], height=numsize)
-	n3=visual.TextStim(window, text=str(leperm[2]), pos=poslist[2], height=numsize)
-	n4=visual.TextStim(window, text=str(leperm[3]), pos=poslist[3], height=numsize)
+	n1=visual.TextStim(window, text=targets[leperm[0]], pos=poslist[0], height=numsize)
+	n2=visual.TextStim(window, text=targets[leperm[1]], pos=poslist[1], height=numsize)
+	n3=visual.TextStim(window, text=targets[leperm[2]], pos=poslist[2], height=numsize)
+	n4=visual.TextStim(window, text=targets[leperm[3]], pos=poslist[3], height=numsize)
 
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
@@ -217,15 +206,13 @@ def doTrial(cond,fpTime,targTime):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif (respInt==leint):
+	elif (respInt==leperm[c]):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
-		iscorrect=1
 	else: 
-		iscorrect=0
 		error.play()
-	return(respInt,rt, w, c, leint, cond, iscorrect)
+	return(respInt,rt, w, c, leperm)
 
 
 
@@ -237,15 +224,11 @@ def doTrial(cond,fpTime,targTime):
 N=128
 cond=range(N)
 for n in range(N):
-	cond[n]=n%2
+	cond[n]=n%32
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 pracN=4
-pracCond=range(4)
-
-for n in range(pracN):
-	pracCond[n]=n%2
-
+pracCond=range(32)
 random.shuffle(pracCond)
 
 
@@ -286,7 +269,7 @@ for t in range(N):
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 #	(targ,cue,loc) = decode(cond[t])
 	#print (targ,cue,loc)
-	addData = (sessionID, blk, t, out[2], out[3], out[4], out[5], out[6], out[0], rt)
+	addData = (sessionID, blk, t, out[2], out[3], out[4][0], out[4][1], out[4][2], out[4][3], out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
 	else:

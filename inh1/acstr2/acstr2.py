@@ -19,7 +19,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='acstr2'
 
@@ -84,6 +84,7 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 
 pos = ((-200,-100),(-200,100),(200,100),(200,-100))
 poslist=[(-400,300), (400,300), (-400, -300), (400,-300)]
+poslistcorners=[(-500,400), (500,400), (-500, -400), (500,-400)]
 arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
@@ -108,6 +109,10 @@ mask3=visual.TextStim(window,text="#",pos = poslist[2], height=numsize)
 mask4=visual.TextStim(window,text="#",pos = poslist[3], height=numsize)
 
 
+box1=visual.TextStim(window,text="[  ]",pos = poslist[0], height=numsize)
+box2=visual.TextStim(window,text="[  ]",pos = poslist[1], height=numsize)
+box3=visual.TextStim(window,text="[  ]",pos = poslist[2], height=numsize)
+box4=visual.TextStim(window,text="[  ]",pos = poslist[3], height=numsize)
 
 arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
 
@@ -115,10 +120,10 @@ arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
 
 
 
-c1=visual.TextStim(window, text="RED", pos=poslist[0], height=cornsize)
-c2=visual.TextStim(window, text="GREEN", pos=poslist[1], height=cornsize)
-c3=visual.TextStim(window, text="BLUE", pos=poslist[2], height=cornsize)
-c4=visual.TextStim(window, text="YELLOW", pos=poslist[3], height=cornsize)
+c1=visual.TextStim(window, text="RED", pos=poslistcorners[0], height=cornsize)
+c2=visual.TextStim(window, text="GREEN", pos=poslistcorners[1], height=cornsize)
+c3=visual.TextStim(window, text="BLUE", pos=poslistcorners[2], height=cornsize)
+c4=visual.TextStim(window, text="YELLOW", pos=poslistcorners[3], height=cornsize)
 
 c1.size=.5
 
@@ -171,13 +176,20 @@ def doTrial(cond,fpTime,targTime):
 			c1.draw()
 			c2.draw()
 			c3.draw()
-			c4.draw()		
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()		
 		if (times[1]<=frame<times[2]):
 			c1.draw()
 			c2.draw()
 			c3.draw()
 			c4.draw()
-
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
 
 
 			cw.draw()
@@ -185,14 +197,34 @@ def doTrial(cond,fpTime,targTime):
 			c1.draw()
 			c2.draw()
 			c3.draw()
-			c4.draw()	
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()	
 		if (times[3]<=frame<times[4]):
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
  			n1.draw()
  			n2.draw()
  			n3.draw()
  			n4.draw()
 						
 		if (times[4]<=frame<times[7]): 
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
 			mask1.draw()
 			mask2.draw()
 			mask3.draw()
@@ -237,14 +269,22 @@ def doTrial(cond,fpTime,targTime):
 N=128
 cond=range(N)
 for n in range(N):
-	cond[n]=n%2
+	if n%3==0:
+		cond[n]=0
+	else:
+		cond[n]=1
+
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 pracN=4
 pracCond=range(4)
 
 for n in range(pracN):
-	pracCond[n]=n%2
+	if n%3==0:
+		pracCond[n]=0
+	else:
+		pracCond[n]=1
+
 
 random.shuffle(pracCond)
 
