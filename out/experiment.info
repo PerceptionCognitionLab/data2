@@ -1,8 +1,8 @@
-experimentID name irbID directory
-1 gl1 1 data2/globloc/gl1
-2 as1 1 data2/inh1/as1
-3 as2 1 data2/inh1/as2
-4 gl2 1 data2/globloc/gl2
-5 sj1 1 data2/inh1/sj1
-6 acstr1 1 data2/inh1/acstr1
-7 acstr2 1 data2/inh1/acstr2
+experimentID name irbID directory Description Outcome
+1 gl1 1 data2/globloc/gl1 From Fayette, first attempt to see if we could get individual differences and dominance in global/local judgments with nested stimuli.   Mistake in unsigned int mistake in code for responses 
+2 as1 1 data2/inh1/as1 Pro (arrow) and anti (circle) saccade task with 1-4 numbers as targets Unsigned response error. Fixed and changed to as2. 
+3 as2 1 data2/inh1/as2  NA
+4 gl2 1 data2/globloc/gl2  NA
+5 sj1 1 data2/inh1/sj1 Stroop judgment task: Varying the number of R, G, B pixels in the words Red, Green, Blue Running. Size of effects not as big as we were looking for.
+6 acstr1 1 data2/inh1/acstr1  NA
+7 acstr2 1 data2/inh1/acstr2  NA

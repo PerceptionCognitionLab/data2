@@ -106,6 +106,14 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 119 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
 120 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
 121 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+124 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+125 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+127 2 sj1 35 1997 1 1 Left No Yes 1 2019-04-18 10:00:48
+129 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+130 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+132 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+133 2 sj1 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+134 3 sj1 36 1997 1 1 Right No Yes 1 2019-04-18 11:01:31
 87 2 acstr1 31 1992 2 8 Right No Yes 1 2019-04-15 13:13:12
 88 2 acstr1 31 1992 2 8 Right No Yes 1 2019-04-15 13:13:12
 89 2 acstr1 31 1992 2 8 Right No Yes 1 2019-04-15 13:13:12
@@ -121,3 +129,6 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 110 2 acstr2 33 1998 1 1 Right No Yes 1 2019-04-17 14:59:32
 111 2 acstr2 33 1998 1 1 Right No Yes 1 2019-04-17 14:59:32
 123 2 acstr2 34 1996 1 7 Right No Yes 1 2019-04-17 15:53:49
+126 2 acstr2 35 1997 1 1 Left No Yes 1 2019-04-18 10:00:48
+128 2 acstr2 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+131 2 acstr2 36 1997 1 1 Right No Yes 1 2019-04-18 11:01:31

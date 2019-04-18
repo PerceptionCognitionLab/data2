@@ -80,11 +80,11 @@ def word():
     	w = [1,2,3]
     	w = numpy.random.choice(w)
     	if (w == 1):
-       		im = Image.open('red.png')
+       		im = Image.open('red_s.png')
    	elif (w == 2):
-        	im = Image.open('green.png')
+        	im = Image.open('green_s.png')
     	elif (w == 3): 
-        	im = Image.open('blue.png')
+        	im = Image.open('blue_s.png')
     	return (w,im)
 
 def stimulus(w,im):
