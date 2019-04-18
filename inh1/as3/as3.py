@@ -94,7 +94,7 @@ fpP=.35
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
 cueCirc=visual.Circle(window,fillColor="Red",pos=(0,0),radius=30)
-circ=visual.Circle(window,pos=(0,0),radius=30,lineColor='red')
+circ=visual.Circle(window,pos=(0,0),radius=30,lineColor='white')
 mask1=visual.TextStim(window,text="@",pos = (0,0))
 mask2=visual.TextStim(window,text="#",pos = (0,0))
 

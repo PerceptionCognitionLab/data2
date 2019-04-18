@@ -88,9 +88,9 @@ poslistcorners=[(-500,400), (500,400), (-500, -400), (500,-400)]
 arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
-duration = [1,60,-1,20,10,0,1,1]
+duration = [1,40,-1,25,15,-1,1,1]
 fpEvent = 2
-targEvent =5
+targEvent =6
 targTime=7
 fpP=.35
 
@@ -172,7 +172,7 @@ def doTrial(cond,fpTime,targTime):
 	n4=visual.TextStim(window, text=str(leperm[3]), pos=poslist[3], height=numsize)
 
 	for frame in range(max(times)):
-		if (times[0]<=frame<times[1]):
+		if (times[0]<=frame<times[2]):
 			c1.draw()
 			c2.draw()
 			c3.draw()
@@ -181,7 +181,7 @@ def doTrial(cond,fpTime,targTime):
 			box2.draw()
 			box3.draw()
 			box4.draw()		
-		if (times[1]<=frame<times[2]):
+		if (times[2]<=frame<times[3]):
 			c1.draw()
 			c2.draw()
 			c3.draw()
@@ -193,7 +193,7 @@ def doTrial(cond,fpTime,targTime):
 
 
 			cw.draw()
-		if (times[2]<=frame<times[3]): 
+		if (times[3]<=frame<times[4]): 
 			c1.draw()
 			c2.draw()
 			c3.draw()
@@ -216,7 +216,7 @@ def doTrial(cond,fpTime,targTime):
  			n3.draw()
  			n4.draw()
 						
-		if (times[4]<=frame<times[7]): 
+		if (times[5]<=frame<times[7]): 
 			c1.draw()
 			c2.draw()
 			c3.draw()

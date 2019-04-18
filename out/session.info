@@ -132,3 +132,5 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 126 2 acstr2 35 1997 1 1 Left No Yes 1 2019-04-18 10:00:48
 128 2 acstr2 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
 131 2 acstr2 36 1997 1 1 Right No Yes 1 2019-04-18 11:01:31
+135 2 acstr2 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+136 2 acstr2 31 1992 2 8 Right No Yes 1 2019-04-15 13:13:12
