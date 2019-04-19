@@ -279,8 +279,8 @@ for n in range(N):
 
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
-pracN=4
-pracCond=range(4)
+pracN=16
+pracCond=range(16)
 
 for n in range(pracN):
 	if n%3==0:
