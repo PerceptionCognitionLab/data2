@@ -21,7 +21,7 @@ from expLib import *
 
 useDB=True
 dbConf = exp
-expName='acstr2'
+expName='acstr3'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
