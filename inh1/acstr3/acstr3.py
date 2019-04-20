@@ -19,7 +19,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='acstr3'
 

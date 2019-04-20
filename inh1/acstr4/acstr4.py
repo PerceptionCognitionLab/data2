@@ -21,7 +21,7 @@ from expLib import *
 
 useDB=True
 dbConf = exp
-expName='as3'
+expName='acstr4'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -29,12 +29,12 @@ createTableStatement = (
     "  `sessionID` INT(6) UNSIGNED NOT NULL,"
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `target` INT(2) UNSIGNED NOT NULL,"
-    "  `cue` INT(2) UNSIGNED NOT NULL,"
-    "  `location` INT(2) UNSIGNED NOT NULL,"
-    "  `forePeriod` INT(4) UNSIGNED NOT NULL,"
-    "  `targetTime` INT(4) UNSIGNED NOT NULL,"
-    "  `resp` int(1) NOT NULL,"
+    "  `WordInt` INT(1) UNSIGNED NOT NULL,"
+    "  `ColorInt` INT(1) UNSIGNED NOT NULL,"
+    "  `TrueInt` INT(1) UNSIGNED NOT NULL,"
+    "  `Cong` INT(1) UNSIGNED NOT NULL,"
+    "  `Correct` INT(1) UNSIGNED NOT NULL,"
+    "  `Response` INT(1) NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
     ") ENGINE=InnoDB")
@@ -42,7 +42,7 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `target`, `cue`, `location`, `forePeriod`, `targetTime`, `resp`, `rt`)"
+     "`sessionID`, `block`, `trial`, `WordInt`, `ColorInt`, `TrueInt`, `Cong`, `Correct`,  `Response`, `rt`)"
      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 
@@ -83,70 +83,155 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 
 
 pos = ((-200,-100),(-200,100),(200,100),(200,-100))
+poslist=[(-400,300), (400,300), (-400, -300), (400,-300)]
+poslistcorners=[(-500,400), (500,400), (-500, -400), (500,-400)]
+arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
-duration = [1,30,-1,6,-1,-1,1,1]
+duration = [1,40,-1,-1,8,-1,1,1]
 fpEvent = 2
 targEvent =5
 targTime=7
-targCue = 4
-targCueI = 15
-targCueC = 9
+wordEvent=3
+wordTime=25
 fpP=.35
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
-cueCirc=visual.Circle(window,fillColor="Red",pos=(0,0),radius=30)
-circ=visual.Circle(window,pos=(0,0),radius=30,lineColor='white')
-mask1=visual.TextStim(window,text="@",pos = (0,0))
-mask2=visual.TextStim(window,text="#",pos = (0,0))
 
 
+cornsize=75
+midsize=75
+numsize=40
+
+
+mask1=visual.TextStim(window,text="#",pos = poslist[0], height=numsize)
+mask2=visual.TextStim(window,text="#",pos = poslist[1], height=numsize)
+mask3=visual.TextStim(window,text="#",pos = poslist[2], height=numsize)
+mask4=visual.TextStim(window,text="#",pos = poslist[3], height=numsize)
+
+
+box1=visual.TextStim(window,text="[  ]",pos = poslist[0], height=numsize)
+box2=visual.TextStim(window,text="[  ]",pos = poslist[1], height=numsize)
+box3=visual.TextStim(window,text="[  ]",pos = poslist[2], height=numsize)
+box4=visual.TextStim(window,text="[  ]",pos = poslist[3], height=numsize)
+
+arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
+
+
+
+
+
+c1=visual.TextStim(window, text="RED", pos=poslistcorners[0], height=cornsize)
+c2=visual.TextStim(window, text="GREEN", pos=poslistcorners[1], height=cornsize)
+c3=visual.TextStim(window, text="BLUE", pos=poslistcorners[2], height=cornsize)
+c4=visual.TextStim(window, text="YELLOW", pos=poslistcorners[3], height=cornsize)
+
+c1.size=.5
+
+cstrings=["RED", "GREEN", "BLUE", "YELLOW"]
+ccols=[(1,0,.2), (0, 1, 0), (0, .3, 1), (1, 1, 0)]
+
+
+
+def colword(wd, col):
+	return(visual.TextStim(window, text=cstrings[wd], pos=(0,0), color=ccols[col], colorSpace='rgb', height=midsize) )
 
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
 	(loc,cue) = divmod(temp,2)
-	#cue=numpy.random.rand()<.6
 	return(targ,cue,loc)
 
-def doTrial(cond,fpTime,targCueI,targCueC,targTime):
-	(targ,cue,loc) = decode(cond)
-	cueCirc.pos=pos[(loc+2)%4]
+def doTrial(cond,fpTime,targTime, wordTime):
 	duration[fpEvent] = fpTime
 	duration[targEvent] = targTime
-	if cue: 
-		duration[targCue] = targCueI
-	else:
-		duration[targCue] = targCueC
+	duration[wordEvent] = wordTime
 	times=numpy.cumsum(duration)
+	(targ,cue,loc) = decode(cond)
 	target=visual.TextStim(window, text = targets[targ],pos=pos[loc])
-	mask1.pos=pos[loc]
-	mask2.pos=pos[loc]
-	circ.pos=pos[loc]
 	respInt=-1
+	
+	if (cond):
+		w=numpy.random.randint(4)
+		c=w
+	else:
+		w=numpy.random.randint(4)
+		c=numpy.random.randint(3)
+		if (c==w):
+			c+=1
+
+	#w=numpy.random.randint(4)
+	#c=numpy.random.randint(4)
+	cw=colword(w,c)
+
+	leint=numpy.random.randint(4)
+	leperm=['X', 'X', 'X', 'X']
+	leperm[c]=leint+1
+#	leperm=numpy.random.permutation(4)
+	
+	n1=visual.TextStim(window, text=str(leperm[0]), pos=poslist[0], height=numsize)
+	n2=visual.TextStim(window, text=str(leperm[1]), pos=poslist[1], height=numsize)
+	n3=visual.TextStim(window, text=str(leperm[2]), pos=poslist[2], height=numsize)
+	n4=visual.TextStim(window, text=str(leperm[3]), pos=poslist[3], height=numsize)
+
 	for frame in range(max(times)):
-		if (times[0]<=frame<times[1]):
-			blank.draw()		
-		if (times[1]<=frame<times[2]): 
-			fix.draw()
-		if (times[2]<=frame<times[3]): 
-			blank.draw()	
-		if (times[3]<=frame<times[4]):
- 
-			if cue: 
-				cueCirc.draw()
+		if (times[0]<=frame<times[2]):
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()		
+		if (times[2]<=frame<times[3]):
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
 
-			else:
-				circ.draw()
 
+			cw.draw()
+		if (times[3]<=frame<times[4]): 
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()	
+		if (times[4]<=frame<times[5]):
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
+ 			n1.draw()
+ 			n2.draw()
+ 			n3.draw()
+ 			n4.draw()
 						
-		if (times[4]<=frame<times[5]): 
-			target.draw()
-
-		if (times[5]<=frame<times[6]): 
+		if (times[5]<=frame<times[7]): 
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()
+			box1.draw()
+			box2.draw()
+			box3.draw()
+			box4.draw()
 			mask1.draw()
-		if (times[6]<=frame<times[7]): 
 			mask2.draw()
+			mask3.draw()
+			mask4.draw()
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -167,13 +252,16 @@ def doTrial(cond,fpTime,targCueI,targCueC,targTime):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif (respInt==targ):
+		iscorrect=2
+	elif (respInt==leint):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
+		iscorrect=1
 	else: 
+		iscorrect=0
 		error.play()
-	return(respInt,rt)
+	return(respInt,rt, w, c, leint, cond, iscorrect)
 
 
 
@@ -183,13 +271,27 @@ def doTrial(cond,fpTime,targCueI,targCueC,targTime):
 # Session Global Settings
 
 N=320
+perccong=.7
+
 cond=range(N)
 for n in range(N):
-	cond[n]=n%32
+	if n<(perccong*N):
+		cond[n]=1
+	else:
+		cond[n]=0
+
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
 pracN=16
 pracCond=range(16)
+
+for n in range(pracN):
+	if n%2==0:
+		pracCond[n]=0
+	else:
+		pracCond[n]=1
+
+
 random.shuffle(pracCond)
 
 
@@ -212,7 +314,7 @@ window.flip()
 event.waitKeys()
 
 for t in range(pracN):				 
-	out=doTrial(pracCond[t],35,20,20,20)
+	out=doTrial(pracCond[t],35,40, 20)
 
 warmUpDoneTxt.draw()
 window.flip()
@@ -221,16 +323,16 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,64)
+	(blk,trl) = divmod(t,80)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()				 
-	out=doTrial(cond[t],fp[n],targCueI, targCueC, targTime)
+	out=doTrial(cond[t],fp[n],targTime, wordTime)
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
-	(targ,cue,loc) = decode(cond[t])
+#	(targ,cue,loc) = decode(cond[t])
 	#print (targ,cue,loc)
-	addData = (sessionID, blk, t, targ, cue, loc, int(fp[t]), targTime, out[0], rt)
+	addData = (sessionID, blk, t, out[2], out[3], out[4], out[5], out[6], out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
 	else:

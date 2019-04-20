@@ -19,9 +19,9 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
-expName='as3'
+expName='as2'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -83,66 +83,63 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 
 
 pos = ((-200,-100),(-200,100),(200,100),(200,-100))
+arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
-duration = [1,30,-1,6,-1,-1,1,1]
+duration = [1,300,-1,6,15,-1,1,1]
 fpEvent = 2
 targEvent =5
 targTime=7
-targCue = 4
-targCueI = 15
-targCueC = 9
 fpP=.35
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
 cueCirc=visual.Circle(window,fillColor="Red",pos=(0,0),radius=30)
-circ=visual.Circle(window,pos=(0,0),radius=30,lineColor='white')
 mask1=visual.TextStim(window,text="@",pos = (0,0))
 mask2=visual.TextStim(window,text="#",pos = (0,0))
+arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
+
+
+c1=visual.TextStim(window, text="RED", pos=(-400, 300))
+c2=visual.TextStim(window, text="GREEN", pos=(400, 300))
+c3=visual.TextStim(window, text="BLUE", pos=(-400, -300))
+c4=visual.TextStim(window, text="YELLOW", pos=(400, -300))
 
 
 
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
 	(loc,cue) = divmod(temp,2)
-	#cue=numpy.random.rand()<.6
 	return(targ,cue,loc)
 
-def doTrial(cond,fpTime,targCueI,targCueC,targTime):
-	(targ,cue,loc) = decode(cond)
-	cueCirc.pos=pos[(loc+2)%4]
+def doTrial(cond,fpTime,targTime):
 	duration[fpEvent] = fpTime
 	duration[targEvent] = targTime
-	if cue: 
-		duration[targCue] = targCueI
-	else:
-		duration[targCue] = targCueC
 	times=numpy.cumsum(duration)
+	(targ,cue,loc) = decode(cond)
+	cueCirc.pos=pos[(loc+2)%4]
 	target=visual.TextStim(window, text = targets[targ],pos=pos[loc])
 	mask1.pos=pos[loc]
 	mask2.pos=pos[loc]
-	circ.pos=pos[loc]
 	respInt=-1
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
-			blank.draw()		
+			c1.draw()
+			c2.draw()
+			c3.draw()
+			c4.draw()		
 		if (times[1]<=frame<times[2]): 
 			fix.draw()
 		if (times[2]<=frame<times[3]): 
 			blank.draw()	
 		if (times[3]<=frame<times[4]):
  
-			if cue: 
-				cueCirc.draw()
-
+			if cue: cueCirc.draw()
 			else:
-				circ.draw()
-
-						
+				arrow.ori=arrowOrient[loc]
+				arrow.draw()				
 		if (times[4]<=frame<times[5]): 
 			target.draw()
-
 		if (times[5]<=frame<times[6]): 
 			mask1.draw()
 		if (times[6]<=frame<times[7]): 
@@ -182,14 +179,14 @@ def doTrial(cond,fpTime,targCueI,targCueC,targTime):
 #########################
 # Session Global Settings
 
-N=320
+N=40
 cond=range(N)
 for n in range(N):
 	cond[n]=n%32
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
-pracN=16
-pracCond=range(16)
+pracN=4
+pracCond=range(32)
 random.shuffle(pracCond)
 
 
@@ -212,7 +209,7 @@ window.flip()
 event.waitKeys()
 
 for t in range(pracN):				 
-	out=doTrial(pracCond[t],35,20,20,20)
+	out=doTrial(pracCond[t],35,20)
 
 warmUpDoneTxt.draw()
 window.flip()
@@ -226,11 +223,11 @@ for t in range(N):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()				 
-	out=doTrial(cond[t],fp[n],targCueI, targCueC, targTime)
+	out=doTrial(cond[t],fp[n],targTime)
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	(targ,cue,loc) = decode(cond[t])
 	#print (targ,cue,loc)
-	addData = (sessionID, blk, t, targ, cue, loc, int(fp[t]), targTime, out[0], rt)
+	addData = (sessionID, blk, t, targ, cue, loc, int(fp[t]), int(targTime), out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
 	else:
