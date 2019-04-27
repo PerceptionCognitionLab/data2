@@ -9,3 +9,5 @@ experimentID name irbID directory Description Outcome
 8 acstr3 1 data2/inh1/acstr3 Newest version of Acstr experiment. Fixed timing issue from before. NA
 9 as3 1 data2/inh1/as3 Anti-Saccade task: Pro saccade condition now has a circle which is flashed and then replaced by the target. NA
 10 acstr4 1 data2/inh1/acstr4 Changed timings, lengthened warmup times NA
+11 as4 1 data2/inh1/as4 Changed congruent stim display time from 9 to 7 NA
+12 acstr5 1 data2/inh1/acstr5 Made half the congruent trials more difficult by changing word presence duration from 25 to 20 frames. NA
