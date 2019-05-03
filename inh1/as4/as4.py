@@ -91,7 +91,7 @@ targEvent =5
 targTime=8
 targCue = 4
 targCueI = 15
-targCueC = 7
+targCueC = 6
 fpP=.35
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
