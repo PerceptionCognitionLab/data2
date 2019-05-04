@@ -19,7 +19,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='acstr5'
 
@@ -94,7 +94,7 @@ targEvent =5
 targTime=7
 wordEvent=3
 wordTime=25
-wordTimeRed=20
+wordTimeRed=15
 fpP=.35
 
 blank=visual.TextStim(window, text = "", pos = (0,0))

@@ -19,9 +19,9 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
-expName='numstr1'
+expName='acstr6'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -88,13 +88,14 @@ poslistcorners=[(-500,400), (500,400), (-500, -400), (500,-400)]
 arrowOrient=[180-31.7,180+31.7,-31.7,31.7]
 arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
-duration = [1,40,-1,-1,8,-1,1,1]
+duration = [1,40,-1,9,-1,-1,1,1]
 fpEvent = 2
 targEvent =5
 targTime=7
-wordEvent=3
-wordTime=22
-wordTimeRed=16
+wordEvent=4
+wordTime=27
+wordTimeRed=17
+#17
 fpP=.35
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
@@ -123,21 +124,20 @@ arrow = visual.ShapeStim(window, vertices=arrowVert, size=1, lineColor='red')
 
 
 
-c1=visual.TextStim(window, text="1", pos=poslistcorners[0], height=cornsize)
-c2=visual.TextStim(window, text="2", pos=poslistcorners[1], height=cornsize)
-c3=visual.TextStim(window, text="3", pos=poslistcorners[2], height=cornsize)
-c4=visual.TextStim(window, text="4", pos=poslistcorners[3], height=cornsize)
+c1=visual.TextStim(window, text="RED", pos=poslistcorners[0], height=cornsize)
+c2=visual.TextStim(window, text="GREEN", pos=poslistcorners[1], height=cornsize)
+c3=visual.TextStim(window, text="BLUE", pos=poslistcorners[2], height=cornsize)
+c4=visual.TextStim(window, text="YELLOW", pos=poslistcorners[3], height=cornsize)
 
 c1.size=.5
 
-letters=["U", "I", "O", "P"]
 cstrings=["RED", "GREEN", "BLUE", "YELLOW"]
 ccols=[(1,0,.2), (0, 1, 0), (0, .3, 1), (1, 1, 0)]
 
 
 
 def colword(wd, col):
-	return(visual.TextStim(window, text=(col+1)*str(wd+1), pos=(0,0), height=midsize) )
+	return(visual.TextStim(window, text=cstrings[wd], pos=(0,0), color=ccols[col], colorSpace='rgb', height=midsize) )
 
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
@@ -172,8 +172,8 @@ def doTrial(cond,fpTime,targTime, wordTime):
 	cw=colword(w,c)
 
 	leint=numpy.random.randint(4)
-	leperm=['%', '%', '%', '%']
-	leperm[c]=letters[leint]
+	leperm=['X', 'X', 'X', 'X']
+	leperm[c]=leint+1
 #	leperm=numpy.random.permutation(4)
 	
 	n1=visual.TextStim(window, text=str(leperm[0]), pos=poslist[0], height=numsize)
@@ -246,13 +246,13 @@ def doTrial(cond,fpTime,targTime, wordTime):
 	if (response==abortKey): 
 		exit()
 	rt = timer.getTime()
-	if (response=='u'): 
+	if (response=='1'): 
 		respInt=0
-	if (response=='i'):
+	if (response=='2'):
 		respInt=1
-	if (response=='o'):
+	if (response=='3'):
 		respInt=2
-	if (response=='p'):
+	if (response=='4'):
 		respInt=3
 	if (respInt== -1):
 		wrongKeyText.draw()
@@ -278,20 +278,20 @@ def doTrial(cond,fpTime,targTime, wordTime):
 # Session Global Settings
 
 N=480
-perccong=.7
+perccong=2/3
 
 cond=range(N)
 for n in range(N):
-	if n<(perccong*.5*N):
+	if n<(round(perccong*.5*N)):
 		cond[n]=1
-	elif n<(perccong*N):
+	elif n<(round(perccong*N)):
 		cond[n]=2
 	else:
 		cond[n]=0
 
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
-pracN=16
+pracN=4
 pracCond=range(16)
 
 for n in range(pracN):
@@ -310,8 +310,8 @@ random.shuffle(pracCond)
 # Helper Text
 
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome\nIdentify the Letter (U, I, O, or P)\nAny key to begin", pos = (0,0))
-warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\n Identify the Letter (U, I, O, or P)\nAny key to begin", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome\nIdentify the Number (1 through 4)\nAny key to begin", pos = (0,0))
+warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\n Identify the Number (1 through 4)\nAny key to begin", pos = (0,0))
 
 
 ############################################################
