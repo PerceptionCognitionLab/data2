@@ -11,3 +11,5 @@ experimentID name irbID directory Description Outcome
 10 acstr4 1 data2/inh1/acstr4 Changed timings, lengthened warmup times NA
 11 as4 1 data2/inh1/as4 Changed congruent stim display time from 9 to 7 NA
 12 acstr5 1 data2/inh1/acstr5 Made half the congruent trials more difficult by changing word presence duration from 25 to 20 frames. NA
+13 acstr6 1 data2/inh1/acstr6 Changed to increase discrepancy between the two congruent case speeds NA
+14 numstr1 1 data2/inh1/numstr1 First implementation NA
