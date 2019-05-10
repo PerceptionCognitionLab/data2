@@ -87,10 +87,10 @@ arrowVert = [(-30,7),(-30,-7),(-0,-7),(-0,-15),(30,0),(0,15),(0,7)]
 targets=["1","2","3","4"]
 duration = [1,30,-1,6,-1,-1,5,1]
 fpEvent = 2
-targEvent =4
+CueEvent =4
 CueTime=3
 blankt = 5
-blanktimeC = 3
+blanktimeC = 4
 blanktimeI = 18
 
 
@@ -114,7 +114,7 @@ def doTrial(cond,fpTime,CueTime, blanktimeC, blanktimeI):
 	(targ,cue,loc) = decode(cond)
 	cueCirc.pos=pos[(loc+2)%4]
 	duration[fpEvent] = fpTime
-	duration[targEvent] = CueTime
+	duration[CueEvent] = CueTime
 	if cue: 
 		duration[blankt] = blanktimeI
 	else:
