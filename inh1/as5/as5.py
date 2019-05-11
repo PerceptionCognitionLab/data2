@@ -19,7 +19,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='as5'
 
@@ -33,7 +33,7 @@ createTableStatement = (
     "  `cue` INT(2) UNSIGNED NOT NULL,"
     "  `location` INT(2) UNSIGNED NOT NULL,"
     "  `forePeriod` INT(4) UNSIGNED NOT NULL,"
-    "  `targetTime` INT(4) UNSIGNED NOT NULL,"
+    "  `cuetime` INT(4) UNSIGNED NOT NULL,"
     "  `resp` int(1) NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
     "  PRIMARY KEY (`datID`)"
@@ -42,7 +42,7 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `target`, `cue`, `location`, `forePeriod`, `targetTime`, `resp`, `rt`)"
+     "`sessionID`, `block`, `trial`, `target`, `cue`, `location`, `forePeriod`, `cuetime`, `resp`, `rt`)"
      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 
@@ -90,7 +90,7 @@ fpEvent = 2
 CueEvent =4
 CueTime=3
 blankt = 5
-blanktimeC = 4
+blanktimeC = 3
 blanktimeI = 18
 
 
@@ -229,12 +229,11 @@ for t in range(N):
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	(targ,cue,loc) = decode(cond[t])
 	#print (targ,cue,loc)
-	addData = (sessionID, blk, t, targ, cue, loc, int(fp[t]), out[0], rt)
+	addData = (sessionID, blk, t, targ, cue, loc, int(fp[t]), int(CueTime), out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
 	else:
 		print(addData)	
-
 
 
 endText=visual.TextStim(window, text = "Thank You\nPlease See Experimenter", pos = (0,0))
