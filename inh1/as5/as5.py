@@ -187,7 +187,7 @@ for n in range(N):
 	cond[n]=n%32
 random.shuffle(cond)
 fp = numpy.random.geometric(p=fpP, size=N)+30
-pracN=1
+pracN=16
 pracCond=range(32)
 random.shuffle(pracCond)
 
