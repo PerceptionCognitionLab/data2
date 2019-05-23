@@ -107,7 +107,6 @@ mask=visual.TextStim(window,text="#",pos = (0,0))
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
 	(loc,cue) = divmod(temp,2)
-	#cue=numpy.random.rand()<.6
 	return(targ,cue,loc)
 
 def doTrial(cond,fpTime,CueTime, blanktimeC, blanktimeI):
