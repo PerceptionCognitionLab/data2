@@ -90,8 +90,8 @@ fpEvent = 2
 CueEvent =4
 CueTime=3
 blankt = 5
-blanktimeC = 3
-blanktimeI = 18
+blanktimeC = 4
+blanktimeI = 20
 
 
 fpP=.35
@@ -107,6 +107,7 @@ mask=visual.TextStim(window,text="#",pos = (0,0))
 def decode(cond):
 	(targ,temp) = divmod(cond,8)
 	(loc,cue) = divmod(temp,2)
+	#cue=numpy.random.rand()<.6
 	return(targ,cue,loc)
 
 def doTrial(cond,fpTime,CueTime, blanktimeC, blanktimeI):
