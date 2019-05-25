@@ -13,5 +13,7 @@ experimentID name irbID directory Description Outcome
 12 acstr5 1 data2/inh1/acstr5 Made half the congruent trials more difficult by changing word presence duration from 25 to 20 frames. NA
 13 acstr6 1 data2/inh1/acstr6 Changed to increase discrepancy between the two congruent case speeds NA
 14 numstr1 1 data2/inh1/numstr1 First implementation NA
-15 as5 1 \data2\inh1\as5  NA
+15 as5 1 data2/inh1/as5 White circle instead of arrow. Different blank times for congruent(5) and incongruent(18) before target presentation. NA
 16 numstr2 1 data2/inh1/numstr2 Changed to 17 and 13 frames NA
+17 as6 1 data2/inh1/as6 Same as as5 except blank times for congruent(5) and incongruent(20) before target presentation. Running till end of spring quarter to correlate with acstr7 NA
+18 acstr7 1 data2/inh1/acstr7 Same as acstr6, changed name for the sake of easily correlating with as6 NA
