@@ -283,3 +283,13 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 281 4 numstr2 88 1998 1 1 Right No Yes 1 2019-05-24 14:55:11
 282 4 numstr2 89 1998 2 3 Right No Yes 1 2019-05-24 15:04:46
 285 2 as6 1 1992 1 1 Right No No 1 2019-03-01 15:51:06
+287 3 as6 90 1998 2 7 Right No Yes 1 2019-05-29 13:56:03
+290 3 as6 91 2000 1 3 Right No Yes 1 2019-05-29 14:56:36
+291 3 as6 92 1997 1 3 Left No Yes 1 2019-05-29 15:03:55
+293 3 as6 93 1999 1 1 Right No Yes 1 2019-05-29 16:02:43
+295 5 as6 94 2000 1 3 Right No Yes 1 2019-05-29 16:52:13
+286 3 acstr7 90 1998 2 7 Right No Yes 1 2019-05-29 13:56:03
+288 3 acstr7 91 2000 1 3 Right No Yes 1 2019-05-29 14:56:36
+289 3 acstr7 92 1997 1 3 Left No Yes 1 2019-05-29 15:03:55
+292 3 acstr7 93 1999 1 1 Right No Yes 1 2019-05-29 16:02:43
+294 3 acstr7 94 2000 1 3 Right No Yes 1 2019-05-29 16:52:13
