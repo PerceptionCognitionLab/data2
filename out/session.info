@@ -312,6 +312,8 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 341 4 as6 117 2000 1 3 Right No Yes 1 2019-06-05 12:07:46
 344 8 as6 119 1993 1 3 Right No Yes 1 2019-06-05 14:51:56
 345 8 as6 120 1995 2 1 Right No Yes 1 2019-06-05 14:57:43
+348 5 as6 121 1999 1 3 Right No Yes 1 2019-06-05 16:39:14
+349 5 as6 122 1997 1 6 Right No Yes 1 2019-06-05 16:58:01
 286 3 acstr7 90 1998 2 7 Right No Yes 1 2019-05-29 13:56:03
 288 3 acstr7 91 2000 1 3 Right No Yes 1 2019-05-29 14:56:36
 289 3 acstr7 92 1997 1 3 Left No Yes 1 2019-05-29 15:03:55
@@ -343,3 +345,5 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 339 4 acstr7 118 1998 2 1 Right No Yes 1 2019-06-05 12:08:37
 342 8 acstr7 119 1993 1 3 Right No Yes 1 2019-06-05 14:51:56
 343 8 acstr7 120 1995 2 1 Right No Yes 1 2019-06-05 14:57:43
+346 8 acstr7 121 1999 1 3 Right No Yes 1 2019-06-05 16:39:14
+347 5 acstr7 122 1997 1 6 Right No Yes 1 2019-06-05 16:58:01
