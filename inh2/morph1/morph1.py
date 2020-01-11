@@ -20,9 +20,9 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = beta
-expName='letflank1'
+expName='morph1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("

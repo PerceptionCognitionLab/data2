@@ -125,21 +125,24 @@ myArrayBox=function(filename,center,surround){
 ### LOOPS TO MAKE THE STIMULI
 ### Frame is all A's
 for ( i in 0:20){
-  filename=paste("FA_T",i,".jpeg",sep="")
+  string=sprintf("%02d",i)
+  filename=paste("A_",string,".jpeg",sep="")
   cen=i/20
   myArray(filename,center=cen,surround=1)
 }
 
 ### Frame is all H's
 for ( i in 0:20){
-  filename=paste("FH_T",i,".jpeg",sep="")
+  string=sprintf("%02d",i)
+  filename=paste("H_",string,".jpeg",sep="")
   cen=i/20
   myArray(filename,center=cen,surround=0)
 }
 
 ### Frame is w/o background
 for ( i in 0:20){
-  filename=paste("T",i,".jpeg",sep="")
+  string=sprintf("%02d",i)
+  filename=paste("blank_",string,".jpeg",sep="")
   cen=i/20
   myArray0(filename,center=cen)
 }
