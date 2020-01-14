@@ -17,3 +17,4 @@ experimentID name irbID directory Description Outcome
 16 numstr2 1 data2/inh1/numstr2 Changed to 17 and 13 frames NA
 17 as6 1 data2/inh1/as6 Same as as5 except blank times for congruent(5) and incongruent(20) before target presentation. Running till end of spring quarter to correlate with acstr7 NA
 18 acstr7 1 data2/inh1/acstr7 Same as acstr6, changed name for the sake of easily correlating with as6 NA
+19 morph1 1 /data2/inh2/morph1 First experiment with morphed stimuli from A to H.  Question is whether we can see large inhibition effects when feedback is provided.  This is a pilot expt that will have several versions under the same expt name NA

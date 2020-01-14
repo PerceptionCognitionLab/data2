@@ -20,8 +20,8 @@ from expLib import *
 #####################
 
 
-useDB=False
-dbConf = beta
+useDB=True
+dbConf = exp
 expName='morph1'
 
 createTableStatement = (
@@ -75,25 +75,25 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 
 
 
-#########################
-# Condition Structure
-
-numTarg=21
-numBack=3
-
-def decode(cond):
-	(targ,back) = divmod(cond,numBack)
-	return(back,targ)
-
-
 	
 
 ########################
 # Other Globals
 fpP=.35
+numTarg=21
+numBack=3
+targC=11
+
 
 filename=[]
-filename.append("A_00.jpeg")
+
+for n in range(numTarg):
+  filename.append("blank_%02d.jpeg"%n)
+for n in range(numTarg):
+  filename.append("H_%02d.jpeg"%n)
+for n in range(numTarg):
+  filename.append("A_%02d.jpeg"%n)
+
 
 filedir='../ahMorphStim/'
 
@@ -101,11 +101,28 @@ blank=visual.TextStim(window, text = "", pos = (0,0))
 
 
 
+
+#########################
+# Condition Structure
+
+
+
+def decode(cond):
+	(back,targ) = divmod(cond,numTarg)
+	return(back,targ)
+
+
+
+#######################
+# Trial Function
+
 def doTrial(cond,fp):
 	(back,targ)=decode(cond)
+	ans=1
+	if (targ<targC): ans=0
 	stim=visual.ImageStim(
 		win=window,
-		image=filedir+filename[0])
+		image=filedir+filename[cond])
 	respInt=-1
 	duration=[1,fp,10,1]
 	times=numpy.cumsum(duration)
@@ -132,13 +149,13 @@ def doTrial(cond,fp):
 		window.flip()
 		wrongKey.play()
 		event.waitKeys()
-	elif (respInt==targ):
+	elif (respInt==ans):
 		correct1.play()
 		core.wait(0.1)
 		correct2.play()
 	else: 
 		error.play()
-		core.wait(2.0)
+		core.wait(0.1)
 	return(respInt,rt)
 
 
@@ -180,7 +197,7 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,64)
+	(blk,trl) = divmod(t,63)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
