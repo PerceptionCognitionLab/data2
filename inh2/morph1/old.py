@@ -32,6 +32,7 @@ createTableStatement = (
     "  `trial` INT(2) UNSIGNED NOT NULL,"
     "  `background` INT(2) UNSIGNED NOT NULL,"
     "  `target` INT(2) UNSIGNED NOT NULL,"
+    "  `difficulty` INT(2) UNSIGNED NOT NULL,"
     "  `forePeriod` INT(4) UNSIGNED NOT NULL,"
     "  `resp` int(1) UNSIGNED NOT NULL,"
     "  `rt`  DECIMAL(5,3),"   
@@ -41,8 +42,8 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `background`, `target`, `forePeriod`, `resp`, `rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `background`, `target`, `difficulty`, `forePeriod`, `resp`, `rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 
 ############################################################
@@ -72,27 +73,25 @@ correct2=sound.Sound(1000,secs=.1)
 error=sound.Sound(300,secs=.3)
 wrongKey=sound.Sound(100,secs=1)
 wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\nPress space to continue", pos = (0,0))
+fpP=.35
 
 
 
 #########################
 # Condition Structure
 
-numTarg=21
-numBack=3
+def code(back,targ,difficulty):
+	return(back*6+targ*3+difficulty)
+
 
 def decode(cond):
-	(targ,back) = divmod(cond,numBack)
-	return(back,targ)
-
-
+        (back,temp) = divmod(cond,6)
+        (targ,difficulty) = divmod(temp,3)
+        return(back,targ,difficulty)
 	
 
-########################
-# Other Globals
-fpP=.35
-
 filename=[]
+
 filename.append("A_00.jpeg")
 
 filedir='../ahMorphStim/'
@@ -101,21 +100,19 @@ blank=visual.TextStim(window, text = "", pos = (0,0))
 
 
 
-def doTrial(cond,fp):
-	(back,targ)=decode(cond)
+def doTrial():
 	stim=visual.ImageStim(
 		win=window,
-		image=filedir+filename[0])
+		image=filedir+filename[cond])
+	(back,targ,difficulty) = decode(cond)
 	respInt=-1
-	duration=[1,fp,10,1]
+	duration=[1,fp,1]
 	times=numpy.cumsum(duration)
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
 			blank.draw()		
 		if (times[1]<=frame<times[2]): 
 			stim.draw()
-		if (times[2]<=frame<times[3]): 
-			blank.draw()
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -124,9 +121,9 @@ def doTrial(cond,fp):
 		exit()
 	rt = timer.getTime()
 	if (response=='a'): 
-		respInt=1
-	if (response=='h'):
 		respInt=0
+	if (response=='h'):
+		respInt=1
 	if (respInt== -1):
 		wrongKeyText.draw()
 		window.flip()
@@ -148,13 +145,21 @@ def doTrial(cond,fp):
 #########################
 # Session Global Settings
 
-N=10
-fp = numpy.random.geometric(p=fpP, size=N)+30
-
+N=1
 cond=range(N)
 for n in range(N):
-	cond[n]=n%(numBack*numTarg)
+	cond[n]=n%12
 random.shuffle(cond)
+
+
+pracN=18
+pracCond=range(pracN)
+for n in range(pracN):
+	pracCond[n]=n%6+12
+random.shuffle(pracCond)
+fpPrac = numpy.random.geometric(p=fpP, size=pracN)+30
+
+
 
 
 ############################################################
@@ -173,6 +178,8 @@ startTxt.draw()
 window.flip()
 event.waitKeys()
 
+for t in range(pracN):				 
+	out=doTrial(pracCond[t],fpPrac[t])
 
 warmUpDoneTxt.draw()
 window.flip()
@@ -180,15 +187,16 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,64)
+	(blk,trl) = divmod(t,36)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
-		event.waitKeys()					 
+		event.waitKeys()				 
 	out=doTrial(cond[t],fp[t])
-	(back,targ)=decode(cond[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
-	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
+	(back,targ,difficulty) = decode(cond[t])
+	#print (back,targ,difficulty)
+	addData = (sessionID, blk, t, back, targ, difficulty, int(fp[t]), out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
 	else:
