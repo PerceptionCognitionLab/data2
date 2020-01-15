@@ -1,13 +1,11 @@
-import numpy
+import numpy 
 
-
-def rld(runLengths, cond)
-	x = np.array(cond)
-	output = np.repeat(x, runLengths, axis=0)
-	return(output) 
-
-
-def jeffs(runlengths):
-	x=range(len(runlengths))
-	output = np.repeat(x, runlengths, axis=0)
+def rld(runlengths):
+	cond = range(len(runlengths))
+	output = numpy.repeat(cond, runlengths, axis=0)
 	return(output)
+
+def totalRunlength(runlengthPerCondition, ncond):
+	output = numpy.repeat(runlengthPerCondition, ncond, axis=0)
+	return(output)
+

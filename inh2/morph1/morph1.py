@@ -55,7 +55,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -165,7 +165,7 @@ def doTrial(cond,fp):
 #########################
 # Session Global Settings
 
-N=10
+N=8*63
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
 cond=range(N)
