@@ -20,7 +20,7 @@ from expLib import *
 #####################
 
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='morph1'
 
@@ -73,40 +73,45 @@ error=sound.Sound(300,secs=.3)
 wrongKey=sound.Sound(100,secs=1)
 wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\nPress space to continue", pos = (0,0))
 
-
-
 	
 
 ########################
 # Other Globals
 fpP=.35
-numTarg=21
-numBack=3
-targC=11
+numTarg=10 # max is 21
+numBack=2  # max is 3
+targC=5
+
+usedTarg = range(8, 18) # discard the obvious cases
+usedBack = [1, 2]
 
 
 filename=[]
 
-for n in range(numTarg):
-  filename.append("blank_%02d.jpeg"%n)
-for n in range(numTarg):
+# for n in range(numTarg):
+#   filename.append("blank_%02d.jpeg"%n)
+# for n in range(numTarg):
+#   filename.append("H_%02d.jpeg"%n)
+# for n in range(numTarg):
+#  filename.append("A_%02d.jpeg"%n)
+
+# only load in relevant stimuli
+for n in usedTarg:
   filename.append("H_%02d.jpeg"%n)
-for n in range(numTarg):
+for n in usedTarg:
   filename.append("A_%02d.jpeg"%n)
 
 
 filedir='../ahMorphStim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
+fix=visual.TextStim(window, text = "+", pos = (0,0))
 
 
 
 
 #########################
 # Condition Structure
-
-
-
 def decode(cond):
 	(back,targ) = divmod(cond,numTarg)
 	return(back,targ)
@@ -115,7 +120,6 @@ def decode(cond):
 
 #######################
 # Trial Function
-
 def doTrial(cond,fp):
 	(back,targ)=decode(cond)
 	ans=1
@@ -128,7 +132,7 @@ def doTrial(cond,fp):
 	times=numpy.cumsum(duration)
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
-			blank.draw()		
+			fix.draw()		
 		if (times[1]<=frame<times[2]): 
 			stim.draw()
 		if (times[2]<=frame<times[3]): 
@@ -150,42 +154,58 @@ def doTrial(cond,fp):
 		wrongKey.play()
 		event.waitKeys()
 	elif (respInt==ans):
-		correct1.play()
-		core.wait(0.1)
+		#correct1.play()
+                # adjust time between tones
+		#core.wait(0.1)
 		correct2.play()
 	else: 
 		error.play()
-		core.wait(0.1)
+                # time after error tone
+		# core.wait(0.1)
+        core.wait(0.5)
 	return(respInt,rt)
 
 
+
+#########################
+# Run length decoding
+def rld(rl, numBack):
+	cond = range(len(rl)*numBack)
+        rlAll=rl*numBack
+	output = numpy.repeat(cond, rlAll, axis=0)
+	return(output.tolist())
+
+# difficult targets get displayed more frequently
+# rl=[1,1,1,1,1,1,1,1,1,1]
+rl=[24,24,24,24,24,24,24,24,24,24] # 480 total trials
+cond=rld(rl, numBack)
+random.shuffle(cond)
 
 
 
 #########################
 # Session Global Settings
-
-N=8*63
+lenBlock=60
+N=8*lenBlock
 fp = numpy.random.geometric(p=fpP, size=N)+30
 
-cond=range(N)
-for n in range(N):
-	cond[n]=n%(numBack*numTarg)
-random.shuffle(cond)
+# cond=range(N)
+# for n in range(N):
+# 	cond[n]=n%(numBack*numTarg)
+# random.shuffle(cond)
+
 
 
 ############################################################
 # Helper Text
-
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
 startTxt=visual.TextStim(window, text = "Welcome \n A or H? \nPress A or H \nAny key to begin", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\n Adding Background\n\n Any key to begin", pos = (0,0))
 
 
+
 ############################################################
 # Start Experiment 
-
-
 startTxt.draw()
 window.flip()
 event.waitKeys()
@@ -197,7 +217,7 @@ event.waitKeys()
 
 
 for t in range(N):
-	(blk,trl) = divmod(t,63)
+	(blk,trl) = divmod(t,lenBlock)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
@@ -218,10 +238,10 @@ endText.draw()
 window.flip()
 event.waitKeys(keyList=(abortKey))
 
+
+
 ##########################################################
 # End Experiment
-
-
 hz=round(window.getActualFrameRate())
 size=window.size
 window.close()
