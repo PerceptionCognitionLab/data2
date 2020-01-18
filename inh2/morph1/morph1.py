@@ -20,7 +20,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='morph1'
 
@@ -176,12 +176,14 @@ def rld(rl, numBack):
 	return(output.tolist())
 
 # difficult targets get displayed more frequently
-# rl=[1,1,1,1,1,1,1,1,1,1]
 rl=[24,24,24,24,24,24,24,24,24,24] # 480 total trials
 cond=rld(rl, numBack)
 random.shuffle(cond)
 
-
+lenWarmUp=10
+rlWarmUp=[1,1,1,1,1,1,1,1,1,1]
+condWarmUp=rld(rlWarmUp, numBack)
+random.shuffle(condWarmUp)
 
 #########################
 # Session Global Settings
@@ -199,8 +201,8 @@ fp = numpy.random.geometric(p=fpP, size=N)+30
 ############################################################
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome \n A or H? \nPress A or H \nAny key to begin", pos = (0,0))
-warmUpDoneTxt=visual.TextStim(window, text = "That Was The Warm Up\n\n Adding Background\n\n Any key to begin", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nIn this experiment you will see a 3 x 3 letter grid. Your task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. This experimental session will consist of one warm up block and eight experimental blocks.\n\nPress any key to begin the warm up.", pos = (0,0))
+warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\n Press any key to begin the real experiment.", pos = (0,0))
 
 
 
@@ -210,6 +212,17 @@ startTxt.draw()
 window.flip()
 event.waitKeys()
 
+# Warm up trial
+for t in range(lenWarmUp):
+	(blk,trl) = divmod(t,lenWarmUp)
+	if trl==0 and blk>0:
+		breakTxt.draw()
+		window.flip()
+		event.waitKeys()					 
+	out=doTrial(condWarmUp[t],fp[t])
+	(back,targ)=decode(condWarmUp[t])
+    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
 warmUpDoneTxt.draw()
 window.flip()

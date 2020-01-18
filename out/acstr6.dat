@@ -7045,3 +7045,4 @@ datID sessionID block trial WordInt ColorInt TrueInt Cong Correct Response rt
 7045 244 0 13 0 0 3 1 1 3 0.438
 7046 244 0 14 1 1 3 1 1 3 0.462
 7047 244 0 15 0 0 3 1 1 3 0.453
+7048 363 0 0 0 0 3 2 2 -1 0.985
