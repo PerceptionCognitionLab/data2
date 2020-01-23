@@ -78,37 +78,30 @@ wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\n
 ########################
 # Other Globals
 fpP=.35
-numTarg=10 # max is 21
-numBack=2  # max is 3
+numTarg=10 
+numBack=2  
+numBackWarmUpBlanks=1 
 targC=5
+# present only difficult targets
+usedTarg = range(8, 18) 
 
-usedTarg = range(8, 18) # discard the obvious cases
-usedBack = [1, 2]
 
-
+# only load in relevant stimuli for experiment
 filename=[]
-
-# for n in range(numTarg):
-#   filename.append("blank_%02d.jpeg"%n)
-# for n in range(numTarg):
-#   filename.append("H_%02d.jpeg"%n)
-# for n in range(numTarg):
-#  filename.append("A_%02d.jpeg"%n)
-
-# only load in relevant stimuli
 for n in usedTarg:
   filename.append("H_%02d.jpeg"%n)
 for n in usedTarg:
   filename.append("A_%02d.jpeg"%n)
 
+# load in relevant stimuli for warm up
+filenameBlanks=[]
+for n in usedTarg:
+  filenameBlanks.append("blank_%02d.jpeg"%n)
 
 filedir='../ahMorphStim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
-
-
-
 
 #########################
 # Condition Structure
@@ -120,7 +113,7 @@ def decode(cond):
 
 #######################
 # Trial Function
-def doTrial(cond,fp):
+def doTrial(cond,fp,filename):
 	(back,targ)=decode(cond)
 	ans=1
 	if (targ<targC): ans=0
@@ -175,15 +168,18 @@ def rld(rl, numBack):
 	output = numpy.repeat(cond, rlAll, axis=0)
 	return(output.tolist())
 
-# difficult targets get displayed more frequently
-rl=[24,24,24,24,24,24,24,24,24,24] # 480 total trials
+# experimental block: 480 trials
+rl=[24,24,24,24,24,24,24,24,24,24] 
 cond=rld(rl, numBack)
 random.shuffle(cond)
 
+# warm up blocks: 10 trials each
 lenWarmUp=10
 rlWarmUp=[1,1,1,1,1,1,1,1,1,1]
-condWarmUp=rld(rlWarmUp, numBack)
-random.shuffle(condWarmUp)
+condWarmUpAll=rld(rlWarmUp, numBack)
+condWarmUpBlanks=rld(rlWarmUp, numBackWarmUpBlanks)
+random.shuffle(condWarmUpAll)
+random.shuffle(condWarmUpBlanks)
 
 #########################
 # Session Global Settings
@@ -201,8 +197,9 @@ fp = numpy.random.geometric(p=fpP, size=N)+30
 ############################################################
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nIn this experiment you will see a 3 x 3 letter grid. Your task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. This experimental session will consist of one warm up block and eight experimental blocks.\n\nPress any key to begin the warm up.", pos = (0,0))
-warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\n Press any key to begin the real experiment.", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nIn this experiment your task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. You will receive auditory feedback on your responses. This experimental session will consist of two warm up blocks and eight experimental blocks.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
+warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a 3 x 3 letter grid. Now, your task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
+warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\nPress any key to begin the real experiment.", pos = (0,0))
 
 
 
@@ -212,15 +209,31 @@ startTxt.draw()
 window.flip()
 event.waitKeys()
 
-# Warm up trial
+# Warm up trial 1: only show blanks
 for t in range(lenWarmUp):
 	(blk,trl) = divmod(t,lenWarmUp)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(condWarmUp[t],fp[t])
-	(back,targ)=decode(condWarmUp[t])
+	out=doTrial(condWarmUpBlanks[t],fp[t],filenameBlanks)
+	(back,targ)=decode(condWarmUpBlanks[t])
+    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
+
+warmUpBlanksDoneTxt.draw()
+window.flip()
+event.waitKeys()
+
+# Warm up trial: present experimental stimuli
+for t in range(lenWarmUp):
+	(blk,trl) = divmod(t,lenWarmUp)
+	if trl==0 and blk>0:
+		breakTxt.draw()
+		window.flip()
+		event.waitKeys()					 
+	out=doTrial(condWarmUpAll[t],fp[t],filename)
+	(back,targ)=decode(condWarmUpAll[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
@@ -228,14 +241,14 @@ warmUpDoneTxt.draw()
 window.flip()
 event.waitKeys()				 
 
-
+# experimental blocks
 for t in range(N):
 	(blk,trl) = divmod(t,lenBlock)
 	if trl==0 and blk>0:
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(cond[t],fp[t])
+	out=doTrial(cond[t],fp[t],filename)
 	(back,targ)=decode(cond[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
