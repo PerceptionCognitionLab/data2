@@ -55,7 +55,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "grey", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = '#6C6C6C', fullscr = False,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -90,22 +90,22 @@ numBack=2
 numBackWarmUpBlanks=1 
 targC=4
 # present only difficult targets: 8 in total
-usedTarg = range(2, 9) 
+usedTarg = range(1, 9) 
 
 
 # only load in relevant stimuli for experiment
 filename=[]
 for n in usedTarg:
-  filename.append("H_%02d.jpeg"%n)
+  filename.append("Bright_circle_%02d.jpeg"%n)
 for n in usedTarg:
-  filename.append("A_%02d.jpeg"%n)
+  filename.append("Dark_circle_%02d.jpeg"%n)
 
 # load in relevant stimuli for warm up
 filenameBlanks=[]
 for n in usedTarg:
-  filenameBlanks.append("blank_%02d.jpeg"%n)
+  filenameBlanks.append("Blank_circle_%02d.jpeg"%n)
 
-filedir='../ahMorphStim/'
+filedir='../brightnessStim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
@@ -215,8 +215,8 @@ fp=numpy.random.geometric(p=fpP, size=N)+30
 ############################################################
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. You will receive auditory feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
-warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a 3 x 3 letter grid. Now, your task is to identify the center letter as fast as possible as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as fast as possible the circle as bright or dark by pressing either 'A' (if you think the circle is bright) or 'H' (if you think the circle is dark) on the keyboard. You will receive auditory feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
+warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a two circles. Now, your task is to identify the inner circle as fast as possible as light or dark by pressing either 'A' (if you think the circle is bright) or 'H' (if you think the circle is dark) on the keyboard. Base your response on the inner circle alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\nPress any key to begin the real experiment.", pos = (0,0))
 endText=visual.TextStim(window, text = "Thank You!\nThis is the end of the experiment.\nPlease See The Experimenter.", pos = (0,0))
 
