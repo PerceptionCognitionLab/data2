@@ -55,13 +55,12 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = '#6C6C6C', fullscr = False,)
+# dim: 1680x1050
+window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = False,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
 rng = random.Random(seed)
-
-
 
 
 #######################
@@ -93,22 +92,28 @@ targC=4
 usedTarg = range(1, 9) 
 
 
-# only load in relevant stimuli for experiment
-filename=[]
-for n in usedTarg:
-  filename.append("Bright_circle_%02d.jpeg"%n)
-for n in usedTarg:
-  filename.append("Dark_circle_%02d.jpeg"%n)
-
-# load in relevant stimuli for warm up
-filenameBlanks=[]
-for n in usedTarg:
-  filenameBlanks.append("Blank_circle_%02d.jpeg"%n)
-
-filedir='../brightnessStim/'
+# define relevant stimuli for the experiment
+backColors=[-0.7, 0.7]
+radius=[380,150]
+warmUpBackColor=[-1]
+targColors=[-0.4,-0.3,-0.2,-0.1,0.1,0.2,0.3,0.4]
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
+
+##########################
+# Draw the circles
+
+def drawCircle(window, color, radius):
+	circleColor=numpy.repeat(color,3).tolist()
+	circle=visual.Circle(
+	    win=window,
+	    units="pix",
+	    radius=radius,
+	    fillColor=circleColor,
+	    lineColor=circleColor,
+	    edges=180)
+	return(circle)
 
 #########################
 # Condition Structure
@@ -116,17 +121,14 @@ def decode(cond):
 	(back,targ) = divmod(cond,numTarg)
 	return(back,targ)
 
-
-
 #######################
 # Trial Function
-def doTrial(cond,fp,filename,feedback):
+def doTrial(cond,fp,backColors,targColors,feedback):
 	(back,targ)=decode(cond)
 	ans=1
 	if (targ<targC): ans=0
-	stim=visual.ImageStim(
-		win=window,
-		image=filedir+filename[cond])
+	backCircle=drawCircle(window, backColors[back], radius=radius[0])
+	targCircle=drawCircle(window, targColors[targ], radius=radius[1])
 	respInt=-1
 	duration=[1,fp,10,1]
 	times=numpy.cumsum(duration)
@@ -134,7 +136,8 @@ def doTrial(cond,fp,filename,feedback):
 		if (times[0]<=frame<times[1]):
 			fix.draw()		
 		if (times[1]<=frame<times[2]): 
-			stim.draw()
+			backCircle.draw()
+			targCircle.draw()
 		if (times[2]<=frame<times[3]): 
 			blank.draw()
 		window.flip()
@@ -176,7 +179,6 @@ def doTrial(cond,fp,filename,feedback):
 	return(respInt,rt,score)
 
 
-
 #########################
 # Run length decoding
 def rld(rl, numBack):
@@ -205,13 +207,6 @@ nBlocks=8
 N=nBlocks*lenBlock
 fp=numpy.random.geometric(p=fpP, size=N)+30
 
-# cond=range(N)
-# for n in range(N):
-# 	cond[n]=n%(numBack*numTarg)
-# random.shuffle(cond)
-
-
-
 ############################################################
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
@@ -236,7 +231,7 @@ for t in range(lenWarmUp):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(condWarmUpBlanks[t],fp[t],filenameBlanks,feedback)
+	out=doTrial(condWarmUpBlanks[t],fp[t],warmUpBackColor, targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpBlanks[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
@@ -254,7 +249,7 @@ for t in range(lenWarmUp):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(condWarmUpAll[t],fp[t],filename,feedback)
+	out=doTrial(condWarmUpAll[t],fp[t],backColors, targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpAll[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
@@ -273,7 +268,7 @@ for t in range(N):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(cond[t],fp[t],filename,feedback)
+	out=doTrial(cond[t],fp[t], backColors, targColors,feedback)
 	feedback=[out[2],trl+2]
 	(back,targ)=decode(cond[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
