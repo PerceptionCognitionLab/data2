@@ -45,9 +45,6 @@ insertTableStatement = (
      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
 
-############################################################
-
-
 #####################
 # Initialize 
 if useDB: 
@@ -60,8 +57,6 @@ mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
 rng = random.Random(seed)
-
-
 
 
 #######################
@@ -78,8 +73,6 @@ def getFeedbackText(correct, score, nTrials):
 	if (correct==False): 
 		string=visual.TextStim(window, text = "Incorrect!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0))
 	return(string)
-	
-
 	
 
 ########################
@@ -109,6 +102,7 @@ filedir='../ahMorphStim/'
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
 fix=visual.TextStim(window, text = "+", pos = (0,0))
+
 
 #########################
 # Condition Structure
@@ -198,18 +192,13 @@ condWarmUpBlanks=rld(rlWarmUp, numBackWarmUpBlanks)
 random.shuffle(condWarmUpAll)
 random.shuffle(condWarmUpBlanks)
 
+
 #########################
 # Session Global Settings
 lenBlock=10
 nBlocks=8
 N=nBlocks*lenBlock
 fp=numpy.random.geometric(p=fpP, size=N)+30
-
-# cond=range(N)
-# for n in range(N):
-# 	cond[n]=n%(numBack*numTarg)
-# random.shuffle(cond)
-
 
 
 ############################################################
@@ -218,7 +207,7 @@ breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", 
 startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. You will receive auditory feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
 warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a 3 x 3 letter grid. Now, your task is to identify the center letter as fast as possible as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\nPress any key to begin the real experiment.", pos = (0,0))
-endText=visual.TextStim(window, text = "Thank You!\nThis is the end of the experiment.\nPlease See The Experimenter.", pos = (0,0))
+endText=visual.TextStim(window, text = "Thank You!\nThis was the first part of the experiment.\nPlease See The Experimenter.", pos = (0,0))
 
 
 
@@ -269,7 +258,6 @@ feedback=[0,1]
 for t in range(N):
 	(blk,trl) = divmod(t,lenBlock)
 	if trl==0 and blk>0:
-		feedback=[0,trl+1] # reset score after each block
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
@@ -286,7 +274,6 @@ for t in range(N):
 endText.draw()
 window.flip()
 event.waitKeys(keyList=(abortKey))
-
 
 
 ##########################################################

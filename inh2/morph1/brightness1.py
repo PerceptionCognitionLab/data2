@@ -56,7 +56,8 @@ else:
 	sessionID=1	
 
 # dim: 1680x1050
-window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = True,)
+grating = visual.GratingStim(win=window, size=(6000,6000),sf=0.01,ori=45,contrast=.1)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -71,6 +72,7 @@ correct2=sound.Sound(1000,secs=.1)
 error=sound.Sound(300,secs=.3)
 wrongKey=sound.Sound(100,secs=1)
 wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\nPress space to continue", pos = (0,0))
+
 def getFeedbackText(correct, score, nTrials):
 	if (correct==True): 
 		string=visual.TextStim(window, text = "Correct!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0))
@@ -94,8 +96,7 @@ usedTarg = range(1, 9)
 
 # define relevant stimuli for the experiment
 backColors=[-0.7, 0.7]
-radius=[380,150]
-warmUpBackColor=[-1]
+radius=[500,200]
 targColors=[-0.4,-0.3,-0.2,-0.1,0.1,0.2,0.3,0.4]
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
@@ -127,7 +128,6 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 	(back,targ)=decode(cond)
 	ans=1
 	if (targ<targC): ans=0
-	backCircle=drawCircle(window, backColors[back], radius=radius[0])
 	targCircle=drawCircle(window, targColors[targ], radius=radius[1])
 	respInt=-1
 	duration=[1,fp,10,1]
@@ -135,11 +135,14 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 	for frame in range(max(times)):
 		if (times[0]<=frame<times[1]):
 			fix.draw()		
-		if (times[1]<=frame<times[2]): 
-			backCircle.draw()
+		if (times[1]<=frame<times[2]):
+			grating.draw()  
+			if(backColors is not None):
+				backCircle=drawCircle(window, backColors[back], radius=radius[0])
+				backCircle.draw()
 			targCircle.draw()
 		if (times[2]<=frame<times[3]): 
-			blank.draw()
+			grating.draw()
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -218,7 +221,7 @@ endText=visual.TextStim(window, text = "Thank You!\nThis is the end of the exper
 
 
 ############################################################
-# Start Experiment 
+# Start Experiment
 startTxt.draw()
 window.flip()
 event.waitKeys()
@@ -231,7 +234,7 @@ for t in range(lenWarmUp):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(condWarmUpBlanks[t],fp[t],warmUpBackColor, targColors,feedback)
+	out=doTrial(condWarmUpBlanks[t],fp[t],None,targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpBlanks[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
@@ -249,7 +252,7 @@ for t in range(lenWarmUp):
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(condWarmUpAll[t],fp[t],backColors, targColors,feedback)
+	out=doTrial(condWarmUpAll[t],fp[t],backColors,targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpAll[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
@@ -264,11 +267,10 @@ feedback=[0,1]
 for t in range(N):
 	(blk,trl) = divmod(t,lenBlock)
 	if trl==0 and blk>0:
-		feedback=[0,trl+1] # reset score after each block
 		breakTxt.draw()
 		window.flip()
 		event.waitKeys()					 
-	out=doTrial(cond[t],fp[t], backColors, targColors,feedback)
+	out=doTrial(cond[t],fp[t],backColors,targColors,feedback)
 	feedback=[out[2],trl+2]
 	(back,targ)=decode(cond[t])
     	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
