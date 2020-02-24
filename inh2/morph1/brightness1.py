@@ -178,7 +178,7 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 		window.flip()
                 # time after error tone
 		# core.wait(0.1)
-        core.wait(0.5)
+	core.wait(0.5)
 	return(respInt,rt,score)
 
 
@@ -186,7 +186,7 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 # Run length decoding
 def rld(rl, numBack):
 	cond = range(len(rl)*numBack)
-        rlAll=rl*numBack
+	rlAll=rl*numBack
 	output = numpy.repeat(cond, rlAll, axis=0)
 	return(output.tolist())
 
@@ -237,7 +237,7 @@ for t in range(lenWarmUp):
 	out=doTrial(condWarmUpBlanks[t],fp[t],None,targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpBlanks[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt=decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
 warmUpBlanksDoneTxt.draw()
@@ -255,7 +255,7 @@ for t in range(lenWarmUp):
 	out=doTrial(condWarmUpAll[t],fp[t],backColors,targColors,feedback)
 	feedback=[out[2],t+2]
 	(back,targ)=decode(condWarmUpAll[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
 warmUpDoneTxt.draw()
@@ -273,7 +273,7 @@ for t in range(N):
 	out=doTrial(cond[t],fp[t],backColors,targColors,feedback)
 	feedback=[out[2],trl+2]
 	(back,targ)=decode(cond[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)
