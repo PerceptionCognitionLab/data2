@@ -1,5 +1,5 @@
 from psychopy import prefs
-prefs.general['audioLib'] = ['pygame']
+prefs.general['audioLib'] = ['PTB']
 from psychopy import core, visual, sound, event
 import mysql.connector
 import os
