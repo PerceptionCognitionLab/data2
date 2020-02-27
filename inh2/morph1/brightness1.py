@@ -56,8 +56,10 @@ else:
 	sessionID=1	
 
 # dim: 1680x1050
-window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = True,)
-grating = visual.GratingStim(win=window, size=(6000,6000),sf=0.01,ori=45,contrast=.1)
+window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = True)
+grating1 = visual.GratingStim(win=window, size=(2000,2000),sf=0.01,ori=45,contrast=.2,opacity=1)
+grating2 = visual.GratingStim(win=window, size=(2000,2000),sf=0.01,ori=135,contrast=.2,opacity=.5)
+noise1=visual.NoiseStim(win=window,units='pix',noiseType='white', size=(1650,1050),opacity=.3)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -136,13 +138,17 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 		if (times[0]<=frame<times[1]):
 			fix.draw()		
 		if (times[1]<=frame<times[2]):
-			grating.draw()  
+			grating1.draw()
+			grating2.draw()
+			noise1.draw()  
 			if(backColors is not None):
 				backCircle=drawCircle(window, backColors[back], radius=radius[0])
 				backCircle.draw()
 			targCircle.draw()
 		if (times[2]<=frame<times[3]): 
-			grating.draw()
+			grating1.draw()
+			grating2.draw()
+			noise1.draw()
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
