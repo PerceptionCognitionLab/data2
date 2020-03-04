@@ -52,7 +52,7 @@ if useDB:
 else:
 	sessionID=1	
 
-window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = False,)
+window=visual.Window(units= "pix", size =(1024,768), rgb = "black", fullscr = True,)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -143,6 +143,8 @@ def doTrial(cond,fp,filename,feedback):
 	if (response=='h'):
 		respInt=0
 	if (respInt== -1):
+		score=feedback[0]
+		roundNr=feedback[1]
 		wrongKeyText.draw()
 		window.flip()
 		wrongKey.play()
@@ -154,6 +156,7 @@ def doTrial(cond,fp,filename,feedback):
 		correct2.play()
 		# print score
 		score=feedback[0]+1
+		roundNr=feedback[1]+1
 		scoreText=getFeedbackText(True, score, feedback[1])
 		scoreText.draw()
 		window.flip()
@@ -161,13 +164,14 @@ def doTrial(cond,fp,filename,feedback):
 		error.play()
 		# print score
 		score=feedback[0]
+		roundNr=feedback[1]+1
 		scoreText=getFeedbackText(False, score, feedback[1])
 		scoreText.draw()
 		window.flip()
                 # time after error tone
 		# core.wait(0.1)
-        core.wait(0.5)
-	return(respInt,rt,score)
+	core.wait(0.5)
+	return(respInt,rt,score,roundNr)
 
 
 
@@ -175,7 +179,7 @@ def doTrial(cond,fp,filename,feedback):
 # Run length decoding
 def rld(rl, numBack):
 	cond = range(len(rl)*numBack)
-        rlAll=rl*numBack
+	rlAll=rl*numBack
 	output = numpy.repeat(cond, rlAll, axis=0)
 	return(output.tolist())
 
@@ -226,9 +230,9 @@ for t in range(lenWarmUp):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(condWarmUpBlanks[t],fp[t],filenameBlanks,feedback)
-	feedback=[out[2],t+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(condWarmUpBlanks[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
 warmUpBlanksDoneTxt.draw()
@@ -244,9 +248,9 @@ for t in range(lenWarmUp):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(condWarmUpAll[t],fp[t],filename,feedback)
-	feedback=[out[2],t+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(condWarmUpAll[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 
 warmUpDoneTxt.draw()
@@ -262,9 +266,9 @@ for t in range(N):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(cond[t],fp[t],filename,feedback)
-	feedback=[out[2],trl+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(cond[t])
-    	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
 	if useDB:
 		insertDatTable(insertTableStatement,addData,dbConf)

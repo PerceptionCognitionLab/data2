@@ -73,13 +73,13 @@ correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.1)
 error=sound.Sound(300,secs=.3)
 wrongKey=sound.Sound(100,secs=1)
-wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\nPress space to continue", pos = (0,0))
+wrongKeyText=visual.TextStim(window, text = "Invalid Response\nRepostion Hands\nPress space to continue", pos = (0,0), color=[-1])
 
 def getFeedbackText(correct, score, nTrials):
 	if (correct==True): 
-		string=visual.TextStim(window, text = "Correct!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0))
+		string=visual.TextStim(window, text = "Correct!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0), color=[-1])
 	if (correct==False): 
-		string=visual.TextStim(window, text = "Incorrect!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0))
+		string=visual.TextStim(window, text = "Incorrect!\n\nScore: " + str(score) + "/" + str(nTrials), pos = (0,0),color=[-1])
 	return(string)
 	
 
@@ -99,10 +99,10 @@ usedTarg = range(1, 9)
 # define relevant stimuli for the experiment
 backColors=[-0.7, 0.7]
 radius=[500,200]
-targColors=[-0.4,-0.3,-0.2,-0.1,0.1,0.2,0.3,0.4]
+targColors=[-0.25,-0.1786,-0.107,-0.036,0.036,0.107,0.1786,0.25]
 
 blank=visual.TextStim(window, text = "", pos = (0,0))
-fix=visual.TextStim(window, text = "+", pos = (0,0))
+fix=visual.TextStim(window, text = "+", pos = (0,0), color=[-1])
 
 ##########################
 # Draw the circles
@@ -135,20 +135,18 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 	duration=[1,fp,10,1]
 	times=numpy.cumsum(duration)
 	for frame in range(max(times)):
-		if (times[0]<=frame<times[1]):
+		grating1.draw()
+		grating2.draw()
+		noise1.draw()
+		if (times[0]<=frame<times[1]): 
 			fix.draw()		
 		if (times[1]<=frame<times[2]):
-			grating1.draw()
-			grating2.draw()
-			noise1.draw()  
 			if(backColors is not None):
 				backCircle=drawCircle(window, backColors[back], radius=radius[0])
 				backCircle.draw()
 			targCircle.draw()
 		if (times[2]<=frame<times[3]): 
-			grating1.draw()
-			grating2.draw()
-			noise1.draw()
+			blank.draw()
 		window.flip()
 	timer.reset()
 	responseList = event.waitKeys()
@@ -160,7 +158,13 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 		respInt=1
 	if (response=='h'):
 		respInt=0
+	# Feedback text
+	grating1.draw()
+	grating2.draw()
+	noise1.draw()
 	if (respInt== -1):
+		score=feedback[0]
+		roundNr=feedback[1]
 		wrongKeyText.draw()
 		window.flip()
 		wrongKey.play()
@@ -172,6 +176,7 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 		correct2.play()
 		# print score
 		score=feedback[0]+1
+		roundNr=feedback[1]+1
 		scoreText=getFeedbackText(True, score, feedback[1])
 		scoreText.draw()
 		window.flip()
@@ -179,13 +184,14 @@ def doTrial(cond,fp,backColors,targColors,feedback):
 		error.play()
 		# print score
 		score=feedback[0]
+		roundNr=feedback[1]+1
 		scoreText=getFeedbackText(False, score, feedback[1])
 		scoreText.draw()
 		window.flip()
                 # time after error tone
 		# core.wait(0.1)
 	core.wait(0.5)
-	return(respInt,rt,score)
+	return(respInt,rt,score,roundNr)
 
 
 #########################
@@ -220,7 +226,7 @@ fp=numpy.random.geometric(p=fpP, size=N)+30
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
 startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as fast as possible the circle as bright or dark by pressing either 'A' (if you think the circle is bright) or 'H' (if you think the circle is dark) on the keyboard. You will receive auditory feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
-warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a two circles. Now, your task is to identify the inner circle as fast as possible as light or dark by pressing either 'A' (if you think the circle is bright) or 'H' (if you think the circle is dark) on the keyboard. Base your response on the inner circle alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
+warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see two circles. Now, your task is to identify the inner circle as fast as possible as light or dark by pressing either 'A' (if you think the circle is bright) or 'H' (if you think the circle is dark) on the keyboard. Base your response on the inner circle alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\nPress any key to begin the real experiment.", pos = (0,0))
 endText=visual.TextStim(window, text = "Thank You!\nThis is the end of the experiment.\nPlease See The Experimenter.", pos = (0,0))
 
@@ -241,7 +247,7 @@ for t in range(lenWarmUp):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(condWarmUpBlanks[t],fp[t],None,targColors,feedback)
-	feedback=[out[2],t+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(condWarmUpBlanks[t])
 	rt=decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
@@ -259,7 +265,7 @@ for t in range(lenWarmUp):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(condWarmUpAll[t],fp[t],backColors,targColors,feedback)
-	feedback=[out[2],t+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(condWarmUpAll[t])
 	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
@@ -277,7 +283,7 @@ for t in range(N):
 		window.flip()
 		event.waitKeys()					 
 	out=doTrial(cond[t],fp[t],backColors,targColors,feedback)
-	feedback=[out[2],trl+2]
+	feedback=[out[2],out[3]]
 	(back,targ)=decode(cond[t])
 	rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
 	addData = (sessionID, blk,trl,back,targ, int(fp[t]), out[0], rt)
