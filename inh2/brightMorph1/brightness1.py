@@ -20,9 +20,10 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='brightness1'
+checkExp(expName,dbConf)
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
