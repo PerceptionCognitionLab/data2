@@ -19,3 +19,4 @@ experimentID name irbID directory Description Outcome
 18 acstr7 1 data2/inh1/acstr7 Same as acstr6, changed name for the sake of easily correlating with as6 NA
 19 morph1 1 /data2/inh2/morph1 First experiment with morphed stimuli from A to H.  Question is whether we can see large inhibition effects when feedback is provided.  This is a pilot expt that will have several versions under the same expt name NA
 20 brightness1 1 specl-exp/data2/inh2/brightMorph1 pilot experiment for flanker brightness task NA
+21 morph2 1 specl-exp/data2/inh2/brightMorph1 pilot experiment for morph-flanker task NA

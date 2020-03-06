@@ -20,7 +20,7 @@ from expLib import *
 #####################
 
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='morph2'
 
@@ -199,7 +199,7 @@ random.shuffle(condWarmUpBlanks)
 
 #########################
 # Session Global Settings
-lenBlock=10
+lenBlock=60
 nBlocks=8
 N=nBlocks*lenBlock
 fp=numpy.random.geometric(p=fpP, size=N)+30
@@ -208,8 +208,8 @@ fp=numpy.random.geometric(p=fpP, size=N)+30
 ############################################################
 # Helper Text
 breakTxt=visual.TextStim(window, text = "Take a Break\nPress any key to begin", pos = (0,0))
-startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. You will receive auditory feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
-warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a 3 x 3 letter grid. Now, your task is to identify the center letter as fast as possible as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive auditory feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
+startTxt=visual.TextStim(window, text = "Welcome to our experiment!\n\nYour task is to identify as accurate and as fast as possible the center letter as an A or an H by pressing the corresponding keys on the keyboard. You will receive feedback on your responses.\n\nTo begin, place your fingers on the A and H letter of the keyboard, then press any key to begin the first warm up block.", pos = (0,0))
+warmUpBlanksDoneTxt=visual.TextStim(window, text = "This was the first warm up block. In the next warm up bock you will see a 3 x 3 letter grid. Now, your task is to identify the center letter as accurate and as fast as possible as an A or an H by pressing the corresponding keys on the keyboard. Base your response on the center letter alone and ignore the background context. You will receive feedback on your responses. \n\nPress any key to begin the second warm up.", pos = (0,0))
 warmUpDoneTxt=visual.TextStim(window, text = "That was the warm up.\n\nPress any key to begin the real experiment.", pos = (0,0))
 endText=visual.TextStim(window, text = "Thank You!\nThis was the first part of the experiment.\nPlease See The Experimenter.", pos = (0,0))
 
