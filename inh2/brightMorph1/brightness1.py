@@ -57,7 +57,7 @@ else:
 	sessionID=1	
 
 # dim: 1680x1050
-window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = False)
+window=visual.Window(units= "pix", size =(1024,768), color = [-1,-1,-1], fullscr = True)
 grating1 = visual.GratingStim(win=window, size=(2000,2000),sf=0.01,ori=45,contrast=.2,opacity=1)
 grating2 = visual.GratingStim(win=window, size=(2000,2000),sf=0.01,ori=135,contrast=.2,opacity=.5)
 noise1=visual.NoiseStim(win=window,units='pix',noiseType='white', size=(1650,1050),opacity=.3)
