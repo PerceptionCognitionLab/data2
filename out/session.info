@@ -372,6 +372,7 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 372 9 morph1 135 1993 1 1 Right No No 1 2020-01-29 10:55:53
 373 1 morph1 136 2001 3 8 Right No Yes 1 2020-02-03 10:42:52
 374 9 brightness1 137 1991 2 6 Right No No 1 2020-03-04 16:50:11
+384 9 brightness1 137 1991 2 6 Right No No 1 2020-03-04 16:50:11
 375 9 brightness1 138 1991 1 6 Right No No 1 2020-03-05 10:21:03
 376 9 morph1 138 1991 1 6 Right No No 1 2020-03-05 10:21:03
 377 9 morph1 138 1991 1 6 Right No No 1 2020-03-05 10:21:03
@@ -381,3 +382,4 @@ sessionID memberID exptName participantID dobYear genderID ethnicityID handBrush
 381 9 brightness1 138 1991 1 6 Right No No 1 2020-03-05 10:21:03
 382 1 brightness1 139 1966 2 6 Left No Yes 1 2020-03-09 15:16:22
 383 1 brightness1 139 1966 2 6 Left No Yes 1 2020-03-09 15:16:22
+385 9 brightness1 140 1994 1 6 Right No No 1 2020-03-09 16:11:42
