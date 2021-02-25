@@ -1,0 +1,116 @@
+### Creating plain letters and digits
+```{r}
+makeChar=function(let){
+  png(paste('set1-',let[1],'.png',sep=""),height = 110, width = 100) 
+  par(mar=(c(0,0,0,0)))
+  plot(c(0,1),c(0,1),axes = 0, xlab="", ylab="", type="n")
+  abline(h=0.5, col="black", lwd=300)
+  text(x=.5,y=.5,labels =  let[1], cex=11.5, col="white")
+  dev.off()}
+for( i in 0:9) makeChar(i)
+```
+
+### Set up for constructing A-H morphs
+```{r}
+HLx=c(.08,.08,.23,.23,.08)
+HLy=c(0,1,1,0,0)
+HRx=1-HLx
+HRy=HLy
+HBx=c(.15,.15,.85,.85,.15)
+HBy=c(.38,.48,.48,.38,.38)
+ALx=c(.05,.4,.54,.19,.05)
+ALy=c(0,1,1,0,0)
+ARx=1-ALx
+ARy=ALy
+ABx=c(.25,.25,.75,.75,.15)
+ABy=c(.37,.49,.49,.37,.37)
+```
+
+### Drawing A-H morphs
+```{r}
+Lx=function(p) p*ALx+(1-p)*HLx
+Ly=function(p) p*ALy+(1-p)*HLy
+Rx=function(p) p*ARx+(1-p)*HRx
+Ry=function(p) p*ARy+(1-p)*HRy
+Bx=function(p) p*ABx+(1-p)*HBx
+By=function(p) p*ABy+(1-p)*HBy
+makeAH=function(p){
+  png(paste('set1-AH-',sprintf("%3.2f",1-p),'.png',sep=""),height = 110, width = 100) 
+  par(mar=(c(0,0,0,0)))
+  plot(c(0,1),c(0,1),axes = 0, xlab="", ylab="", type="n")
+  abline(h=0.5, col="black", lwd=300)
+  polygon(x=Lx(p), Ly(p), col="white",border=NA)
+  polygon(x=Rx(p), Ry(p), col="white",border=NA)
+  polygon(x=Bx(p), By(p), col="white",border=NA)
+  dev.off()}
+p=1-seq(0,1,.05)
+for (x in p) makeAH(p=x)
+```
+
+### Set up for constructing T-I morphs
+```{r}
+ICx=c(.43,.43,.57,.57,.43)
+ICy=c(0,1,1,0,0)
+ITx=c(.25,.25,.75,.75,.25)
+ITy=c(.9,1,1,.9,.9)
+IBx=ITx
+IBy=1-ITy
+TCx=ICx
+TCy=ICy
+TTx=c(.05,.05,.95,.95,.05)
+TTy=ITy
+TBx=c(.43,.43,.57,.57,.43)
+TBy=IBy
+dev.off()
+```
+
+### Drawing T-I morphs
+```{r}
+Cx=function(p) p*ICx+(1-p)*TCx
+Cy=function(p) p*ICy+(1-p)*TCy
+Tx=function(p) p*ITx+(1-p)*TTx
+Ty=function(p) p*ITy+(1-p)*TTy
+Bx=function(p) p*IBx+(1-p)*TBx
+By=function(p) p*IBy+(1-p)*TBy
+makeIT=function(p){
+  png(paste('set1-IT-',sprintf("%3.2f",1-p),'.png',sep=""),height = 110, width = 100) 
+  par(mar=(c(0,0,0,0)))
+  plot(c(0,1),c(0,1),axes = 0, xlab="", ylab="", type="n")
+  abline(h=0.5, col="black", lwd=300)
+  polygon(x=Cx(p), y=Cy(p), col="white",border=NA)
+  polygon(x=Tx(p), y=Ty(p), col="white",border=NA)
+  polygon(x=Bx(p), y=By(p), col="white",border=NA)
+  dev.off()}
+p=seq(0,1,.05)
+for (x in p) makeIT(p=x)
+```
+
+### Drawing crosses
+```{r}
+x <- seq(0,1,0.2)
+Top <- max(x)
+Dwn <- min(x)
+c <- Top/2
+l <- 0.4
+w.V <-0.05
+w.H <- w.V
+
+Vx<- c(c-w.V,c+w.V,c+w.V,c-w.V)
+Vy <- c(c-l,c-l,c+l,c+l)
+Hx <- c(c-l,c+l,c+l,c-l)
+Hy <- c(c-w.H,c-w.H,c+w.H,c+w.H)
+
+png(paste('set1-+.png', sep=""),height = 110, width = 100) 
+par(mar=(c(0,0,0,0)))
+plot(x,x,axes = 0, xlab="", ylab="", type="n")
+abline(h=0.5, col="black", lwd=300)
+polygon(x=Vx, y=Vy, col="white",border=NA)
+polygon(x=Hx, y=Hy, col="white",border=NA)
+dev.off()
+
+png(paste('set1-empty.png', sep=""),height = 110, width = 100) 
+par(mar=(c(0,0,0,0)))
+plot(x,x,axes = 0, xlab="", ylab="", type="n")
+abline(h=0.5, col="black", lwd=300)
+dev.off()
+```

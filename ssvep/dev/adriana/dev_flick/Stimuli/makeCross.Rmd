@@ -1,0 +1,54 @@
+```{r}
+HLx=c(.08,.08,.23,.23,.08)
+HLy=c(0,1,1,0,0)
+HRx=1-HLx
+HRy=HLy
+HBx=c(.15,.15,.85,.85,.15)
+HBy=c(.38,.48,.48,.38,.38)
+ALx=c(.05,.4,.54,.19,.05)
+ALy=c(0,1,1,0,0)
+ARx=1-ALx
+ARy=ALy
+ABx=c(.25,.25,.75,.75,.15)
+ABy=c(.37,.49,.49,.37,.37)
+
+Lx=function(p) p*ALx+(1-p)*HLx
+Ly=function(p) p*ALy+(1-p)*HLy
+Rx=function(p) p*ARx+(1-p)*HRx
+Ry=function(p) p*ARy+(1-p)*HRy
+Bx=function(p) p*ABx+(1-p)*HBx
+By=function(p) p*ABy+(1-p)*HBy
+```
+
+
+```{r}
+plot(1, 1, col = "white", xlab = "X", ylab = "Y")    
+polygon(x = c(0.8, 1.2, 1.2, 0.8), y = c(0, 0, 1, 1), col = "#1b98e0")     
+```
+
+
+### Drawing crosses
+```{r}
+x <- seq(0,1,0.2)
+Top <- max(x)
+Dwn <- min(x)
+c <- Top/2
+m.V <- 0.02
+m.H <- 0.01
+l <- 0.4
+w.V <-0.03
+w.H <- w.V
+
+Vx<- c(c-w.V,c+w.V,c+w.V,c-w.V)
+Vy <- c(c-l,c-l,c+l,c+l)
+Hx <- c(c-l,c+l,c+l,c-l)
+Hy <- c(c-w.H,c-w.H,c+w.H,c+w.H)
+
+png(paste('set1+.png', sep=""),height = 110, width = 100) 
+par(mar=(c(0,0,0,0)))
+plot(x,x,axes = 0, xlab="", ylab="", type="n")
+abline(h=0.5, col="black", lwd=300)
+polygon(x=Vx, y=Vy, col="white",border=NA)
+polygon(x=Hx, y=Hy, col="white",border=NA)
+dev.off()
+```
