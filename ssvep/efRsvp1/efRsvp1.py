@@ -58,8 +58,8 @@ rng = random.Random(seed)
 ########################################
 # CONDITIONS AND BLOCKS  ###############
 ########################################
-nBlocks=4
-nTrials=20
+nBlocks=2
+nTrials=3
 Rep=3
 cond=np.repeat(range(4),Rep)
 N=len(cond)
@@ -237,5 +237,12 @@ Thnx.draw()
 window.flip()
 event.waitKeys()
 
+########################################
+# End Experiment
+#######################################3
+hz=round(window.getActualFrameRate())
+size=window.size
 window.close()
+if useDB:
+        stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 core.quit()
