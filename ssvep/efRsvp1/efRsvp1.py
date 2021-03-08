@@ -58,12 +58,11 @@ rng = random.Random(seed)
 ########################################
 # CONDITIONS AND BLOCKS  ###############
 ########################################
-nBlocks=2
-nTrials=3
-Rep=3
-cond=np.repeat(range(4),Rep)
+nBlocks=5
+nTrials=40
+nStim=int(nTrials/4)+1
+cond=np.repeat(range(4),nStim)
 N=len(cond)
-order=random.sample(range(N),N)
 crit=np.random.randint(2,6,N)
 
 
@@ -217,13 +216,18 @@ Welcome.draw()
 window.flip()
 event.waitKeys()
 
+
+trialID = 0
 for block in range(nBlocks):
+    random.shuffle(cond)
+    order = cond[:]
     BlockID = block
-    for trial in range(nTrials):
-        (target,flanker)=divmod(cond[order[trial]],2)
+    for trial in range(nTrials):        
+        trialID = trialID+1
+        (target,flanker)=divmod(order[trial],2)
         [resp,RT,frameFlag]=doTrial(target,flanker,crit[trial])
-        rt = decimal.Decimal(RT).quantize(decimal.Decimal('1e-3'))
-        addData = (sessionID, BlockID, trial,flanker,target,resp,crit[trial],rt)        
+        rt = decimal.Decimal(RT).quantize(decimal.Decimal('1e-3'))        
+        addData = (sessionID, BlockID, trialID,flanker,target,resp,crit[trial],rt)        
         if useDB:
             insertDatTable(insertTableStatement,addData,dbConf)
         else:

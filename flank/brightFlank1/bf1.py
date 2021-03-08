@@ -12,6 +12,7 @@ numFlank = 2
 flankVal=[0,1]
 targVal=[0,.2,.4,.6,.8,1]
 
+
 def decode(cond):
     return(divmod(cond,numFlank))
 
@@ -19,10 +20,12 @@ def code(targ,flank):
     return(targ*numFlank+flank)
 
 condVals=np.array(range(numTarg*numFlank),dtype=int)
-#condRep=np.array([20,20,10,10,10,10,10,10,10,10,20,20],dtype=int)
-condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
+condRep=np.array([20,20,10,10,10,10,10,10,10,10,20,20],dtype=int)
+#condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
 cond=np.repeat(condVals,condRep)
-#np.random.shuffle(cond)
+np.random.shuffle(cond)
+numTrialsPerBlock = 40
+
 
 resX=100
 resY=110
@@ -39,9 +42,9 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
-expName='brFlank-p1'
+expName='brightFlank1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -73,7 +76,7 @@ window=visual.Window(units= "pix",
                      allowGUI=False,
                      size=(400,400),
                      color=[0,0,0],
-                     fullscr = False)
+                     fullscr = True)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -149,20 +152,34 @@ def doTrial(cond):
 #######################################
 
 numTrials=len(cond)
-window.getMovieFrame(buffer='front') 
 
 for n in range(numTrials):
+    (blk,trl)=divmod(n,numTrialsPerBlock)
+    if (trl==0):
+        st0=visual.TextStim(window, text="z: more black dots",
+                            color=(-1,-1,-1),
+                            pos=(0,50))
+        st1=visual.TextStim(window, text="/: more white dots",
+                            color=(1,1,1),
+                            pos=(0,-50))
+        st0.draw()
+        st1.draw()
+        window.flip()
+        event.waitKeys(keyList=['z','slash','9'])
     (respInt,RT)=doTrial(cond[n])
     rt = decimal.Decimal(RT).quantize(decimal.Decimal('1e-3'))
     (targ,flank)=decode(cond[n])
-    addData = (sessionID,0,n,targ,flank,respInt,rt)
+    addData = (sessionID,blk,trl,targ,flank,respInt,rt)
     if useDB:
         insertDatTable(insertTableStatement,addData,dbConf)
     else:
         print(addData)	
 
-window.saveMovieFrames('f1.mpeg',)
-
+hz=round(window.getActualFrameRate())
+size=window.size
 window.close()
+if useDB:
+	stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 core.quit()
+
 
