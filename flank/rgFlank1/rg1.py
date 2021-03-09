@@ -21,9 +21,9 @@ def code(targ,flank):
 
 condVals=np.array(range(numTarg*numFlank),dtype=int)
 condRep=np.array([20,20,10,10,10,10,10,10,10,10,20,20],dtype=int)
-condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
+#condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
 cond=np.repeat(condVals,condRep)
-#np.random.shuffle(cond)
+np.random.shuffle(cond)
 numTrialsPerBlock = 40
 
 
@@ -42,9 +42,9 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
-expName='brightFlank1'
+expName='rgFlank1'
 
 createTableStatement = (
     "CREATE TABLE `out__" + expName + "` ("
@@ -76,7 +76,7 @@ window=visual.Window(units= "pix",
                      allowGUI=False,
                      size=(400,400),
                      color=[0,0,0],
-                     fullscr = False)
+                     fullscr = True)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -95,37 +95,54 @@ error=sound.Sound(300,secs=.2)
 def makeArray(p,mx,my):
     n=mx*my
     x=int((1-p)*n+.5)
-    a0=np.zeros(x,dtype=np.uint8)
-    a1=np.ones(n-x,dtype=np.uint8)
-    a2=np.concatenate((a0,255*a1))
-    np.random.shuffle(a2)
-    a3=np.reshape(a2,(my,mx))
-    return(Image.fromarray(a3))
+    red=np.reshape(np.array([255,0,0]*x,dtype=np.uint8),(x,3))
+    green=np.reshape(np.array([0,255,0]*(n-x),dtype=np.uint8),(n-x,3))
+    a=np.concatenate((red,green))
+    np.random.shuffle(a)
+    a1=np.reshape(a,(my,mx,3))
+    return(Image.fromarray(a1))
 
+
+def makeVertices(pX,pY):
+    a=np.array(((pX-resX//2,pY-resY//2),
+                (pX+resX//2,pY-resY//2),
+                (pX+resX//2,pY+resY//2),
+                (pX-resX//2,pY+resY//2)))
+    return(a)
 
 def doTrial(cond):
+    myCol=[[1,-1,-1],[-1,1,-1]]
     blank=visual.TextStim(win=window,text="")
+    cross=visual.TextStim(win=window,text="+")
     
     [targ,flank]=decode(cond)
+    start=np.random.randint(-20,20,size=2)
     im=[]
     for x in range(3):
         for y in range(3):
-            t=makeArray(flankVal[flank],resX,resY)
-            im.append(visual.ImageStim(win=window,
-                               pos=(posX[x],posY[y]),
-                               image=t))
-    im[4].image=makeArray(targVal[targ],resX,resY)        
+            im.append(visual.ShapeStim(win=window,
+                            vertices=makeVertices(pX=posX[x]+start[0],pY=posY[y]+start[1]),
+                            fillColor=myCol[flank],
+                            lineColor=(0,0,0)))
+            
+    im[4]=visual.ImageStim(win=window,
+                           image=makeArray(targVal[targ],resX,resY),
+                           pos=start)        
     full=visual.BufferImageStim(win=window,stim=im)
 
     correct=int(targVal[targ]>.5)
     
+    cross.pos=start
+    cross.draw()
+    window.flip()
+    core.wait(.2)
     blank.draw()
     window.flip()
     core.wait(.5)        
     timer.reset()
     full.draw()
     window.flip()
-    window.getMovieFrame(buffer='front')
+#    window.getMovieFrame(buffer='front')
     keys=event.waitKeys(keyList=['z','slash','9'],timeStamped=timer)
     blank.draw()
     window.flip()
@@ -157,11 +174,11 @@ numTrials=len(cond)
 for n in range(numTrials):
     (blk,trl)=divmod(n,numTrialsPerBlock)
     if (trl==0):
-        st0=visual.TextStim(window, text="z: more black dots",
-                            color=(-1,-1,-1),
+        st0=visual.TextStim(window, text="z: more red dots",
+                            color=(1,-1,-1),
                             pos=(0,50))
-        st1=visual.TextStim(window, text="/: more white dots",
-                            color=(1,1,1),
+        st1=visual.TextStim(window, text="/: more green dots",
+                            color=(-1,1,-1),
                             pos=(0,-50))
         st0.draw()
         st1.draw()
@@ -176,7 +193,7 @@ for n in range(numTrials):
     else:
         print(addData)	
 
-window.saveMovieFrames("display.png")
+#window.saveMovieFrames("display.png")
 hz=round(window.getActualFrameRate())
 size=window.size
 window.close()
