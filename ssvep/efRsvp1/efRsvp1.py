@@ -226,7 +226,8 @@ for block in range(nBlocks):
         trialID = trialID+1
         (target,flanker)=divmod(order[trial],2)
         [resp,RT,frameFlag]=doTrial(target,flanker,crit[trial])
-        rt = decimal.Decimal(RT).quantize(decimal.Decimal('1e-3'))        
+        rt = RT - ((crit[trial]*30)/60)
+        rt = decimal.Decimal(rt).quantize(decimal.Decimal('1e-3'))        
         addData = (sessionID, BlockID, trialID,flanker,target,resp,crit[trial],rt)        
         if useDB:
             insertDatTable(insertTableStatement,addData,dbConf)

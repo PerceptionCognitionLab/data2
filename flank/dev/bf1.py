@@ -21,9 +21,9 @@ def code(targ,flank):
 
 condVals=np.array(range(numTarg*numFlank),dtype=int)
 condRep=np.array([20,20,10,10,10,10,10,10,10,10,20,20],dtype=int)
-condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
+#condRep=np.array([1,1,1,1,1,1,1,1,1,1,1,1],dtype=int)
 cond=np.repeat(condVals,condRep)
-#np.random.shuffle(cond)
+np.random.shuffle(cond)
 numTrialsPerBlock = 40
 
 
@@ -42,7 +42,7 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='brightFlank1'
 
@@ -125,7 +125,6 @@ def doTrial(cond):
     timer.reset()
     full.draw()
     window.flip()
-    window.getMovieFrame(buffer='front')
     keys=event.waitKeys(keyList=['z','slash','9'],timeStamped=timer)
     blank.draw()
     window.flip()
@@ -176,7 +175,6 @@ for n in range(numTrials):
     else:
         print(addData)	
 
-window.saveMovieFrames("display.png")
 hz=round(window.getActualFrameRate())
 size=window.size
 window.close()

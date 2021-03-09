@@ -1,0 +1,99 @@
+---
+title: "Pilot-Check"
+author: "Adriana Chavez"
+date: "3/8/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Load data
+
+```{r}
+loc.data = "https://raw.githubusercontent.com/PerceptionCognitionLab/data2/master/out/efRsvp1.dat"
+dat = read.table(url(loc.data), head=TRUE)
+```
+
+#### Identify pilot session
+```{r}
+Pilot = 412  #First 200-trial run
+pilot = which(dat$sessionID==Pilot)
+datos = dat[pilot,]
+attach(datos)
+```
+
+### Checking for stimuli presentation
+
+```{r}
+table(target)   #Proportion of Targets shown
+table(flanker)  #Proportion of Flankers shown
+```
+
+#### Checking for responses
+
+```{r}
+table(resp)     #Proportion of Responses
+```
+
+```{r}
+prop.H <- tapply(resp, list(target,sessionID), mean)
+```
+
+```{r, echo=FALSE, fig.height=4, fig.width=5}
+plot(c(0,1), prop.H, ann=F, axes=F, pch=15, col="green4", 
+     cex=3, xlim=c(-0.25,1.25))
+axis(1,c(0,1),c("A","H"), line=1)
+axis(2,seq(0,1,0.1),seq(0,1,0.1), las=2, line=-2)
+mtext("Target", 1, line=2)
+mtext("Prop. of H responses", 2, line=1)
+text(0,0.5,paste(round(prop.H[1],3)))
+text(1,0.5,paste(round(prop.H[2],3)))
+```
+
+```{r}
+AHA <- mean(resp[which(target==1&flanker==0)])
+AAA <- mean(resp[which(target==0&flanker==0)])
+HHH <- mean(resp[which(target==1&flanker==1)])
+HAH <- mean(resp[which(target==0&flanker==1)])
+
+plot(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, col="indianred", ann=F, axes=FALSE, cex=2)
+axis(1,c(1:4), c("AAA","HAH","AHA","HHH"))
+axis(2, seq(0,1,0.2), seq(0,1,0.2), las=2)
+text(1,0.5,paste(round(AAA,3)))
+text(2,0.5,paste(round(HAH,3)))
+text(3,0.5,paste(round(AHA,3)))
+text(4,0.5,paste(round(HHH,3)))
+mtext("Stimuli", 1, line=2)
+mtext("Proportion of H responses", 2, line=2.5)
+```
+
+
+```{r}
+AHA <- mean(rt[which(target==1&flanker==0)])
+rt.AHA <- rt[which(target==1&flanker==0)]
+AAA <- mean(rt[which(target==0&flanker==0)])
+rt.AAA <- rt[which(target==0&flanker==0)]
+HHH <- mean(rt[which(target==1&flanker==1)])
+rt.HHH <- rt[which(target==1&flanker==1)]
+HAH <- mean(rt[which(target==0&flanker==1)])
+rt.HAH <- rt[which(target==0&flanker==1)]
+
+plot(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, col="indianred", ann=F, axes=FALSE, cex=2, ylim=c(1.35,3.5))
+points(rep(1,length(rt.AAA)),rt.AAA)
+points(rep(2,length(rt.HAH)),rt.HAH)
+points(rep(3,length(rt.AHA)),rt.AHA)
+points(rep(4,length(rt.HHH)),rt.HHH)
+points(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, cex=2.5, col="indianred")
+axis(1,c(1:4), c("AAA","HAH","AHA","HHH"))
+axis(2, seq(0,3.5,0.05), seq(0,3.5,0.05), las=2)
+text(1,0.5,paste(round(AAA,3)))
+text(2,0.5,paste(round(HAH,3)))
+text(3,0.5,paste(round(AHA,3)))
+text(4,0.5,paste(round(HHH,3)))
+mtext("Stimuli", 1, line=2)
+mtext("Response Times", 2, line=3)
+```
+
+
