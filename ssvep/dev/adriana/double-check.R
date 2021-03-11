@@ -4,6 +4,9 @@ loc.session = "https://raw.githubusercontent.com/PerceptionCognitionLab/data2/ma
 dat = read.table(url(loc.data), head=TRUE)
 ses = read.table(url(loc.session), head=TRUE)
 
+Pilot = 412
+Exp= "efRsvp1"
+
 head(dat,10)
 head(ses,10)
 

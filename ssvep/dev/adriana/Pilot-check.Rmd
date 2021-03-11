@@ -18,10 +18,11 @@ dat = read.table(url(loc.data), head=TRUE)
 
 #### Identify pilot session
 ```{r}
-Pilot = 412  #First 200-trial run
-pilot = which(dat$sessionID==Pilot)
+pilot = which(dat$sessionID==412|dat$sessionID==413)
 datos = dat[pilot,]
 attach(datos)
+
+table(datos$sessionID)
 ```
 
 ### Checking for stimuli presentation
@@ -39,59 +40,79 @@ table(resp)     #Proportion of Responses
 
 ```{r}
 prop.H <- tapply(resp, list(target,sessionID), mean)
+mean.H <- apply(prop.H,1,mean)
 ```
 
 ```{r, echo=FALSE, fig.height=4, fig.width=5}
-plot(c(0,1), prop.H, ann=F, axes=F, pch=15, col="green4", 
-     cex=3, xlim=c(-0.25,1.25))
-axis(1,c(0,1),c("A","H"), line=1)
-axis(2,seq(0,1,0.1),seq(0,1,0.1), las=2, line=-2)
-mtext("Target", 1, line=2)
-mtext("Prop. of H responses", 2, line=1)
-text(0,0.5,paste(round(prop.H[1],3)))
-text(1,0.5,paste(round(prop.H[2],3)))
+plot(c(0,1), c(0,1), ann=F, axes=F, pch=16, col="white", 
+     cex=1.5, xlim=c(-0.25,1.25))
+    for(a in 1:ncol(prop.H)){
+        points(c(0,1), prop.H[,a], pch=16, 
+               col=c("blue4","green4")[a], cex=1.5)}
+    lines(c(-0.1,0.1),c(mean.H[1],mean.H[1]), col="red", lwd=4)
+    lines(c(0.9,1.1),c(mean.H[2],mean.H[2]), col="red", lwd=4)
+    axis(1,c(0,1),c("A","H"), line=1)
+    axis(2,seq(0,1,0.1),seq(0,1,0.1), las=2, line=-2)
+    mtext("Target", 1, line=2)
+    mtext("Prop. of H responses", 2, line=1)
+    text(0,0.1,paste(round(mean.H[1],3)))
+    text(1,0.87,paste(round(mean.H[2],3)))
 ```
 
 ```{r}
-AHA <- mean(resp[which(target==1&flanker==0)])
-AAA <- mean(resp[which(target==0&flanker==0)])
-HHH <- mean(resp[which(target==1&flanker==1)])
-HAH <- mean(resp[which(target==0&flanker==1)])
+nParticipants <- length(unique(datos$sessionID))
+nTarget <- length(unique(target))
+nFlanker <- length(unique(flanker))
 
-plot(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, col="indianred", ann=F, axes=FALSE, cex=2)
+prop.Flank <- tapply(resp, list(target,flanker,sessionID), mean)
+mean.Flank<- matrix(NA,ncol=nTarget,nrow=nFlanker)
+
+for(a in 1:nTarget){
+  for(b in 1:nFlanker){
+      mean.Flank[a,b] <- mean(prop.Flank[a,b,])}}
+
+plot(c(1,4), seq(0,1), pch=17, col="white", ann=F, axes=FALSE, cex=, type="b", lwd=2)
+abline(h=0)
+abline(h=1)
+lines(c(1:4),as.vector(t(mean.Flank)), col="indianred", lwd=2)
+for(i in 1:nParticipants){
+lines(c(1:4),as.vector(t(prop.Flank[,,i])), col=c("blue4","green4")[i], lwd=2)}
 axis(1,c(1:4), c("AAA","HAH","AHA","HHH"))
 axis(2, seq(0,1,0.2), seq(0,1,0.2), las=2)
-text(1,0.5,paste(round(AAA,3)))
-text(2,0.5,paste(round(HAH,3)))
-text(3,0.5,paste(round(AHA,3)))
-text(4,0.5,paste(round(HHH,3)))
 mtext("Stimuli", 1, line=2)
 mtext("Proportion of H responses", 2, line=2.5)
 ```
 
 
 ```{r}
-AHA <- mean(rt[which(target==1&flanker==0)])
-rt.AHA <- rt[which(target==1&flanker==0)]
-AAA <- mean(rt[which(target==0&flanker==0)])
-rt.AAA <- rt[which(target==0&flanker==0)]
-HHH <- mean(rt[which(target==1&flanker==1)])
-rt.HHH <- rt[which(target==1&flanker==1)]
-HAH <- mean(rt[which(target==0&flanker==1)])
-rt.HAH <- rt[which(target==0&flanker==1)]
+rt <- datos$rt
 
-plot(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, col="indianred", ann=F, axes=FALSE, cex=2, ylim=c(1.35,3.5))
-points(rep(1,length(rt.AAA)),rt.AAA)
-points(rep(2,length(rt.HAH)),rt.HAH)
-points(rep(3,length(rt.AHA)),rt.AHA)
-points(rep(4,length(rt.HHH)),rt.HHH)
-points(c(1:4), c(AAA,HAH,AHA,HHH), pch=17, cex=2.5, col="indianred")
+rt.Flank <- tapply(rt, list(target,flanker,sessionID), mean)
+rt.Flank <- rt.Flank[,,2:nParticipants]
+
+mean.RT <- matrix(NA,ncol=nTarget,nrow=nFlanker)
+for(a in 1:nTarget){
+  for(b in 1:nFlanker){
+      mean.RT[a,b] <- mean(rt.Flank[a,b])}}
+mean.RT <- as.vector(t(mean.RT))
+
+rt.AHA <- rt[which(target==1&flanker==0&sessionID==413)]
+rt.AAA <- rt[which(target==0&flanker==0&sessionID==413)]
+rt.HHH <- rt[which(target==1&flanker==1&sessionID==413)]
+rt.HAH <- rt[which(target==0&flanker==1&sessionID==413)]
+
+plot(c(1:4), mean.RT, pch=17, col="white", ann=F, axes=FALSE, cex=2, ylim=c(0.3,1.4))
+points(rep(1,length(rt.AAA)),rt.AAA, cex=0.5, pch=16)
+points(rep(2,length(rt.HAH)),rt.HAH, cex=0.5, pch=16)
+points(rep(3,length(rt.AHA)),rt.AHA, cex=0.5, pch=16)
+points(rep(4,length(rt.HHH)),rt.HHH, cex=0.5, pch=16)
+lines(c(1:4),mean.RT, lty=2)
+lines(c(0.9,1.1),c(mean.RT[1],mean.RT[1]), col="red", lwd=2)
+lines(c(1.9,2.1),c(mean.RT[2],mean.RT[2]), col="red", lwd=2)
+lines(c(2.9,3.1),c(mean.RT[3],mean.RT[3]), col="red", lwd=2)
+lines(c(3.9,4.1),c(mean.RT[4],mean.RT[4]), col="red", lwd=2)
 axis(1,c(1:4), c("AAA","HAH","AHA","HHH"))
 axis(2, seq(0,3.5,0.05), seq(0,3.5,0.05), las=2)
-text(1,0.5,paste(round(AAA,3)))
-text(2,0.5,paste(round(HAH,3)))
-text(3,0.5,paste(round(AHA,3)))
-text(4,0.5,paste(round(HHH,3)))
 mtext("Stimuli", 1, line=2)
 mtext("Response Times", 2, line=3)
 ```
