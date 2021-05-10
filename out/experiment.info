@@ -23,3 +23,4 @@ experimentID name memberID irbID directory Description Outcome
 22 efRsvp1 10 1 data2/ssvep/efRsvp1 First RSVP experiment. Flicker frequencies are 2 (target) and 3 (flankers). Targets are clear A and H.  THIS IS A PILOT NA
 23 brightFlank1 1 1 specl-exp/data2/flank/brightFlank1 Critical stimuli in a flanker expt are the proportion of black-to-white dots.  Hope to see integration for clear black/white squares and contrast otherwise. NA
 24 rgFlank1 1 1 specl-exp/data2/flank/rgFlank1 Red-Green flanker analogous to the brightFlank1.   NA
+25 octo1 1 1 specl-exp/data2/omem/octo1 Absolute identification of 8 unrelated irregular octogons NA

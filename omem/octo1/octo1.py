@@ -13,7 +13,7 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='octo1'
 abortKey='q'
@@ -24,22 +24,25 @@ createTableStatement = (
     "  `sessionID` INT(4) UNSIGNED NOT NULL,"
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `stimGlob INT(3) UNSIGNED NOT NULL,"
+    "  `stimGlob` INT(3) UNSIGNED NOT NULL,"
     "  `stimLoc` INT(1) UNSIGNED NOT NULL,"
-    "  `resp` INT(1) NOT NULL,"
+    "  `correctResp` CHAR(1),"
+    "  `resp` CHAR(1),"
     "  `rt`  DECIMAL(5,3),"
     "  PRIMARY KEY (`datID`)"
     ") ENGINE=InnoDB")
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `stimGlob`, `StimLoc`, `resp`,`rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `stimGlob`, `StimLoc`, `correctResp`,`resp`,`rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-if useDB: 
-	sessionID=startExp(expName,createTableStatement,dbConf)
+if useDB:
+    sessionID=startExp(expName,createTableStatement,dbConf)
 else:
 	sessionID=1
+    
+    
     
 ########################################
 # GLOBAL SETTINGS  #####################
@@ -161,9 +164,9 @@ for i in range(8):
 slideshow(stim,map)
 
 
-numReps=1
+numReps=30
 numTrials=numReps*8
-numTrialsPerBlock=numTrials
+numTrialsPerBlock=80
 stimIndex=np.repeat(range(8),numReps)
 random.shuffle(stimIndex)
 
@@ -174,13 +177,18 @@ for n in range(numTrials):
     out=trialAbsId(stim[stimIndex[n]],map[stimIndex[n]])
     rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
     addData = (sessionID, b, t, 
-               stimChoice[stimIndex[n]], stimIndex[n], map[n],
+               stimChoice[stimIndex[n]], stimIndex[n], map[stimIndex[n]],
                out[0], rt)
     if useDB:
         insertDatTable(insertTableStatement,addData,dbConf)
     else:
         print(addData)	
 
+hz=round(window.getActualFrameRate())
+size=window.size
 window.close()
-core.quit()
+if useDB:
+	stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 
+
+core.quit()
