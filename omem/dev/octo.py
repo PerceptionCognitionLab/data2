@@ -145,7 +145,7 @@ def takeABreak():
         event.waitKeys()
         
 
-fname="/home/exp/local-exp/omem/dev/s1.octo"
+fname="/home/exp/spec-exp/omem/dev/s1.octo"
 octo=readPoly(fname,scale)
 #p=np.linspace(0,1,8)
 #m=morph(octo[0,:,:],octo[1,:,:],p)

@@ -13,9 +13,9 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=True
+useDB=False
 dbConf = exp
-expName='octo1'
+expName='octo2'
 abortKey='q'
 
 createTableStatement = (
@@ -24,8 +24,9 @@ createTableStatement = (
     "  `sessionID` INT(4) UNSIGNED NOT NULL,"
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `stimGlob` INT(3) UNSIGNED NOT NULL,"
-    "  `stimLoc` INT(1) UNSIGNED NOT NULL,"
+    "  `stimGlobA` INT(3) UNSIGNED NOT NULL,"
+    "  `stimGLobB` INT(1) UNSIGNED NOT NULL,"
+    "  `weightA` DECIMAL(4.3) NOT NULL,"
     "  `correctResp` CHAR(1),"
     "  `resp` CHAR(1),"
     "  `rt`  DECIMAL(5,3),"
@@ -34,8 +35,8 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `stimGlob`, `StimLoc`, `correctResp`,`resp`,`rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `stimGlobA`, `StimGlobB`, `weightA`, `correctResp`,`resp`,`rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
 
 if useDB:
     sessionID=startExp(expName,createTableStatement,dbConf)
@@ -148,15 +149,13 @@ def takeABreak():
         event.waitKeys()
         
 
-fname="/home/exp/specl-exp/data2/omem/dev/s1.octo"
+fname="/home/exp/local-exp/omem/dev/s1.octo"
 octo=readPoly(fname,scale)
-#p=np.linspace(0,1,8)
-#m=morph(octo[0,:,:],octo[1,:,:],p)
+p=np.linspace(0,1,8)
+stimChoice=np.random.choice(np.shape(octo)[0],2,replace=False)
+stimChoice=np.array([64,41])
+stim=morph(octo[stimChoice[0],:,:],octo[stimChoice[1],:,:],p)
 
-
-stimChoice=np.random.choice(np.shape(octo)[0],8,replace=False)
-#stimChoice=np.array([64,41,23,17,5,16,68,47])
-stim=octo[stimChoice,:,:]
 ans=np.arange(1,9,dtype="int")
 map=[]
 for i in range(8):
@@ -164,7 +163,7 @@ for i in range(8):
 slideshow(stim,map)
 
 
-numReps=30
+numReps=1
 numTrials=numReps*8
 numTrialsPerBlock=80
 stimIndex=np.repeat(range(8),numReps)
@@ -176,9 +175,10 @@ for n in range(numTrials):
         takeABreak()
     out=trialAbsId(stim[stimIndex[n]],map[stimIndex[n]])
     rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
+    weight=decimal.Decimal(p[stimIndex[n]]).quantize(decimal.Decimal('1e-3'))
     addData = (sessionID, b, t, 
-               stimChoice[stimIndex[n]], stimIndex[n], map[stimIndex[n]],
-               out[0], rt)
+               stimChoice[0], stimChoice[1],weight, 
+               map[stimIndex[n]],out[0], rt)
     if useDB:
         insertDatTable(insertTableStatement,addData,dbConf)
     else:
