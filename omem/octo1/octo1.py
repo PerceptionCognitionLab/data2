@@ -172,7 +172,7 @@ random.shuffle(stimIndex)
 
 for n in range(numTrials):
     (b,t)=divmod(n,numTrialsPerBlock)
-    if t==0 & b>0:
+    if t==0 and b>0:
         takeABreak()
     out=trialAbsId(stim[stimIndex[n]],map[stimIndex[n]])
     rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
