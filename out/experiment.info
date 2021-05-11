@@ -25,3 +25,4 @@ experimentID name memberID irbID directory Description Outcome
 24 rgFlank1 1 1 specl-exp/data2/flank/rgFlank1 Red-Green flanker analogous to the brightFlank1.   NA
 25 octo1 1 1 specl-exp/data2/omem/octo1 Absolute identification of 8 unrelated irregular octogons Seems like all three of us learned the octogons fairly easily
 26 octo2a 1 NA specl-exp/data2/omem/octo2 Wide setting on 1D morphs with octogons 23 and 41 NA
+27 octo2b 1 1 data2/omem/octo2 Irregular octogons 23 and 41, morphs, narrow spacing NA
