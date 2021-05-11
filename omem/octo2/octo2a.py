@@ -13,9 +13,9 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
-expName='octo2'
+expName='octo2a'
 abortKey='q'
 
 createTableStatement = (
@@ -163,7 +163,7 @@ for i in range(8):
 slideshow(stim,map)
 
 
-numReps=1
+numReps=30
 numTrials=numReps*8
 numTrialsPerBlock=80
 stimIndex=np.repeat(range(8),numReps)
