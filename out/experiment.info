@@ -26,3 +26,6 @@ experimentID name memberID irbID directory Description Outcome
 25 octo1 1 1 specl-exp/data2/omem/octo1 Absolute identification of 8 unrelated irregular octogons Seems like all three of us learned the octogons fairly easily
 26 octo2a 1 NA specl-exp/data2/omem/octo2 Wide setting on 1D morphs with octogons 23 and 41 NA
 27 octo2b 1 1 data2/omem/octo2 Irregular octogons 23 and 41, morphs, narrow spacing NA
+28 stLines1a 10 1 specl-exp/data2/omem/stLines1 Exploratory/Pilot study for "What makes a thing a thing" with an AI task on straight lines. 
+
+Code allows adjusting for the distance and number of line segments prevented. NA

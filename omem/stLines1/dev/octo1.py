@@ -12,9 +12,9 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=True
+useDB=False
 dbConf = exp
-expName='stLines1a'
+expName='octo1'
 abortKey='q'
 
 createTableStatement = (
@@ -23,6 +23,8 @@ createTableStatement = (
     "  `sessionID` INT(4) UNSIGNED NOT NULL,"
     "  `block` INT(2) UNSIGNED NOT NULL,"
     "  `trial` INT(2) UNSIGNED NOT NULL,"
+    "  `stimGlob` INT(3) UNSIGNED NOT NULL,"
+    "  `stimLoc` INT(1) UNSIGNED NOT NULL,"
     "  `correctResp` CHAR(1),"
     "  `resp` CHAR(1),"
     "  `rt`  DECIMAL(5,3),"
@@ -31,8 +33,8 @@ createTableStatement = (
 
 insertTableStatement = (
      "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `correctResp`,`resp`,`rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s)")
+     "`sessionID`, `block`, `trial`, `stimGlob`, `StimLoc`, `correctResp`,`resp`,`rt`)"
+     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
 if useDB:
     sessionID=startExp(expName,createTableStatement,dbConf)
@@ -46,7 +48,7 @@ window=visual.Window(units= "pix",
                      allowGUI=False,
                      size=(640,320),
                      color=[-1,-1,-1],
-                     fullscr = True)
+                     fullscr = False)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
@@ -57,7 +59,7 @@ correct2=sound.Sound(1000,secs=.2)
 
 nLen = 8
 minDis = 50 
-maxDis = 750
+maxDis = 300
 step = (maxDis-minDis)/nLen
 length=np.linspace(minDis,maxDis,nLen)
 
@@ -141,7 +143,8 @@ for n in range(numTrials):
         takeABreak()
     out=trialAbsId(length[stimIndex[n]],map[stimIndex[n]])
     rt = decimal.Decimal(out[1]).quantize(decimal.Decimal('1e-3'))
-    addData = (sessionID, b, t, out[0], map[stimIndex[n]], rt)
+    addData = (sessionID, b, t, stimIndex[n], map[stimIndex[n]],
+               out[0], rt)
     if useDB:
         insertDatTable(insertTableStatement,addData,dbConf)
     else:
