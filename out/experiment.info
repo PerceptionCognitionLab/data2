@@ -29,3 +29,5 @@ experimentID name memberID irbID directory Description Outcome
 28 stLines1a 10 1 specl-exp/data2/omem/stLines1 Exploratory/Pilot study for "What makes a thing a thing" with an AI task on straight lines. 
 
 Code allows adjusting for the distance and number of line segments prevented. NA
+29 octo3a 1 1 data2/omem/octo3 Absolute Identification with irregular octogons that vary in size only.  This is the wide condition, 8 octogons, fixed value for now. NA
+30 octo3b 1 1 data2/omem/octo3 Absolute Identification with irregular octogons that vary in size only.  This is the narrow condition, 8 octogons, fixed value for now. NA

@@ -15,7 +15,7 @@ from expLib import *
 
 useDB=True
 dbConf = exp
-expName='octo3a'
+expName='octo3b'
 abortKey='q'
 
 createTableStatement = (
@@ -161,7 +161,7 @@ def takeABreak():
 
 fname="/home/exp/specl-exp/data2/omem/dev/s1.octo"
 octo=readPoly(fname,scale)
-p=np.exp(np.linspace(-1,1,8))
+p=np.exp(np.linspace(-.5,.5,8))
 stimChoice=np.random.choice(np.shape(octo)[0],2,replace=False)
 stimChoice=np.array([23,41])
 stim=scaler(octo[stimChoice[0],:,:],p)
