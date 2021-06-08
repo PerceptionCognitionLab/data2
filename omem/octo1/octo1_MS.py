@@ -13,7 +13,7 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=True
+useDB=False
 dbConf = exp
 expName='octo1'
 abortKey='q'
@@ -50,10 +50,10 @@ else:
 scale=400
 
 window=visual.Window(units= "pix", 
-                     allowGUI=False,
+                     allowGUI=True,
                      size=(2*scale,2*scale),
                      color=[-1,-1,-1],
-                     fullscr = True)
+                     fullscr = False)
 mouse = event.Mouse(visible=False)
 timer = core.Clock()
 seed = random.randrange(1e6)
