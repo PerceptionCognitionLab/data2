@@ -12,7 +12,7 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=False
+useDB=True
 dbConf = exp
 expName='stLines1a'
 abortKey='q'
