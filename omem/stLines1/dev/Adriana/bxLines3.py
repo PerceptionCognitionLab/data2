@@ -75,17 +75,11 @@ endpoint = np.array(length)/(2*expCondition)
 wBox = 1500/expCondition
 hBox = 850/expCondition
 
-## Set of central positions for the lines Vertical(v) Horizontal(h)
-numHPos = 6
-x = list(range(numHPos-1))
-hJitter = 60
-hJump = wBox/hJitter
-hCPos = np.array(x)*hJump
-
+## Set of possibl positions for the lines (y axis)
 numVPos = 10
 y = list(range(numVPos-1))
 vJitter = 30
-vJump = hBox/vJitter
+vJump = (hBox/2)/vJitter
 vCPos = np.array(y)*vJump
 
 ## Set of positions for the mask
@@ -130,8 +124,9 @@ def slideshow(endpoint,map="None"):
         
 def trialAbsId(endpoint,map):
     box=visual.Rect(window,width=wBox,height=hBox)
-    im=visual.Line(window, start=[-endpoint,0],
-                   end=[endpoint,0])    
+    vertPos = random.sample(list(vCPos),1)
+    im=visual.Line(window, start=[-endpoint,np.array(vertPos)],
+                   end=[endpoint,np.array(vertPos)])    
     feedback=visual.TextStim(window,text=map,
                         pos=(0,100),
                         height=20,bold=True,

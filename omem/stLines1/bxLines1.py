@@ -5,6 +5,15 @@ import sys
 import numpy as np  
 import os
 
+################################################
+######### DESCRIPTION
+#########
+######### Task: Absolute identification task
+######### Stimuli: Line lengths within a box
+######### Conditions: 2 Boz sizes (expCondition)
+######### Specifics: No mask and fixated location of lines
+################################################
+
 ##########################
 # SET UP THE EXPERIMENT ##
 ##########################
@@ -14,8 +23,11 @@ from expLib import *
 
 useDB=False
 dbConf = exp
-expName='bxLines1'
-expCondition= 1 #"1" for full size; "2" for half sizes
+expName = 'bxLines1'
+expCondition = 1 #"1" for full size; "2" for half sizes
+base = 100   #Length of the reference line (Line #1)
+rate = 1.5   #Increment rate between lines
+nLen = 7     #Number of line lengths included
 
 abortKey='q'
 
@@ -55,19 +67,26 @@ timer = core.Clock()
 seed = random.randrange(1e6)
 rng = random.Random(seed)
 
+## Feedback sounds
 correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.2)
 
+## Setting up lines
+def linelength(base, rate, n):
+    l = list(range(n))
+    length = base*pow(rate,np.array(l))
+    return(length)
 
-length = [100, 150, 225, 337, 506, 759, 1139]
+length = linelength(base,rate,nLen)
 endpoint = np.array(length)/(2*expCondition)
-nLen = len(endpoint)
 
+## Setting up box
 wBox = 1400/expCondition
 hBox = 800/expCondition
 
+
 ########################################
-# Functions  #####################
+# MAIN FUNCTIONS  ######################
 ########################################
 def slideshow(endpoint,map="None"): 
     if (map=="None"): 
