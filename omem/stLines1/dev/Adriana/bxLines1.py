@@ -5,6 +5,19 @@ import sys
 import numpy as np  
 import os
 
+#########################################################
+########### DESCRIPTION
+###########
+########### Task: Absolute identification task
+########### Stimuli: Line lengths presented within a box
+########### Conditions: 2 Box sizes (expCondition)
+########### Specifics: No mask and fixed central positions
+#########################################################
+#### IN THIS DEV file:
+#### Line lengths were input directly (not with a function)
+#### The actual length of the stimuli presented is yet to be included in the output
+#########################################################
+
 ##########################
 # SET UP THE EXPERIMENT ##
 ##########################
@@ -54,14 +67,16 @@ timer = core.Clock()
 seed = random.randrange(1e6)
 rng = random.Random(seed)
 
+## Feedback sounds
 correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.2)
 
-
+## Setting up lines
 length = [100, 150, 225, 337, 506, 759, 1139]
 endpoint = np.array(length)/(2*expCondition)
 nLen = len(endpoint)
 
+## Setting up box
 wBox = 1400/expCondition
 hBox = 800/expCondition
 

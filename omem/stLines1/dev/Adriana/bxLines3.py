@@ -5,6 +5,20 @@ import sys
 import numpy as np  
 import os
 
+###################################################
+######### DESCRIPTION
+#########
+######### Task: Absolute identification task
+######### Stimuli: Line lengths within a box
+######### Conditions: 2 box sizes (expConditions)
+######### Specifics: No masks and line lengths are 
+#########            presented at random locations
+####################################################
+#### IN THIS DEV file
+#### We try to randomize the X and Y locations of the
+#### line lengths presented to participants
+####################################################
+
 ##########################
 # SET UP THE EXPERIMENT ##
 ##########################
@@ -80,20 +94,9 @@ numVPos = 10
 y = list(range(numVPos-1))
 vJitter = 30
 vJump = (hBox/2)/vJitter
-vCPos = np.array(y)*vJump
-
-## Set of positions for the mask
-Jitter = 20
-hGrid = wBox/Jitter
-vGrid = hBox/Jitter
-points = list(range(Jitter-1))
-hMPos = np.array(points)*hGrid
-vMPos = np.array(points)*vGrid
-
-
-######## ADRIANA del futuro:
-######## Te falta escribir la funcion para samplear
-######## los puntos centrales (y borrar esto)
+vCPos1 = np.array(y)*vJump
+vCPos2 = -(vCPos1)
+vCPos = list(vCPos1) + list(vCPos2)
 
 
 ########################################
@@ -128,12 +131,9 @@ def trialAbsId(endpoint,map):
     im=visual.Line(window, start=[-endpoint,np.array(vertPos)],
                    end=[endpoint,np.array(vertPos)])    
     feedback=visual.TextStim(window,text=map,
-                        pos=(0,100),
+                        pos=(0,np.array(vertPos)+100),
                         height=20,bold=True,
                         anchorVert="bottom")
-    mask=visual.TextStim(window,text="+  +  +  +  +  +  +  +  +",
-                         pos=(0,0),
-                         height=100, wrapWidth=1500)
     blank=visual.TextStim(window,"")
     timer.reset()
     im.draw()
@@ -152,21 +152,19 @@ def trialAbsId(endpoint,map):
         im.draw()
         feedback.draw()
         window.flip()
-        box.draw()
-        mask.draw()
+        box.draw()        
         feedback.draw()
-        core.wait(0.1)        
+        core.wait(0.5)        
     else:
         feedback.text="ERROR! Correct Answer: "+map
         im.draw()
         feedback.draw()
         window.flip()        
         box.draw()
-        mask.draw()
+        im.draw()
         feedback.draw()
-        core.wait(0.1)
+        core.wait(0.5)
     blank.draw()
-    mask.draw()    
     window.flip()    
     core.wait(1)
     return(resp,rt)
