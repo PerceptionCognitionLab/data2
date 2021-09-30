@@ -92,8 +92,7 @@ hBox = 850/expCondition
 ## Set of possibl positions for the lines (y axis)
 numVPos = 10
 y = list(range(numVPos-1))
-vJitter = 30
-vJump = (hBox/2)/vJitter
+vJump = 10
 vCPos1 = np.array(y)*vJump
 vCPos2 = -(vCPos1)
 vCPos = list(vCPos1) + list(vCPos2)
@@ -179,7 +178,7 @@ ans=np.arange(1,9,dtype="int")
 map=[]
 for i in range(nLen):
     map.append(str(ans[i]))
-#slideshow(endpoint,map)
+slideshow(endpoint,map)
 
 numReps=30
 numTrials=numReps*8

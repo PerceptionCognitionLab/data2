@@ -432,6 +432,7 @@ sessionID memberID exptName finish concern participantID dobYear genderID ethnic
 438 10 stLines1a 1 0 141 1993 1 3 Right No No 1 2021-05-24 21:54:08
 441 10 octo3a 1 0 141 1993 1 3 Right No No 1 2021-05-27 16:31:46
 443 10 octo3b 1 0 141 1993 1 3 Right No No 1 2021-05-29 21:55:35
+446 10 bxLines1 1 0 141 1993 1 3 Right No No 1 2021-09-29 16:49:26
 409 10 brightFlank1 1 1 142 1990 2 3 Left No No 1 2021-03-08 00:23:15
 413 10 efRsvp1 1 1 142 1990 2 3 Left No No 1 2021-03-08 15:20:50
 416 10 rgFlank1 1 1 142 1990 2 3 Left No No 1 2021-03-08 21:57:17
@@ -442,3 +443,4 @@ sessionID memberID exptName finish concern participantID dobYear genderID ethnic
 442 10 octo3a 1 0 143 1990 2 4 Left No No 1 2021-05-29 16:05:09
 444 10 octo3b 1 0 143 1990 2 4 Left No No 1 2021-05-29 22:23:43
 440 11 octo1 0 0 144 1991 2 6 Right Yes No 1 2021-05-27 17:13:54
+445 10 bxLines1 1 0 145 1990 2 4 Left No No 1 2021-09-29 15:43:07

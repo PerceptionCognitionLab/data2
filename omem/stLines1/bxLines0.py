@@ -5,16 +5,14 @@ import sys
 import numpy as np  
 import os
 
-###################################################
+################################################
 ######### DESCRIPTION
 #########
 ######### Task: Absolute identification task
 ######### Stimuli: Line lengths within a box
-######### Conditions: 2 box sizes (expConditions)
-######### Specifics: No masks and line lengths jitter
-#########            randomly along the vertical axis
-####################################################
-
+######### Conditions: 2 Box sizes (expCondition)
+######### Specifics: No mask and fixed location of lines
+################################################
 
 ##########################
 # SET UP THE EXPERIMENT ##
@@ -23,13 +21,13 @@ SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
 sys.path.append(SCRIPT_DIR)
 from expLib import *
 
-useDB=True
+useDB=False
 dbConf = exp
-expName='bxLines1'
-expCondition= 1 #"1" for full size; "2" for half sizes
-base = 100    #Reference (Line #1)
-rate = 1.5    #Increment rate
-nLen = 7      #Number of line lengths included
+expName = 'bxLines1'
+expCondition = 1 #"1" for full size; "2" for half sizes
+base = 100   #Length of the reference line (Line #1)
+rate = 1.5   #Increment rate between lines
+nLen = 7     #Number of line lengths included
 
 abortKey='q'
 
@@ -74,7 +72,7 @@ correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.2)
 
 ## Setting up lines
-def linelength(base,rate,n):
+def linelength(base, rate, n):
     l = list(range(n))
     length = base*pow(rate,np.array(l))
     return(length)
@@ -83,20 +81,11 @@ length = linelength(base,rate,nLen)
 endpoint = np.array(length)/(2*expCondition)
 
 ## Setting up box
-wBox = 1500/expCondition
-hBox = 850/expCondition
-
-## Set of possibl positions for the lines (y axis)
-numVPos = 10
-y = list(range(numVPos-1))
-vJump = 10
-vCPos1 = np.array(y)*vJump
-vCPos2 = -(vCPos1)
-vCPos = list(vCPos1) + list(vCPos2)
-
+wBox = 1400/expCondition
+hBox = 800/expCondition
 
 ########################################
-# MAIN Functions  ######################
+# MAIN FUNCTIONS  ######################
 ########################################
 def slideshow(endpoint,map="None"): 
     if (map=="None"): 
@@ -123,11 +112,10 @@ def slideshow(endpoint,map="None"):
         
 def trialAbsId(endpoint,map):
     box=visual.Rect(window,width=wBox,height=hBox)
-    vertPos = random.sample(list(vCPos),1)
-    im=visual.Line(window, start=[-endpoint,np.array(vertPos)],
-                   end=[endpoint,np.array(vertPos)])    
+    im=visual.Line(window, start=[-endpoint,0],
+                   end=[endpoint,0])    
     feedback=visual.TextStim(window,text=map,
-                        pos=(0,np.array(vertPos)+50),
+                        pos=(0,100),
                         height=20,bold=True,
                         anchorVert="bottom")
     blank=visual.TextStim(window,"")
@@ -136,7 +124,7 @@ def trialAbsId(endpoint,map):
     box.draw()
     window.flip()
     box.draw()
-    keys=event.waitKeys(keyList=('1','2','3','4','5','6','7','8','9',
+    keys=event.waitKeys(keyList=('1','2','3','4','5','6','7',
                                  abortKey),timeStamped=timer)
     resp=keys[0][0]
     rt=keys[0][1]
@@ -144,25 +132,19 @@ def trialAbsId(endpoint,map):
         window.close()
         core.quit()   
     if (resp==map):
-        feedback.text="Correct answer!"
-        im.draw()
-        feedback.draw()
-        window.flip()
-        box.draw()        
-        feedback.draw()
-        core.wait(0.5)        
+        correct1.play()
+        correct2.play()
+        core.wait(.5)
     else:
-        feedback.text="ERROR! Correct Answer: "+map
+        feedback.text="Error. Your Answer: "+resp+".  Correct Answer: "+map
         im.draw()
         feedback.draw()
         window.flip()        
         box.draw()
-        im.draw()
-        feedback.draw()
-        core.wait(0.5)
+        event.waitKeys()
     blank.draw()
-    window.flip()    
-    core.wait(1)
+    window.flip()
+    core.wait(.5)
     return(resp,rt)
     
 def takeABreak():
@@ -178,8 +160,8 @@ for i in range(nLen):
 slideshow(endpoint,map)
 
 numReps=30
-numTrials=numReps*nLen
-numTrialsPerBlock=nLen*10
+numTrials=numReps*8
+numTrialsPerBlock=80
 stimIndex=np.repeat(range(nLen),numReps)
 random.shuffle(stimIndex)
 
