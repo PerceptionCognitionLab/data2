@@ -187,7 +187,10 @@ numReps=30
 numTrials=numReps*nLen
 numTrialsPerBlock=nLen*10
 stimIndex=np.repeat(range(nLen),numReps)
-horJitter = np.repeat(hCPos,numReps)
+numStims = len(stimIndex)
+(repetitions,residual) = divmod(numStims,len(hCPos))
+numRepVar = repetitions+1
+horJitter = np.repeat(hCPos,numRepVar)
 random.shuffle(stimIndex)
 random.shuffle(horJitter)
 
