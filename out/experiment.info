@@ -4,7 +4,7 @@ experimentID name memberID irbID directory Description Outcome
 3 as2 NA 1 data2/inh1/as2  NA
 4 gl2 NA 1 data2/globloc/gl2 Same as gl1. Fixed response unsigned int bug. NA
 5 sj1 NA 1 data2/inh1/sj1 Stroop judgment task: Varying the number of R, G, B pixels in the words Red, Green, Blue Running. Size of effects not as big as we were looking for.
-6 acstr1 NA 1 data2/inh1/acstr1  NA
+6 acstr1 8 1 data2/inh1/acstr1 This is the first of the saccade/anti-saccade version of the Stroop task. NA
 7 acstr2 NA 1 data2/inh1/acstr2  NA
 8 acstr3 NA 1 data2/inh1/acstr3 Newest version of Acstr experiment. Fixed timing issue from before. NA
 9 as3 NA 1 data2/inh1/as3 Anti-Saccade task: Pro saccade condition now has a circle which is flashed and then replaced by the target. NA
