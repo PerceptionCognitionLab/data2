@@ -87,7 +87,7 @@ def targetLetters(size):
 	
 
 
-def runFrames(frame,frameTimes,timerStart=3):
+def runFrames(frame,frameTimes,timerStart=2):
     event.clearEvents()
     currentFrame=0
     cumTimes=np.cumsum(frameTimes)    
@@ -139,82 +139,105 @@ def welcome():
 rect = visual.Rect(
 	win = win, 
 	units = "pix",
-	width = 20,
-	height = 20, 
+	width = 40,
+	height = 40, 
 	lineColor = [0, 0, 0]
 )
 
-mat = np.array([[1,0,0],[0,0,1],[0,0,0]])
 
-def rotation(orig_mat, rotation):
-	stims = []
+
+def rotMat(orig_mat, rotation):
 	rot_mat = orig_mat
 	for r in range(rotation):
 		rot_mat = np.rot90(rot_mat)
+	return rot_mat 			
+
+
+
+
+def presMat(orig_mat, rot_mat):
+	rect = visual.Rect(
+		win = win, 
+		units = "pix",
+		width = 60,
+		height = 60, 
+		lineColor = [0, 0, 0]
+	)
+	stims = []
 	y = 100 		
-	for r in range(3):
+	for row in range(3):
 		x1 = -200
 		x2 = 200
-		for c in range(3):
+		for col in range(3):
 			trect = cp.copy(rect)
-			if orig_mat[r,c] == 1:
+			if orig_mat[row,col] == 1:
 				trect.fillColor = [1,-1,-1]
 			else:
 				trect.fillColor = [-1,-1,1]
 			trect.pos = [x1,y]
 			stims.append(trect)
 			trect2 = cp.copy(rect)
-			x1+=20
-			if rot_mat[r,c] == 1:
+			x1+=60
+			if rot_mat[row,col] == 1:
 				trect2.fillColor = [1,-1,-1]
 			else:
 				trect2.fillColor = [-1,-1,1]
 			trect2.pos = [x2,y]
 			stims.append(trect2)
-			x2+=20
-		y+=20
+			x2+=60
+		y+=60
 	return(stims)
 	
 
-stims = rotation(mat, 1)
-#print(stims)
+
+def runTrial(n=15):
+	mats = []
+	mats.append(np.array([[0,0,0],[1,1,0],[1,0,1]]))
+	mats.append(np.array([[0,0,1],[1,0,0],[1,0,1]]))
+	mats.append(np.array([[0,1,0],[1,0,1],[1,0,0]]))
+	mats.append(np.array([[0,1,0],[1,0,0],[1,0,1]]))
+	rots = []
+	order = []
+	for i in range(n):
+		order.append(i%2)
+		rots.append(i%3+1)
+	random.shuffle(order)
+	random.shuffle(rots)
+
+	for t in range(15):
+		print(f"row:{order[t]}")
+		if order[t] == 1:
+			tmat = random.sample(mats,k=1)
+			tmats = [tmat[0],rotMat(tmat[0],rots[t])]
+		else:
+			tmat = random.sample(mats,k=2)
+			tmats = [tmat[0],rotMat(tmat[1],rots[t])]
+
+		stim = presMat(tmats[0], tmats[1])
+		trial(stim, order[t])
 
 
 
 
-def trial(set_size):
-	frameTimes=[60,30,60,1]  #at 60hz
-	[target, q, in_the_set] = targetLetters(set_size)
+
+def trial(stims, truth):
+	frameTimes=[30,30,1]  #at 60hz
 	frame=[]
 	#frame.append(visual.BufferImageStim(win, stim = stims))
-	frame.append(rect)	
-	frame.append(visual.TextStim(win,target))
+	
+	frame.append(visual.TextStim(win,"+"))
 	frame.append(visual.TextStim(win,""))
-	frame.append(visual.TextStim(win,q))
+	frame.append(visual.BufferImageStim(win,stim=stims))
 	runFrames(frame,frameTimes)
-	[resp,rt]=getResp(in_the_set = in_the_set)
+	[resp,rt]=getResp(in_the_set = truth)
 	acc=feedback(resp,1)
 	print(rt, resp)
 
 
-a=visual.TextStim(win,"Here")
-b=visual.TextStim(win,"There",pos=[40,50])
+runTrial(n=15)
 
-a = cp.copy(rect)
-a.pos = [100,-100]
-a.fillColor = [-1,-1,1]
-b = cp.copy(rect)
-b.pos = [100,100]
-b.fillColor = [1,-1,-1]
-c=visual.BufferImageStim(win,stim=stims)
-c.draw()
 
-win.flip()
-event.waitKeys()
 
-welcome()
-for i in range(3,10):
-	trial(i)
 
 hz=round(win.getActualFrameRate())
 size=win.size

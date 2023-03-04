@@ -149,7 +149,9 @@ def trial(set_size):
 	print(rt, resp)
 
 welcome()
-for i in range(3,10):
+x = [3,5,3,5,3,6,4,3,2,1,5,8,9,10,11,4,5,6]
+
+for i in x:
 	trial(i)
 
 hz=round(win.getActualFrameRate())
