@@ -145,46 +145,64 @@ rect = visual.Rect(
 )
 
 
-def curveLine():
-    # Define the center and radius of the circle
-    center = (0, 0)
-    radius = 1000
-
-    # Define the starting and ending angles of the circle
+def curveLine(ang):
+    center = (0, 100)
+    if ang == 180:
+        center = (100, 0)
+    radius = 100
     start_angle = 0
-    end_angle = np.pi / 2
-
-    # Define the number of points to use for the circle curve
-    num_points = 1000
-
-    # Calculate the angles for each point on the circle curve
-    angles = np.linspace(start_angle, end_angle, num_points)
-
-    # Calculate the x and y coordinates for each point on the circle curve
+    end_angle =  ang
+    num_points = 10000
+    angles = [np.deg2rad(angle) for angle in np.linspace(start_angle, end_angle, num_points)]
     x_coords = center[0] + radius * np.cos(angles)
     y_coords = center[1] + radius * np.sin(angles)
+    coords = [(x,y) for x,y in zip(x_coords, y_coords)]
+    if ang == 180:
+        coords = np.flip(coords, axis=1)
+        [x,y] = coords[-1]
+        pointer1_vert1 = [(x,y), (x+10,y+12)]
+        pointer1_vert2 = [(x,y), (x+10,y-10)]
+    else:
+        [x,y] = coords[0]
+        pointer1_vert1 = [(x,y), (x+10,y+10)]
+        pointer1_vert2 = [(x,y), (x-12,y+10)]
+    wedge = visual.ShapeStim(
+        win=win, 
+        lineColor='white', 
+        vertices=coords,
+        closeShape=False)
 
-    # Combine the x and y coordinates into a list of vertices for the polygon
-    vertices = list(zip(x_coords, y_coords))
-    return(vertices)
+    line1 = visual.ShapeStim(
+        win = win, 
+        lineColor="white",
+        vertices=pointer1_vert1
+    )
+    line2 = visual.ShapeStim(
+        win = win, 
+        lineColor="white",
+        vertices=pointer1_vert2
+    )
+    text_stim = visual.TextStim(
+        win = win,
+        text = f'Rotate {ang}\u00B0',
+        pos = (0,250),
+        color = 'white'
+    )
+    return(wedge,line1,line2,text_stim)
 
 
-vertices =  curveLine()
-vertices.reverse()
 
-wedge90 = visual.Polygon(
-    win = win,
-    vertices = vertices,
-    fillColor = "Blue",
-    lineColor = "Red",
-)
-
-
-def rotMat(orig_mat, rotation):
-	rot_mat = orig_mat
-	for r in range(rotation):
-		rot_mat = np.rot90(rot_mat)
-	return rot_mat 			
+def rotMat(orig_mat, rotation, flip = False):
+    rot_mat = orig_mat
+    for r in range(rotation):
+        rot_mat = np.rot90(rot_mat)
+    if flip == True:
+        ax = random.choice([0,1])
+        if rotation == 2: 
+            rot_mat = np.flip(rot_mat, axis = ax)
+        else:
+            rot_mat = np.flip(rot_mat, axis = ax)
+    return rot_mat 			
 
 
 
@@ -200,8 +218,8 @@ def presMat(orig_mat, rot_mat):
 	stims = []
 	y = -100 		
 	for row in range(3):
-		x1 = -300
-		x2 = 300
+		x1 = -400
+		x2 = 400
 		for col in range(3):
 			trect = cp.copy(rect)
 			if orig_mat[row,col] == 1:
@@ -236,19 +254,27 @@ def runTrial(n=15):
     order = []
     for i in range(n):
         order.append(i%2)
-    rots.append(i%3+1)
+        rots.append(i%2+1)
     random.shuffle(order)
     random.shuffle(rots)
     for t in range(15):
-        print(f"row:{order[t]}")
+        if rots[t] == 1:
+            [wedge90,line1,line2,txt] = curveLine(90)
+        else:
+            [wedge90,line1,line2,txt] = curveLine(180)
         if order[t] == 1:
             tmat = random.sample(mats,k=1)
             tmats = [tmat[0],rotMat(tmat[0],rots[t])]
         else:
-            tmat = random.sample(mats,k=2)
-            tmats = [tmat[0],rotMat(tmat[1],rots[t])]
+            # tmat = random.sample(mats,k=2)
+            # tmats = [tmat[0],rotMat(tmat[1],rots[t])]
+            tmat = random.sample(mats,k=1)
+            tmats = [tmat[0],rotMat(tmat[0],rots[t],flip=True)]
         stim = presMat(tmats[0], tmats[1])        
         stim.append(wedge90)
+        stim.append(line1)
+        stim.append(line2)
+        stim.append(txt)
         trial(stim, order[t])
 
 
@@ -265,7 +291,7 @@ def trial(stims, truth):
     runFrames(frame,frameTimes)
     [resp,rt]=getResp(in_the_set = truth)
     acc=feedback(resp,1)
-    print(rt, resp)
+    print(truth,resp)
 
 
 runTrial(n=15)
