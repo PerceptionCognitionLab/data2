@@ -148,7 +148,7 @@ def conjunct(truth, size):
             win = win,
             text = 'N',
             pos = (x, y),
-            color = 'white',
+            color = 'green',
             height = 20,
             flipHoriz = True
         )
@@ -182,7 +182,6 @@ random.shuffle(size)
 for i in range(20):
     trial(size[i],truth[i])
 
-
 hz=round(win.getActualFrameRate())
 size=win.size
 win.close()
@@ -191,3 +190,4 @@ if useDB:
 
 
 core.quit()
+print(hz)
