@@ -9,44 +9,29 @@ import sys
 import numpy as np  
 import os
 import copy as cp
+import localLib
 
 
 ##############################
 # Setup  #####################
 ##############################
 
-SCRIPT_DIR=os.environ.get('SCRIPT_DIR')
-sys.path.append(SCRIPT_DIR)
-from expLib import *
+win=visual.Window(units="pix",
+                  size=(256,256), 
+                  color=[0,0,0],
+                  fullscr = True,
+                  allowGUI=False)
+fps=round(win.getActualFrameRate())
+win.close()
 
-useDB=False
-dbConf = exp
-expName='test'
-abortKey='q'
+if fps!=60:
+    print()
+    print("WARNING....  Frame Rate is not 60hz.")
+    input("Enter to Continue, control-c to quit.  ") 
 
-createTableStatement = (
-    "CREATE TABLE `out__" + expName + "` ("
-    "  `datID` INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,"
-    "  `sessionID` INT(4) UNSIGNED NOT NULL,"
-    "  `block` INT(2) UNSIGNED NOT NULL,"
-    "  `trial` INT(2) UNSIGNED NOT NULL,"
-    "  `stimGlob` INT(3) UNSIGNED NOT NULL,"
-    "  `stimLoc` INT(1) UNSIGNED NOT NULL,"
-    "  `correctResp` CHAR(1),"
-    "  `resp` CHAR(1),"
-    "  `rt`  DECIMAL(5,3),"
-    "  PRIMARY KEY (`datID`)"
-    ") ENGINE=InnoDB")
+[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=False,fps=fps)
 
-insertTableStatement = (
-     "INSERT INTO `out__" + expName + "` ("
-     "`sessionID`, `block`, `trial`, `stimGlob`, `StimLoc`, `correctResp`,`resp`,`rt`)"
-     "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)")
 
-if useDB:
-    sessionID=startExp(expName,createTableStatement,dbConf)
-else:
-	sessionID=1
     
     
     
@@ -69,6 +54,8 @@ rng = rd.Random(seed)
 correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.2)
 error=sound.Sound(250,secs=.5)
+
+header=['sub','task','cond','cor','rt','resp','block','acc','trial']
 
 
 ########################################
@@ -102,10 +89,10 @@ def getResp(truth, abortKey='9'):
         win.close()
         core.quit()   
     if truth == True:
-        resp = int(resp=='m')
+        acc = int(resp=='m')
     else:
-        resp = int(resp=="x")
-    return([resp,rt])
+        acc = int(resp=="x")
+    return([resp,rt,acc])
 
 def feedback(resp,correctResp):
     if (resp==correctResp):
@@ -168,13 +155,13 @@ def conjunctTrial(size, truth, set_size, st):
     frame.append(visual.TextStim(win,"+"))
     frame.append(visual.BufferImageStim(win,stim=stims))
     runFrames(frame,frameTimes)
-    [resp,rt]=getResp(truth = truth)
-    acc=feedback(resp,1)
-    return(resp)
+    [resp,rt,ac]=getResp(truth = truth)
+    acc=feedback(ac,1)
+    return(resp,rt,acc)
 
 
-def runConjunct(trial_size, set_size = [4,12], method = 1, trian = False):
-    st = "N" if trian == False else "L"
+def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
+    st = "N" if train == False else "L"
     truth = []
     size = []
     if method == 1:
@@ -189,7 +176,15 @@ def runConjunct(trial_size, set_size = [4,12], method = 1, trian = False):
     rd.shuffle(truth)
     rd.shuffle(size)
     for i in range(20):
-        conjunctTrial(size[i],truth[i],set_size,st)
+        [resp,rt,acc] = conjunctTrial(size[i],truth[i],set_size,st)
+
+        cond = 0 if size[i] == 4 else 1
+        resp2 = 1 if resp == "m" else 0
+        out=[sub,2,cond,truth[i],rt,resp2,int(train),int(acc),i+1]
+        print(*out,sep=", ",file=fptr)
+        fptr.flush()
+
+
 
 
 ### Mental Rotation:
@@ -319,9 +314,9 @@ def menRotTrial(stims, truth):
     frame.append(visual.TextStim(win,""))
     frame.append(visual.BufferImageStim(win,stim=stims))
     runFrames(frame,frameTimes)
-    [resp,rt]=getResp(truth = truth)
-    acc=feedback(resp,1)
-    print(truth,resp)
+    [resp,rt,ac]=getResp(truth = truth)
+    acc=feedback(ac,1)
+    return(resp, rt, acc)
 
 
 
@@ -378,7 +373,18 @@ def runMenRot(trial_size, method = 1, rotations = [0,1], train = False):
         else:
             txt = curveLine(0)
             stim.append(txt)
-        menRotTrial(stim, order[t])
+        [resp,rt,acc] = menRotTrial(stim, order[t])
+        
+        if x == 0:
+            cond = 0
+        else:
+            cond = 1 if x == 1 else -1 
+        resp2 = 1 if resp == "m" else 0
+        out=[sub,1,cond,order[t],rt,resp2,int(train),int(acc),i+1]
+        print(*out,sep=", ",file=fptr)
+        fptr.flush()
+
+
 
 
 ### Memory span:
@@ -432,7 +438,14 @@ def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False):
             color = 'white'
         )
         s_stim.size = q_stim.size = 5
-        memSpanTrial(truth, q_stim, s_stim)
+        [resp,rt,acc] = memSpanTrial(truth, q_stim, s_stim)
+
+        cond = 0 if size[t] == 2 else 1 
+        resp2 = 1 if resp == "m" else 0
+        out=[sub,3,cond,order[t],rt,resp2,int(train),int(acc),i+1]
+        print(*out,sep=", ",file=fptr)
+        fptr.flush()
+
 
 
 def mask():
@@ -451,24 +464,22 @@ def mask():
     return(mask1, mask2)
 
 def memSpanTrial(truth, q, s):
-    frameTimes=[60,30,60,30,30,1]  #at 60hz
+    frameTimes=[60,30,60,1]  #at 60hz
     frame=[]
     [mask1,mask2] = mask()
     frame.append(visual.TextStim(win,"+"))
     frame.append(q)
     frame.append(visual.TextStim(win,""))
     frame.append(s)
-    frame.append(mask1)
-    frame.append(mask2)
+    # frame.append(mask1)
+    # frame.append(mask2)
 
-    runFrames(frame,frameTimes)
-    [resp,rt]=getResp(truth = truth)
-    acc=feedback(resp,1)
-    print(rt, resp)
+    runFrames(frame,frameTimes,timerStart=1)
+    [resp,rt,ac]=getResp(truth = truth)
+    acc=feedback(ac,1)
+    return(resp,rt,acc)
 
 ### Inspection time:
-
-
 
 
 
@@ -479,64 +490,73 @@ def getRespInsTime(s, abortKey='9'):
     if len(keys)==0:
         keys=event.waitKeys(keyList=letters,timeStamped=timer)
     resp=keys[0][0]
+    resp=resp.upper()
     rt=keys[0][1]
     if resp==abortKey:
         fptr.close()
         win.close()
         core.quit()   
-    resp = int(resp==s)
     return([resp,rt])
 
 
 
 def insTimeTrial(t, q, s):
-    frameTimes=[60,t,30,30,1]  #at 60hz
+    frameTimes=[30,30,t,3,3,1]  #at 60hz
     frame=[]
     [mask1,mask2] = mask()
     frame.append(visual.TextStim(win,"+"))
+    frame.append(visual.TextStim(win,""))
     frame.append(q)
     frame.append(mask1)
     frame.append(mask2)
-    frame.append(visual.TextStim(win,"Enter the letter you just saw:"))
-    runFrames(frame,frameTimes)
+    frame.append(visual.TextStim(win,""))
+    runFrames(frame,frameTimes, timerStart=2)
     [resp,rt]=getRespInsTime(s)
-    acc=feedback(resp,1)
+    resp2 = int(resp==s)
+    acc=feedback(resp2,1)
     print(rt, resp)
-    return(resp)
+    return(resp,rt,acc)
 
 
 
 
 def runInsTime(trial_size):
-    letters = ["a","s","d","f","g","h","j","k","l"]
-
+    letters = ["A","S","D","F","G","H","J","K","L"]
     counter = 0
-    t = 50
+    t = 12
     for i in range(trial_size):
         x = rd.choice(letters)
+        x.upper()
         q_stim = visual.TextStim(
             win = win,
             text = x,
             pos = (0,0),
             color = 'white'
         )
-        z = insTimeTrial(t, q_stim, x)
-        counter += z
-        if z == 0:
-            t += 5
+        [resp,rt,acc] = insTimeTrial(t, q_stim, x)
+        acc = int(acc)
+        counter += acc
+        if counter == 0:
+            t += 1
             counter = 0
         if counter == 2:
-            t -=5
+            t -= 1
             counter = 0
-        print(f"count: {t}")
+        out=[sub,0,t,x,rt,resp,"NA",acc,i+1]
+        print(*out,sep=", ",file=fptr)
+        fptr.flush()
+
+        
 
 
 
+print(*header,sep=", ",file=fptr)
+fptr.flush()
 
 # runInsTime(10)
-# runMemSpan(10, target_size=[2,5], method = 1, train = False)
-runMenRot(20, method = 1, rotations = [0,1], train = False)
-# runConjunct(10, set_size = [4,12], method = 1, trian = False)
+# runMemSpan(5, target_size=[2,5], method = 1, train = True)
+runMenRot(5, method = 1, rotations = [0,1], train = True)
+# runConjunct(5, set_size = [4,12], method = 1, train = False)
 
 
 hz=round(win.getActualFrameRate())
