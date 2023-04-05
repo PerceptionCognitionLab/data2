@@ -29,7 +29,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=False,fps=fps)
+[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=True,fps=fps)
 
 
     
@@ -153,8 +153,9 @@ def conjunctTrial(size, truth, set_size, st):
     stims = conjunct(truth, size, set_size, st)
     frame=[]
     frame.append(visual.TextStim(win,"+"))
+    frame.append(visual.TextStim(win,""))
     frame.append(visual.BufferImageStim(win,stim=stims))
-    runFrames(frame,frameTimes)
+    runFrames(frame,frameTimes, timerStart=2)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
     return(resp,rt,acc)
@@ -189,14 +190,6 @@ def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
 
 ### Mental Rotation:
 
-
-rect = visual.Rect(
-	win = win, 
-	units = "pix",
-	width = 40,
-	height = 40, 
-	lineColor = [0, 0, 0]
-)
 
 
 def curveLine(ang, dir = 0):
@@ -283,8 +276,8 @@ def presMat(orig_mat, rot_mat):
 	stims = []
 	y = -100 		
 	for row in range(3):
-		x1 = -400
-		x2 = 400
+		x1 = -300
+		x2 = 200; print(f"rot_mat:{orig_mat}")
 		for col in range(3):
 			trect = cp.copy(rect)
 			if orig_mat[row,col] == 1:
@@ -313,14 +306,14 @@ def menRotTrial(stims, truth):
     frame.append(visual.TextStim(win,"+"))
     frame.append(visual.TextStim(win,""))
     frame.append(visual.BufferImageStim(win,stim=stims))
-    runFrames(frame,frameTimes)
+    runFrames(frame,frameTimes, timerStart=2)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
     return(resp, rt, acc)
 
 
 
-def runMenRot(trial_size, method = 1, rotations = [0,1], train = False):
+def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
     mats = []
     if train == True:
         mats.append(np.array([[1,0,0],[1,0,0],[0,0,0]]))
@@ -334,53 +327,61 @@ def runMenRot(trial_size, method = 1, rotations = [0,1], train = False):
         mats.append(np.array([[0,1,0],[1,0,0],[1,0,1]]))
         mats.append(np.array([[1,0,0],[0,0,0],[0,1,1]]))
         mats.append(np.array([[0,1,0],[1,0,1],[0,0,0]]))
-
-    rots = []
+    
+    for i in range(len(mats)):
+        temp_mat = np.flip(mats[i], axis = 1)
+        mats.append(temp_mat)
     order = []
+    stim_grid = []
+    for i in range(len(mats)): 
+        stim_grid.append([i,rotations[0]])
+        stim_grid.append([i,rotations[1]])
+        stim_grid.append([i,rotations[2]])
     if method == 1:
         for i in range(trial_size):
             order.append(i%2)
-            rots.append(rotations[i%2])
-    print(rots)
     if method == 2:
         for i in range(trial_size):
             x = rd.choices([0,1], k = 2)
-            order.append(x[0]%2)
-            rots.append(rotations[x[1]%2])
+            order.append(x[0])
+
+    rd.shuffle(stim_grid)
     rd.shuffle(order)
-    rd.shuffle(rots)
     for t in range(trial_size):
-        if rots[t] == 1:
-            x = rd.choice([1,3])
-        else:
-            x = rots[t]
+        x = stim_grid[t][1]
+        print(f"stim:{stim_grid[t]}")
+        print(f"truth:{order[t]}")
+        print(f"mat:{mats[stim_grid[t][0]]}")
+        print(x)
         if order[t] == 1:
-            tmat = rd.sample(mats,k=1)
-            tmats = [tmat[0],rotMat(tmat[0],x)]
+            tmat_t = mats[stim_grid[t][0]]
+            tmat_q = rotMat(tmat_t,x)
         else:
-            tmat = rd.sample(mats,k=1)
-            tmats = [tmat[0],rotMat(tmat[0],x,flip=True)]
-        stim = presMat(tmats[0], tmats[1])    
-        if rots[t] != 0:
-            if rots[t] == 1:
+            tmat_t = rd.choice(mats)
+            tmat_q = rotMat(tmat_t,x,flip=True)
+        print(f"t:{tmat_t}")
+        print(f"q:{tmat_q}")
+        stims = presMat(tmat_t, tmat_q)    
+        if x != 0:
+            if x in [1,3]:
                 [wedge90,line1,line2,txt] = curveLine(90, dir = x)
-            elif rots[t] == 2:
+            elif x == 2:
                 [wedge90,line1,line2,txt] = curveLine(180)
-            stim.append(wedge90)
-            stim.append(line1)
-            stim.append(line2)
-            stim.append(txt)
+            stims.append(wedge90)
+            stims.append(line1)
+            stims.append(line2)
+            stims.append(txt)
         else:
             txt = curveLine(0)
-            stim.append(txt)
-        [resp,rt,acc] = menRotTrial(stim, order[t])
+            stims.append(txt)
+        [resp,rt,acc] = menRotTrial(stims, order[t])
         
         if x == 0:
             cond = 0
         else:
             cond = 1 if x == 1 else -1 
         resp2 = 1 if resp == "m" else 0
-        out=[sub,1,cond,order[t],rt,resp2,int(train),int(acc),i+1]
+        out=[sub,1,cond,order[t],rt,resp2,int(train),int(acc),t+1]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -442,7 +443,7 @@ def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False):
 
         cond = 0 if size[t] == 2 else 1 
         resp2 = 1 if resp == "m" else 0
-        out=[sub,3,cond,order[t],rt,resp2,int(train),int(acc),i+1]
+        out=[sub,3,cond,order[t],rt,resp2,int(train),int(acc),t+1]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -523,7 +524,7 @@ def insTimeTrial(t, q, s):
 def runInsTime(trial_size):
     letters = ["A","S","D","F","G","H","J","K","L"]
     counter = 0
-    t = 12
+    t = 6
     for i in range(trial_size):
         x = rd.choice(letters)
         x.upper()
@@ -533,15 +534,18 @@ def runInsTime(trial_size):
             pos = (0,0),
             color = 'white'
         )
+        if i < 4:
+            [resp,rt,acc] = insTimeTrial(12, q_stim, x)
         [resp,rt,acc] = insTimeTrial(t, q_stim, x)
         acc = int(acc)
-        counter += acc
-        if counter == 0:
-            t += 1
-            counter = 0
-        if counter == 2:
-            t -= 1
-            counter = 0
+        if i > 3:
+            counter += acc
+            if counter == 0:
+                t += 1
+                counter = 0
+            if counter == 2:
+                t -= 1
+                counter = 0
         out=[sub,0,t,x,rt,resp,"NA",acc,i+1]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
@@ -553,10 +557,12 @@ def runInsTime(trial_size):
 print(*header,sep=", ",file=fptr)
 fptr.flush()
 
-# runInsTime(10)
-# runMemSpan(5, target_size=[2,5], method = 1, train = True)
-runMenRot(5, method = 1, rotations = [0,1], train = True)
-# runConjunct(5, set_size = [4,12], method = 1, train = False)
+runInsTime(50)
+runMenRot(20, method = 1, rotations = [0,1,3], train = False)
+runConjunct(5, set_size = [4,12], method = 1, train = False)
+runMemSpan(5, target_size=[2,5], method = 1, train = True)
+
+
 
 
 hz=round(win.getActualFrameRate())
