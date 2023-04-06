@@ -29,7 +29,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=True,fps=fps)
+[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=False,fps=fps)
 
 
     
@@ -149,7 +149,7 @@ def conjunct(truth, size, set_size, st):
 
 
 def conjunctTrial(size, truth, set_size, st):
-    frameTimes=[60,1]  #at 60hz
+    frameTimes=[30,30,1]  #at 60hz
     stims = conjunct(truth, size, set_size, st)
     frame=[]
     frame.append(visual.TextStim(win,"+"))
@@ -176,7 +176,7 @@ def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
             size.append(set_size[x[1]%2])
     rd.shuffle(truth)
     rd.shuffle(size)
-    for i in range(20):
+    for i in range(trial_size):
         [resp,rt,acc] = conjunctTrial(size[i],truth[i],set_size,st)
 
         cond = 0 if size[i] == 4 else 1
@@ -524,7 +524,7 @@ def insTimeTrial(t, q, s):
 def runInsTime(trial_size):
     letters = ["A","S","D","F","G","H","J","K","L"]
     counter = 0
-    t = 6
+    t = 8
     for i in range(trial_size):
         x = rd.choice(letters)
         x.upper()
@@ -535,10 +535,9 @@ def runInsTime(trial_size):
             color = 'white'
         )
         if i < 4:
-            [resp,rt,acc] = insTimeTrial(12, q_stim, x)
-        [resp,rt,acc] = insTimeTrial(t, q_stim, x)
-        acc = int(acc)
-        if i > 3:
+            [resp,rt,acc] = insTimeTrial(20, q_stim, x)
+        else:
+            [resp,rt,acc] = insTimeTrial(t, q_stim, x)
             counter += acc
             if counter == 0:
                 t += 1
@@ -546,21 +545,127 @@ def runInsTime(trial_size):
             if counter == 2:
                 t -= 1
                 counter = 0
-        out=[sub,0,t,x,rt,resp,"NA",acc,i+1]
+        out=[sub,0,t,x,rt,resp,"NA",int(acc),i+1]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
-        
+### Buffer:
+
+def getRespBuffer(abortKey='9'):
+    keys=event.getKeys(keyList=["s",abortKey],timeStamped=timer)
+    if len(keys)==0:
+        keys=event.waitKeys(keyList=("s",abortKey),timeStamped=timer)
+    resp=keys[0][0]
+    rt=keys[0][1]
+    if resp==abortKey:
+        fptr.close()
+        win.close()
+        core.quit()   
+    return("confirmed")
+
+
+
+
+def expBuffer():
+    frameTimes=[60,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Well done on your training! \nPress enter when ready..."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+    txt = "Now let's begin. \nPress enter when ready... "
+    frameTimes=[60,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,txt))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+
+def trainBuffer(exp):
+    if exp == 1:
+        txt = "Welcome to the Mental Rotation Task. Your objective is to determine whether a presented grid needs to be rotated or not. \nIf the grid matches the original grid, please enter 'M'. If it does not match, please enter 'X'. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+    elif exp == 2:
+        txt = "Welcome to the Conjunction Search Task. Your objective is to identify whether there is a backward letter in the list of letters presented. \nPlease press 'M' if there is a backward letter, and 'X' if there is not. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+    elif exp == 3:
+        txt = "Welcome to the Memory Scan Task. \nIn this task, you will be presented with a list of letters or digits, followed by a single item. Your objective is to determine whether the subsequent item was in the original list. \nPlease press 'M' if the subsequent item was in the original list, and 'X' if it was not. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+
+    frameTimes=[30,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Welcome to the next task! \nTake your time, and if you have any questions, please do not hesitate to ask. \nPlease press 'S' to begin."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+    frameTimes=[30,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,txt))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+    frameTimes=[30,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Now let's do a training round, \nPlease press 'S' to begin."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+
+def intialBuffer():
+    frameTimes=[30,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Welcome! \nPress press 'S' when ready..."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+    txt = "Welcome to the Inspection Time Task. \nIn this task, a letter will be presented to you, followed by a mask. \nYour objective is to identify the letter that was presented. \nPlease enter the corresponding letter on the keyboard. \nIf you have any questions, please don't hesitate to ask the RA. \nPress 'S' to begin the task. "
+    frameTimes=[60,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,txt))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+
+
+def expBuffer():
+    frameTimes=[60,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Well done on completing the training round! \nPlease press 'S' to begin the next task."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+    txt = "Great! Let's begin. \nRemember to stay focused and do your best. \nPlease press 'S' to start the task."
+    frameTimes=[60,1]  #at 60hz
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,txt))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
+
+
 
 
 
 print(*header,sep=", ",file=fptr)
 fptr.flush()
 
-runInsTime(50)
-runMenRot(20, method = 1, rotations = [0,1,3], train = False)
+
+# intialBuffer()
+# runInsTime(5)
+# trainBuffer(1)
+# runMenRot(5, method = 1, rotations = [0,1,3], train = False)
+# expBuffer()
+# runMenRot(5, method = 1, rotations = [0,1,3], train = True)
+# trainBuffer(2)
 runConjunct(5, set_size = [4,12], method = 1, train = False)
+expBuffer()
+runConjunct(5, set_size = [4,12], method = 1, train = True)
+trainBuffer(3)
+runMemSpan(5, target_size=[2,5], method = 1, train = False)
+expBuffer()
 runMemSpan(5, target_size=[2,5], method = 1, train = True)
+
+# runInsTime(50)
+# runMenRot(20, method = 1, rotations = [0,1,3], train = False)
+# runConjunct(5, set_size = [4,12], method = 1, train = False)
+# runMemSpan(5, target_size=[2,5], method = 1, train = True)
 
 
 
