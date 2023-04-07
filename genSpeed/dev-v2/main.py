@@ -190,66 +190,127 @@ def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
 
 ### Mental Rotation:
 
-
-
-def curveLine(ang, dir = 0):
-    center = (0, 100)
-    if ang == 180:
-        center = (100, 0)
+def curveLine(ang, dir=0):
+    if ang == 180: center1 = (100, 0)
+    else: 
+        center1 = (0, 0)
+        center2 = (-250, 100)
     radius = 100
     start_angle = 0
     end_angle =  ang
     num_points = 10000
     angles = [np.deg2rad(angle) for angle in np.linspace(start_angle, end_angle, num_points)]
 
-    x_coords = center[0] + radius * np.cos(angles)
-    y_coords = center[1] + radius * np.sin(angles)
-    coords = [(x,y) for x,y in zip(x_coords, y_coords)]
-    txt = f'Rotate {ang}\u00B0 clockwise!'
+    x_coords1 = center1[0] + radius * np.cos(angles)
+    y_coords1 = center1[1] + radius * np.sin(angles)
+    x_coords2 = center2[0] + radius * np.cos(angles)
+    y_coords2 = center2[1] + radius * np.sin(angles)
     if dir == 3:
-        coords = [(-x,y) for x,y in zip(x_coords, y_coords)]
+        coords1 = [(-x,y) for x,y in zip(x_coords1, y_coords1)]
+        coords2 = [(-x-450,y) for x,y in zip(x_coords2, y_coords2)]
         txt = f'Rotate {ang}\u00B0 counter clockwise!'
+    else:
+        coords1 = [(x,y) for x,y in zip(x_coords1, y_coords1)]
+        coords2 = [(x,y) for x,y in zip(x_coords2, y_coords2)]
+        txt = f'Rotate {ang}\u00B0 clockwise!'
+
+    print(f"dir{dir}")
+    print(f"coords1{coords1[0]}")
+    print(f"coords2{coords2[0]}")
+
     if ang != 0:
-        if ang == 180:
-            coords = np.flip(coords, axis=1)
-            [x,y] = coords[-1]
-            pointer1_vert1 = [(x,y), (x+10,y+12)]
-            pointer1_vert2 = [(x,y), (x+10,y-10)]
-        else:
-            [x,y] = coords[0]
-            pointer1_vert1 = [(x,y), (x+10,y+10)]
-            pointer1_vert2 = [(x,y), (x-12,y+10)]      
-        wedge = visual.ShapeStim(
+        # if ang == 180:
+            # coords = np.flip(coords, axis=1)
+            # [x,y] = coords[-1]
+            # pointer1_vert1 = [(x,y), (x+10,y+12)]
+            # pointer1_vert2 = [(x,y), (x+10,y-10)]
+        [x,y] = coords1[0]
+        f_pointer1_vert1 = [(x,y), (x+10,y+10)]
+        f_pointer1_vert2 = [(x,y), (x-12,y+10)] 
+        [x,y] = coords2[0]
+        s_pointer1_vert1 = [(x,y), (x+10,y+10)]
+        s_pointer1_vert2 = [(x,y), (x-12,y+10)] 
+
+
+        f_wedge = visual.ShapeStim(
             win=win, 
             lineColor='white', 
-            vertices=coords,
+            vertices=coords1,
             closeShape=False)
-        line1 = visual.ShapeStim(
+        f_line1 = visual.ShapeStim(
             win = win, 
             lineColor="white",
-            vertices=pointer1_vert1
+            vertices=f_pointer1_vert1
         )
-        line2 = visual.ShapeStim(
+        f_line2 = visual.ShapeStim(
             win = win, 
             lineColor="white",
-            vertices=pointer1_vert2
+            vertices=f_pointer1_vert2
         )
-        text_stim = visual.TextStim(
+        f_text_stim = visual.TextStim(
             win = win,
             text = txt,
-            pos = (0,250),
+            pos = (center1[0],center1[1]+150),
             color = 'white'
         )
-        return(wedge,line1,line2,text_stim)
+        s_wedge = visual.ShapeStim(
+            win=win, 
+            lineColor='white', 
+            vertices=coords2,
+            closeShape=False)
+        s_line1 = visual.ShapeStim(
+            win = win, 
+            lineColor="white",
+            vertices=s_pointer1_vert1
+        )
+        s_line2 = visual.ShapeStim(
+            win = win, 
+            lineColor="white",
+            vertices=s_pointer1_vert2
+        )
+        print(f"center:{center1[0],center1[1]+150}")
+        s_text_stim = visual.TextStim(
+            win = win,
+            text = txt,
+            pos = (center2[0],center2[1]+150),
+            color = 'white'
+        )
+        [flash_x, flash_y, flash_width, flash_height] = [0,-40, 160, 20]
+        body = visual.Rect(
+            win = win, 
+            units = "pix",
+            width = flash_width,
+            height = flash_height, 
+            lineColor = [0, 0, 0],
+            pos = [flash_x, flash_y],
+            fillColor = "white"
+	    )
+        head_verts = [(flash_x+flash_width/2, flash_y-flash_height/2-10), (flash_x+flash_width/2, flash_y+flash_height/2+10), (flash_x+flash_width/2+flash_height, flash_y)]
+        head = visual.ShapeStim(
+            win, 
+            fillColor='white',
+            vertices=head_verts, 
+            lineColor='white')
+
+    
+
+        f_stim = [f_wedge,f_line1,f_line2,f_text_stim]
+        s_stim = [s_wedge,s_line1,s_line2,s_text_stim, body, head]
+        return(f_stim, s_stim)
     else:
-        text_stim = visual.TextStim(
+        f_text_stim = visual.TextStim(
             win = win,
             text = f'Do not rotate! \n Are the two grids the same?',
-            pos = (0,250),
+            pos = (0,150),
             color = 'white'
         )
-        return(text_stim)
-
+        s_text_stim = visual.TextStim(
+            win = win,
+            text = f'Match?',
+            pos = (0,150),
+            color = 'white'
+        )
+        return(f_text_stim,s_text_stim)
 
 
 def rotMat(orig_mat, rotation, flip = False):
@@ -299,11 +360,16 @@ def presMat(orig_mat, rot_mat):
 	return(stims)
 
 
-def menRotTrial(stims, truth):
-    frameTimes=[30,30,1]  #at 60hz
+def menRotTrial(stims, truth, curve, match = False):
+    frameTimes=[30,30,30,30,1]  #at 60hz
     frame=[]
     #frame.append(visual.BufferImageStim(win, stim = stims))
     frame.append(visual.TextStim(win,"+"))
+    frame.append(visual.TextStim(win,""))
+    if match == True:
+        frame.append(curve)
+    else:
+        frame.append(visual.BufferImageStim(win,stim=curve))
     frame.append(visual.TextStim(win,""))
     frame.append(visual.BufferImageStim(win,stim=stims))
     runFrames(frame,frameTimes, timerStart=2)
@@ -349,33 +415,26 @@ def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
     rd.shuffle(order)
     for t in range(trial_size):
         x = stim_grid[t][1]
-        print(f"stim:{stim_grid[t]}")
-        print(f"truth:{order[t]}")
-        print(f"mat:{mats[stim_grid[t][0]]}")
-        print(x)
         if order[t] == 1:
             tmat_t = mats[stim_grid[t][0]]
             tmat_q = rotMat(tmat_t,x)
         else:
             tmat_t = rd.choice(mats)
             tmat_q = rotMat(tmat_t,x,flip=True)
-        print(f"t:{tmat_t}")
-        print(f"q:{tmat_q}")
-        stims = presMat(tmat_t, tmat_q)    
-        if x != 0:
-            if x in [1,3]:
-                [wedge90,line1,line2,txt] = curveLine(90, dir = x)
-            elif x == 2:
-                [wedge90,line1,line2,txt] = curveLine(180)
-            stims.append(wedge90)
-            stims.append(line1)
-            stims.append(line2)
-            stims.append(txt)
-        else:
-            txt = curveLine(0)
-            stims.append(txt)
-        [resp,rt,acc] = menRotTrial(stims, order[t])
-        
+        tstims = presMat(tmat_t, tmat_q)    
+        if x != 0: 
+            [f_curve, s_curve] = curveLine(90, dir = x)
+            stims = tstims + s_curve
+            [resp,rt,acc] = menRotTrial(stims, order[t], f_curve)
+            # elif x == 2:
+                # [wedge90,line1,line2,txt] = curveLine(180, loc_cent = False)
+                # curve = curveLine(180)
+        else: 
+            [f_curve, s_curve] = curveLine(0)
+            tstims.append(s_curve)
+            [resp,rt,acc] = menRotTrial(tstims, order[t], f_curve, match = True)
+
+
         if x == 0:
             cond = 0
         else:
@@ -428,13 +487,13 @@ def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False):
         q = " ".join(q)
         q_stim = visual.TextStim(
             win = win,
-            text = q,
+            text = q.upper(),
             pos = (0,0),
             color = 'white'
         )
         s_stim = visual.TextStim(
             win = win,
-            text = s,
+            text = s.upper(),
             pos = (0,0),
             color = 'white'
         )
@@ -641,26 +700,28 @@ def expBuffer():
 
 
 
-
+runConjunct(5, set_size = [4,12], method = 1, train = False)
 
 print(*header,sep=", ",file=fptr)
+
 fptr.flush()
+runMenRot(5, method = 1, rotations = [0,1,3], train = False)
 
-
-# intialBuffer()
-# runInsTime(5)
-# trainBuffer(1)
-# runMenRot(5, method = 1, rotations = [0,1,3], train = False)
-# expBuffer()
-# runMenRot(5, method = 1, rotations = [0,1,3], train = True)
-# trainBuffer(2)
-runConjunct(5, set_size = [4,12], method = 1, train = False)
-expBuffer()
-runConjunct(5, set_size = [4,12], method = 1, train = True)
-trainBuffer(3)
 runMemSpan(5, target_size=[2,5], method = 1, train = False)
+intialBuffer()
+runInsTime(5)
+trainBuffer(1)
+runMenRot(5, method = 1, rotations = [0,1,3], train = True)
 expBuffer()
+runMenRot(5, method = 1, rotations = [0,1,3], train = False)
+trainBuffer(2)
+runConjunct(5, set_size = [4,12], method = 1, train = True)
+expBuffer()
+runConjunct(5, set_size = [4,12], method = 1, train = False)
+trainBuffer(3)
 runMemSpan(5, target_size=[2,5], method = 1, train = True)
+expBuffer()
+runMemSpan(5, target_size=[2,5], method = 1, train = False)
 
 # runInsTime(50)
 # runMenRot(20, method = 1, rotations = [0,1,3], train = False)
