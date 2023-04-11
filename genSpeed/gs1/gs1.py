@@ -29,7 +29,16 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=False,fps=fps)
+run_mode = False
+if run_mode == False:
+    nt_inst_t = 5
+    nt_rest_tasks = 5
+    nt_train = 2
+else:
+    nt_inst_t = 50
+    nt_rest_tasks = 32
+    nt_train = 10
+[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=run_mode,fps=fps)
 
 
     
@@ -55,7 +64,7 @@ correct1=sound.Sound(500,secs=.1)
 correct2=sound.Sound(1000,secs=.2)
 error=sound.Sound(250,secs=.5)
 
-header=['sub','task','cond','cor','rt','resp','block','acc','trial']
+header=['sub','task','cond','cor','rt','resp','block','acc','trial','round','tooFast']
 
 
 ########################################
@@ -158,10 +167,16 @@ def conjunctTrial(size, truth, set_size, st):
     runFrames(frame,frameTimes, timerStart=2)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
-    return(resp,rt,acc)
+    if rt < .2:
+        warn()
+        tooFast = 1
+    else:
+        tooFast = 0
+
+    return(resp,rt,acc,tooFast)
 
 
-def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
+def runConjunct(trial_size, set_size = [4,12], method = 1, train = False, rnd=1):
     st = "N" if train == False else "L"
     truth = []
     size = []
@@ -177,11 +192,11 @@ def runConjunct(trial_size, set_size = [4,12], method = 1, train = False):
     rd.shuffle(truth)
     rd.shuffle(size)
     for i in range(trial_size):
-        [resp,rt,acc] = conjunctTrial(size[i],truth[i],set_size,st)
+        [resp,rt,acc,tooFast] = conjunctTrial(size[i],truth[i],set_size,st)
 
         cond = 0 if size[i] == 4 else 1
         resp2 = 1 if resp == "m" else 0
-        out=[sub,2,cond,truth[i],rt,resp2,int(train),int(acc),i+1]
+        out=[sub,2,cond,truth[i],round(rt,2),resp2,int(train),int(acc),i+1,rnd,tooFast]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -300,7 +315,7 @@ def curveLine(ang, dir=0):
     else:
         f_text_stim = visual.TextStim(
             win = win,
-            text = f'Do not rotate! \n Are the two grids the same?',
+            text = f'Do not rotate!',
             pos = (0,150),
             color = 'white'
         )
@@ -361,7 +376,7 @@ def presMat(orig_mat, rot_mat):
 
 
 def menRotTrial(stims, truth, curve, match = False):
-    frameTimes=[30,30,30,30,1]  #at 60hz
+    frameTimes=[30,30,60,30,1]  #at 60hz
     frame=[]
     #frame.append(visual.BufferImageStim(win, stim = stims))
     frame.append(visual.TextStim(win,"+"))
@@ -372,14 +387,21 @@ def menRotTrial(stims, truth, curve, match = False):
         frame.append(visual.BufferImageStim(win,stim=curve))
     frame.append(visual.TextStim(win,""))
     frame.append(visual.BufferImageStim(win,stim=stims))
-    runFrames(frame,frameTimes, timerStart=2)
+    runFrames(frame,frameTimes, timerStart=4)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
-    return(resp, rt, acc)
+    
+    if rt < .2:
+        warn()
+        tooFast = 1
+    else:
+        tooFast = 0
+
+    return(resp, rt, acc, tooFast)
 
 
 
-def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
+def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False, rnd=1):
     mats = []
     if train == True:
         mats.append(np.array([[1,0,0],[1,0,0],[0,0,0]]))
@@ -425,14 +447,14 @@ def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
         if x != 0: 
             [f_curve, s_curve] = curveLine(90, dir = x)
             stims = tstims + s_curve
-            [resp,rt,acc] = menRotTrial(stims, order[t], f_curve)
+            [resp,rt,acc,tooFast] = menRotTrial(stims, order[t], f_curve)
             # elif x == 2:
                 # [wedge90,line1,line2,txt] = curveLine(180, loc_cent = False)
                 # curve = curveLine(180)
         else: 
             [f_curve, s_curve] = curveLine(0)
             tstims.append(s_curve)
-            [resp,rt,acc] = menRotTrial(tstims, order[t], f_curve, match = True)
+            [resp,rt,acc,tooFast] = menRotTrial(tstims, order[t], f_curve, match = True)
 
 
         if x == 0:
@@ -440,7 +462,7 @@ def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
         else:
             cond = 1 if x == 1 else -1 
         resp2 = 1 if resp == "m" else 0
-        out=[sub,1,cond,order[t],rt,resp2,int(train),int(acc),t+1]
+        out=[sub,1,cond,order[t],round(rt,4),resp2,int(train),int(acc),t+1,rnd,tooFast]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -448,11 +470,11 @@ def runMenRot(trial_size, method = 1, rotations = [0,1,3], train = False):
 
 
 ### Memory span:
-def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False):
+def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False, rnd=1):
     target = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-    if train == True: 
-        target = []
-        for i in range(10): target.append(str(i))
+    # if train == True: 
+    #     target = []
+    #    for i in range(10): target.append(str(i))
     order = []
     size = []
     if method == 1:
@@ -498,11 +520,11 @@ def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False):
             color = 'white'
         )
         s_stim.size = q_stim.size = 5
-        [resp,rt,acc] = memSpanTrial(truth, q_stim, s_stim)
+        [resp,rt,acc,tooFast] = memSpanTrial(truth, q_stim, s_stim)
 
         cond = 0 if size[t] == 2 else 1 
         resp2 = 1 if resp == "m" else 0
-        out=[sub,3,cond,order[t],rt,resp2,int(train),int(acc),t+1]
+        out=[sub,3,cond,order[t],round(rt,4),resp2,int(train),int(acc),t+1,rnd, tooFast]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -534,10 +556,16 @@ def memSpanTrial(truth, q, s):
     # frame.append(mask1)
     # frame.append(mask2)
 
-    runFrames(frame,frameTimes,timerStart=1)
+    runFrames(frame,frameTimes,timerStart=3)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
-    return(resp,rt,acc)
+    print(rt)
+    if rt < .2:
+        warn()
+        tooFast = 1
+    else:
+        tooFast = 0
+    return(resp,rt,acc,tooFast)
 
 ### Inspection time:
 
@@ -580,7 +608,7 @@ def insTimeTrial(t, q, s):
 
 
 
-def runInsTime(trial_size):
+def runInsTime(trial_size, rnd = 1):
     letters = ["A","S","D","F","G","H","J","K","L"]
     counter = 0
     t = 8
@@ -604,7 +632,7 @@ def runInsTime(trial_size):
             if counter == 2:
                 t -= 1
                 counter = 0
-        out=[sub,0,t,x,rt,resp,"NA",int(acc),i+1]
+        out=[sub,0,t,x,round(rt,2),resp,"NA",int(acc),i+1,rnd,"NA"]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -623,6 +651,31 @@ def getRespBuffer(abortKey='9'):
     return("confirmed")
 
 
+def warn():
+    frameTimes=[60,60,60,60,60,1]  #at 60hz
+    head_verts = [(-80, -50), (80, -50), (0,50)]
+    print(head_verts)
+    tri = visual.ShapeStim(
+        win, 
+        fillColor='red',
+        vertices=head_verts, 
+        lineColor='white')
+    txt = visual.TextStim(
+        win = win,
+        text = "!",
+        pos = (-2.5,0),
+        color = 'white',
+        height = 100
+    )
+    frame=[]
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.BufferImageStim(win,stim=[tri, txt]))
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Too fast!"))
+    frame.append(visual.TextStim(win,""))
+    frame.append(visual.TextStim(win,"Pay attention! \n press S to continue..."))
+    runFrames(frame,frameTimes, timerStart=0)
+    getRespBuffer()
 
 
 def expBuffer():
@@ -683,11 +736,27 @@ def intialBuffer():
     getRespBuffer()
 
 
-def expBuffer():
-    frameTimes=[60,1]  #at 60hz
-    frame=[]
-    frame.append(visual.TextStim(win,""))
-    frame.append(visual.TextStim(win,"Well done on completing the training round! \nPlease press 'S' to begin the next task."))
+def expBuffer(exp=0):
+    if exp != 0:
+        if exp == 1:
+            txt = "Welcome to the Mental Rotation Task. Your objective is to determine whether a presented grid needs to be rotated or not. \nIf the grid matches the original grid, please enter 'M'. If it does not match, please enter 'X'. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+        elif exp == 2:
+            txt = "Welcome to the Conjunction Search Task. Your objective is to identify whether there is a backward letter in the list of letters presented. \nPlease press 'M' if there is a backward letter, and 'X' if there is not. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+        elif exp == 3:
+            txt = "Welcome to the Memory Scan Task. \nIn this task, you will be presented with a list of letters or digits, followed by a single item. Your objective is to determine whether the subsequent item was in the original list. \nPlease press 'M' if the subsequent item was in the original list, and 'X' if it was not. \nIf you have any questions, please call the RA over. \nPress 'S' to begin the task."
+        frameTimes=[30,1]  #at 60hz
+        frame=[]
+        frame.append(visual.TextStim(win,""))
+        frame.append(visual.TextStim(win,"Welcome to the next task! \nTake your time, and if you have any questions, please do not hesitate to ask. \nPlease press 'S' to begin."))
+        runFrames(frame,frameTimes, timerStart=0)
+        getRespBuffer()
+    else:
+        frameTimes=[60,1]  #at 60hz
+        frame=[]
+        frame.append(visual.TextStim(win,""))
+        frame.append(visual.TextStim(win,"Well done on completing the training round! \nPlease press 'S' to begin the next task."))
+
+
     runFrames(frame,frameTimes, timerStart=0)
     getRespBuffer()
     txt = "Great! Let's begin. \nRemember to stay focused and do your best. \nPlease press 'S' to start the task."
@@ -699,34 +768,33 @@ def expBuffer():
     getRespBuffer()
 
 
-
-runConjunct(5, set_size = [4,12], method = 1, train = False)
-
-print(*header,sep=", ",file=fptr)
-
 fptr.flush()
-runMenRot(5, method = 1, rotations = [0,1,3], train = False)
 
-runMemSpan(5, target_size=[2,5], method = 1, train = False)
+
+
 intialBuffer()
-runInsTime(5)
+runInsTime(nt_inst_t)
 trainBuffer(1)
-runMenRot(5, method = 1, rotations = [0,1,3], train = True)
+runMenRot(nt_train, method = 1, rotations = [0,1,3], train = True)
 expBuffer()
-runMenRot(5, method = 1, rotations = [0,1,3], train = False)
+runMenRot(nt_rest_tasks, method = 1, rotations = [0,1,3], train = False)
 trainBuffer(2)
-runConjunct(5, set_size = [4,12], method = 1, train = True)
+runConjunct(nt_train, set_size = [4,12], method = 1, train = True)
 expBuffer()
-runConjunct(5, set_size = [4,12], method = 1, train = False)
+runConjunct(nt_rest_tasks, set_size = [4,12], method = 1, train = False)
 trainBuffer(3)
-runMemSpan(5, target_size=[2,5], method = 1, train = True)
+runMemSpan(nt_train, target_size=[2,5], method = 1, train = True)
 expBuffer()
-runMemSpan(5, target_size=[2,5], method = 1, train = False)
+runMemSpan(nt_rest_tasks, target_size=[2,5], method = 1, train = False)
 
-# runInsTime(50)
-# runMenRot(20, method = 1, rotations = [0,1,3], train = False)
-# runConjunct(5, set_size = [4,12], method = 1, train = False)
-# runMemSpan(5, target_size=[2,5], method = 1, train = True)
+intialBuffer()
+runInsTime(nt_inst_t, rnd = 2)
+expBuffer(exp = 1)
+runMenRot(nt_rest_tasks, method = 1, rotations = [0,1,3], train = False, rnd = 2)
+expBuffer(exp = 2)
+runConjunct(nt_rest_tasks, set_size = [4,12], method = 1, train = False, rnd = 2)
+expBuffer(exp = 3)
+runMemSpan(nt_rest_tasks, target_size=[2,5], method = 1, train = False, rnd = 2)
 
 
 
