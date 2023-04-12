@@ -29,7 +29,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-run_mode = False
+run_mode = True
 if run_mode == False:
     nt_inst_t = 5
     nt_rest_tasks = 5
@@ -38,7 +38,7 @@ else:
     nt_inst_t = 50
     nt_rest_tasks = 32
     nt_train = 10
-[fptr,sub]=localLib.startExp(expName="genSpeed",runMode=run_mode,fps=fps)
+[fptr,sub]=localLib.startExp(expName="speedBat",runMode=run_mode,fps=fps)
 
 
     
@@ -133,7 +133,6 @@ def conjunct(truth, size, set_size, st):
     stims = []
     for pos in range(size):
         x,y = grid_jitter[pos]
-        print(f"pos:{pos}, x:{x} ,y:{y}")
         text_stim = visual.TextStim(
             win = win,
             text = st,
@@ -630,7 +629,8 @@ def runInsTime(trial_size, rnd = 1):
                 t += 1
                 counter = 0
             if counter == 2:
-                t -= 1
+                if t > 1: 
+                    t -= 1
                 counter = 0
         out=[sub,0,t,x,round(rt,2),resp,"NA",int(acc),i+1,rnd,"NA"]
         print(*out,sep=", ",file=fptr)
@@ -767,6 +767,9 @@ def expBuffer(exp=0):
     runFrames(frame,frameTimes, timerStart=0)
     getRespBuffer()
 
+header=['sub','task','cond','cor','rt','resp','block','acc','trial','round','tooFast']
+print(*header,sep=", ",file=fptr)
+header=['sub','task','cond','cor','rt','resp','block','acc','trial','round','tooFast']
 
 fptr.flush()
 
@@ -805,6 +808,5 @@ win.close()
 if useDB:
 	stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 
-print(hz)
 core.quit()
 
