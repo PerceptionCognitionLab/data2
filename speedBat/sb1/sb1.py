@@ -195,7 +195,7 @@ def runConjunct(trial_size, set_size = [2,18], method = 1, train = False, rnd=1)
     for i in range(trial_size):
         [resp,rt,acc,tooFast] = conjunctTrial(size[i],truth[i],set_size,st)
 
-        cond = 0 if size[i] == 4 else 1
+        cond = 0 if size[i] == set_size[0]  else 1
         resp2 = 1 if resp == "m" else 0
         out=[sub,2,cond,truth[i],round(rt,2),resp2,int(train),int(acc),i+1,rnd,tooFast]
         print(*out,sep=", ",file=fptr)
@@ -531,7 +531,7 @@ def runMemSpan(trial_size, target_size=[2,5], method = 1, train = False, rnd=1):
         s_stim.size = q_stim.size = 5
         [resp,rt,acc,tooFast] = memSpanTrial(truth, q_stim, s_stim)
 
-        cond = 0 if size[t] == 2 else 1 
+        cond = 0 if size[t] == target_size[0] else 1 
         resp2 = 1 if resp == "m" else 0
         out=[sub,3,cond,order[t],round(rt,4),resp2,int(train),int(acc),t+1,rnd, tooFast]
         print(*out,sep=", ",file=fptr)
