@@ -31,7 +31,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-run_mode = True
+run_mode = False
 if run_mode == False:
     nt_inst_t = 5
     nt_rest_tasks = 5
@@ -620,7 +620,10 @@ def insTimeTrial(t, q, s):
 def runInsTime(trial_size, rnd = 1):
     letters = ["A","S","D","F","G","H","J","K","L"]
     counter = 0
-    t = 8
+    if rnd == 1:
+        t = 8
+    else:
+        t = 4
     for i in range(trial_size):
         x = rd.choice(letters)
         x.upper()
@@ -634,15 +637,17 @@ def runInsTime(trial_size, rnd = 1):
             [resp,rt,acc] = insTimeTrial(20, q_stim, x)
         else:
             [resp,rt,acc] = insTimeTrial(t, q_stim, x)
-            counter += acc
-            if counter == 0:
+            if acc == False:
                 t += 1
                 counter = 0
-            if counter == 2:
-                if t > 1: 
-                    t -= 1
-                counter = 0
+            else:
+                counter += acc
+                if counter == 2:
+                    if t > 1: 
+                        t -= 1
+                    counter = 0
         out=[sub,0,t,x,round(rt,2),resp,"NA",int(acc),i+1,rnd,"NA"]
+        print(f"t:{t}  acc:{acc}")
         print(*out,sep=", ",file=fptr)
         fptr.flush()
 
@@ -782,7 +787,6 @@ print(*header,sep=", ",file=fptr)
 header=['sub','task','cond','cor','rt','resp','block','acc','trial','round','tooFast']
 
 fptr.flush()
-
 
 
 intialBuffer()
