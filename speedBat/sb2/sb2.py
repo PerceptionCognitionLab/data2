@@ -40,7 +40,7 @@ else:
     nt_inst_t = 50
     nt_rest_tasks = 32
     nt_train = 10
-[fptr,sub]=localLib.startExp(expName="sb1",runMode=run_mode,fps=fps)
+[fptr,sub]=localLib.startExp(expName="sb2",runMode=run_mode,fps=fps)
 
 
     
