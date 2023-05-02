@@ -170,12 +170,27 @@ def conjunct(truth, size, set_size, st, ins = False):
 
 
 def conjunctTrial(size, truth, set_size, st):
+    x = visual.TextStim(
+        win = win,
+        text = "Press 'X' if you do not see a backward letter",
+        pos = (-400,-475),
+        color = "white"
+    )
+    m = visual.TextStim(
+        win = win,
+        text = "Press 'M' if you do see a backward letter",
+        pos = (400,-475),
+        color = "white"
+    )
     frameTimes=[30,30,1]  #at 60hz
     stims = conjunct(truth, size, set_size, st)
     frame=[]
-    frame.append(visual.TextStim(win,"+"))
-    frame.append(visual.TextStim(win,""))
-    frame.append(visual.BufferImageStim(win,stim=stims))
+    tstim = [visual.TextStim(win,"+"), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    tstim = [visual.TextStim(win,""), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    tstim = stims+[x,m]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
     runFrames(frame,frameTimes, timerStart=2)
     [resp,rt,ac]=getResp(truth = truth)
     acc=feedback(ac,1)
@@ -186,6 +201,7 @@ def conjunctTrial(size, truth, set_size, st):
         tooFast = 0
 
     return(resp,rt,acc,tooFast)
+
 
 
 def runConjunct(trial_size, set_size = [2,18], method = 1, train = False, rnd=1):
@@ -211,7 +227,6 @@ def runConjunct(trial_size, set_size = [2,18], method = 1, train = False, rnd=1)
         out=[sub,2,cond,truth[i],round(rt,2),resp2,int(train),int(acc),i+1,rnd,tooFast]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
-
 
 ### Mental Rotation:
 
@@ -395,16 +410,38 @@ def presMat(orig_mat, rot_mat, ins = False):
     return(stims)
 
 def menRotTrial(stims, truth, curve, match = False):
+    x = visual.TextStim(
+        win = win,
+        text = "Press 'X' for not a match",
+        pos = (-400,-475),
+        color = "white"
+    )
+    m = visual.TextStim(
+        win = win,
+        text = "Press 'M' for match",
+        pos = (400,-475),
+        color = "white"
+    )
+
+
     frameTimes=[30,30,60,60,1]  #at 60hz
     frame=[]
     #frame.append(visual.BufferImageStim(win, stim = stims))
-    frame.append(visual.TextStim(win,"+"))
-    frame.append(visual.TextStim(win,""))
+    tstim = [visual.TextStim(win,"+"), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    tstim = [visual.TextStim(win,""), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
     if match == True:
-        frame.append(curve)
+        tstim = [curve, x, m]
+        frame.append(visual.BufferImageStim(win,stim=tstim))
     else:
+        curve.append(x)
+        curve.append(m)
         frame.append(visual.BufferImageStim(win,stim=curve))
-    frame.append(visual.TextStim(win,""))
+    tstim = [visual.TextStim(win,""), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    stims.append(x)
+    stims.append(m)
     frame.append(visual.BufferImageStim(win,stim=stims))
     runFrames(frame,frameTimes, timerStart=4)
     [resp,rt,ac]=getResp(truth = truth)
@@ -570,13 +607,28 @@ def mask():
     return(mask1, mask2)
 
 def memSpanTrial(truth, q, s):
+    x = visual.TextStim(
+        win = win,
+        text = "Press 'X' if the white letter was part of the yellow letter",
+        pos = (-400,-475),
+        color = "white"
+    )
+    m = visual.TextStim(
+        win = win,
+        text = "Press 'M' if the white letter was part of the yellow letter",
+        pos = (400,-475),
+        color = "white"
+    )
     frameTimes=[60,30,60,1]  #at 60hz
     frame=[]
     [mask1,mask2] = mask()
-    frame.append(visual.TextStim(win,"+"))
-    frame.append(q)
-    frame.append(visual.TextStim(win,""))
-    frame.append(s)
+    tstim = [visual.TextStim(win,"+"), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    frame.append(visual.BufferImageStim(win,stim=[q, m, x]))
+    tstim = [visual.TextStim(win,""), m, x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    frame.append(visual.BufferImageStim(win,stim=[s, m, x]))
+
     # frame.append(mask1)
     # frame.append(mask2)
 
@@ -589,6 +641,7 @@ def memSpanTrial(truth, q, s):
     else:
         tooFast = 0
     return(resp,rt,acc,tooFast)
+
 
 ### Inspection time:
 
@@ -612,15 +665,25 @@ def getRespInsTime(s, abortKey='9'):
 
 
 def insTimeTrial(t, q, s):
+    x = visual.TextStim(
+        win = win,
+        text = "Enter the letter you just saw \nFrom 'A' to 'L' on your keyboard",
+        pos = (0,-475),
+        color = "white"
+    )
+
     frameTimes=[30,30,t,3,3,1]  #at 60hz
     frame=[]
     [mask1,mask2] = mask()
-    frame.append(visual.TextStim(win,"+", color = "white"))
-    frame.append(visual.TextStim(win,""))
-    frame.append(q)
-    frame.append(mask1)
-    frame.append(mask2)
-    frame.append(visual.TextStim(win,""))
+    tstim = [visual.TextStim(win,"+"), x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    tstim = [visual.TextStim(win,""), x]
+    frame.append(visual.BufferImageStim(win,stim=tstim))
+    frame.append(visual.BufferImageStim(win,stim=[q,x]))
+    frame.append(visual.BufferImageStim(win,stim=[mask1,x]))
+    frame.append(visual.BufferImageStim(win,stim=[mask2,x]))
+    frame.append(visual.BufferImageStim(win,stim=[visual.TextStim(win,""),x]))
+
     runFrames(frame,frameTimes, timerStart=2)
     [resp,rt]=getRespInsTime(s)
     resp2 = int(resp==s)
@@ -662,7 +725,6 @@ def runInsTime(trial_size, rnd = 1):
         out=[sub,0,t,x,round(rt,2),resp,"NA",int(acc),i+1,rnd,"NA"]
         print(*out,sep=", ",file=fptr)
         fptr.flush()
-
 ### Buffer:
 
 def getRespBuffer(abortKey='9'):
