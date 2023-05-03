@@ -1,2 +1,1 @@
-sub, task, condition, correct, rt, resp, block, accuracy, trial, round, 2fast
-0, 0, 8, F, 0.96, F, NA, 1, 1, 1, NA
+sub, task, cond1, cond2, rt, inputResp, training, accuracy, trial, block, 2fast
