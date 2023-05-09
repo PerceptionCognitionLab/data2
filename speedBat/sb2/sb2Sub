@@ -1,0 +1,5 @@
+sub, task, cond1, cond2, rt, inputResp, training, accuracy, trial, block, 2fast
+, 0, 8, D, 0.7, D, NA, 1, 1, 1, NA
+, 0, 8, J, 0.71, J, NA, 1, 2, 1, NA
+, 0, 8, G, 0.76, G, NA, 1, 3, 1, NA
+, 0, 8, J, 0.95, J, NA, 1, 4, 1, NA

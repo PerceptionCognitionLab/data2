@@ -31,7 +31,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-run_mode = False
+run_mode = True
 if run_mode == False:
     nt_inst_t = 5
     nt_rest_tasks = 5
@@ -1263,10 +1263,10 @@ def intialBuffer():
 header=['sub','task','cond1','cond2','rt','inputResp','training','accuracy','trial','block','2fast']
 print(*header,sep=", ",file=fptr)
 header=['sub','task','cond1','cond2','rt','inputResp','training','accuracy','trial','block','2fast']
-
+print(nt_train)
 fptr.flush()
 trainBuffer(0)
-runInsTime(nt_train)
+runInsTime(nt_inst_t)
 trainBuffer(2)
 runConjunct(nt_train, set_size = [2,18], method = 1, train = True)
 expBuffer(2)
