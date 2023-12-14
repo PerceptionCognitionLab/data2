@@ -31,7 +31,7 @@ if fps!=60:
     print("WARNING....  Frame Rate is not 60hz.")
     input("Enter to Continue, control-c to quit.  ") 
 
-run_mode = True
+run_mode = False
 if run_mode == False:
     nt_inst_t = 5
     nt_rest_tasks = 5

@@ -39,81 +39,55 @@ seed = random.randrange(1e6)
 rng = random.Random(seed)
 
 
+def runFrames(frame,frameTimes,timerStart=1):
+    event.clearEvents()
+    currentFrame=0
+    cumTimes=np.cumsum(frameTimes)    
+    for refresh in range(max(cumTimes)):
+        if refresh in cumTimes:
+            currentFrame=currentFrame+1
+            if currentFrame==timerStart:
+                timer.reset()
+        frame[currentFrame].draw()
+        win.flip()  
 
-
-
-def targetLetters(size):
-	letters = ["Hello"] * size
-	x = random.choices(letters, k = size)
-	return(x)
 	
 
-def runFrames(frame, frameTimes, wait_for_key=True):
-    event.clearEvents()
-    currentFrame = 0
-    frame_count = len(frame)
-    
-    while currentFrame < frame_count:
-        frame[currentFrame].draw()
-        win.flip()
+def getResp(abortKey='9'):
+    keys=event.getKeys(keyList=['x','m',abortKey],timeStamped=timer)
+    if len(keys)==0:
+        keys=event.waitKeys(keyList=('x','m',abortKey),timeStamped=timer)
+    resp=keys[0][0]
+    rt=keys[0][1]
+    if resp==abortKey:
+        fptr.close()
+        win.close()
+        core.quit()   
 
-        keys = event.getKeys()
-        if keys:
-            currentFrame += 1
-
-        event.clearEvents()
-
-    if wait_for_key:
-        event.waitKeys()
+    return([resp,rt])
 
 
-def getResp():
-    keys = event.waitKeys()
+message=visual.TextStim(win,text="m",
+		        pos=(0,0),
+		        height=20)
+messagex=visual.TextStim(win,text="x",
+		        pos=(0,0),
+		        height=20)
 
-    resp = keys[0]  # Get the first key pressed
-    rt = timer.getTime()  # Use the timer to get the response time
+c=visual.TextStim(win,text="+",
+		        pos=(0,0),
+		        height=20)
 
-    print(f"Key pressed: {resp}, Response time: {rt}")
-    return [resp, rt]
 
-def trial(set_size):
-    frameTimes = [60, 30, 60, 1]  # at 60hz
-    target_list = targetLetters(set_size)
-    q = "Hello"  
-    
-    
-    hello_frame = visual.TextStim(win, "Hello")
-
-    key_press_counter = 0
-
-    while key_press_counter < 10:  
-        frame = [
-            visual.TextStim(win, "+"),
-            visual.TextStim(win, " ".join(target_list)),
-            visual.TextStim(win, ""),
-            visual.TextStim(win, q),
-            visual.TextStim(win, ""),
-            visual.TextStim(win, q),
-            visual.TextStim(win, ""),
-            visual.TextStim(win, q),
-            visual.TextStim(win, q),
-            visual.TextStim(win, q)
-        ]
-
-        runFrames(frame, frameTimes)
-        resp,rt = getResp()
-        print(f"Key pressed: {resp}, Response time: {rt}")
-        key_press_counter += 1
-
-        hello_frame.draw()
-        win.flip()
-        event.waitKeys()  
-    
-
-x = [5,5,5,5,5,5,5]
-
-for i in x:
-	trial(i)
+frame=[c,message,messagex]
+random.shuffle(frame)
+frameTimes=[60,60]
+all_resp=[]
+for i in range(5):
+	
+	runFrames(frame,frameTimes)
+	response = getResp()
+	all_resp.append(response)
 
 hz=round(win.getActualFrameRate())
 size=win.size
@@ -121,5 +95,6 @@ win.close()
 if useDB:
 	stopExp(sessionID,hz,size[0],size[1],seed,dbConf)
 
-
+for i in range(5):
+	print(all_resp[i])
 core.quit()
