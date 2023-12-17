@@ -38,6 +38,19 @@ timer = core.Clock()
 seed = random.randrange(1e6)
 rng = random.Random(seed)
 
+numEvent=4
+
+message=visual.TextStim(win,text="",
+		        pos=(0,0),
+		        height=20)
+messagex=visual.TextStim(win,text="",
+		        pos=(0,0),
+		        height=20)
+
+c=visual.TextStim(win,text="+",
+		        pos=(0,0),
+		        height=20)
+
 
 def runFrames(frame,frameTimes,timerStart=1):
     event.clearEvents()
@@ -50,9 +63,6 @@ def runFrames(frame,frameTimes,timerStart=1):
                 timer.reset()
         frame[currentFrame].draw()
         win.flip()  
-
-	
-
 def getResp(abortKey='9'):
     keys=event.getKeys(keyList=['x','m',abortKey],timeStamped=timer)
     if len(keys)==0:
@@ -67,27 +77,7 @@ def getResp(abortKey='9'):
     return([resp,rt])
 
 
-message=visual.TextStim(win,text="m",
-		        pos=(0,0),
-		        height=20)
-messagex=visual.TextStim(win,text="x",
-		        pos=(0,0),
-		        height=20)
 
-c=visual.TextStim(win,text="+",
-		        pos=(0,0),
-		        height=20)
-
-
-frame=[c,message,messagex]
-random.shuffle(frame)
-frameTimes=[60,60]
-all_resp=[]
-for i in range(5):
-	
-	runFrames(frame,frameTimes)
-	response = getResp()
-	all_resp.append(response)
 
 hz=round(win.getActualFrameRate())
 size=win.size
