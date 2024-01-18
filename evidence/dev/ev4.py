@@ -52,17 +52,23 @@ def draw_dividers():
 	divider_low.draw()
 	divider_high.draw()
 
+
+
 def do_trial(mean):
 	event.clearEvents()
 	current_frame = 0
+	
 	x0 = np.rint(np.random.normal(mean, 100, size=max_trials))
 	x = np.repeat(x0, frame_dur)
 	resp = []
-
 	fix.draw()
 	win.flip()
 	core.wait(1)
-
+	dot.pos=[0,0]
+	draw_dividers()
+	dot.draw()
+	win.flip()
+	core.wait(0.4)
 	while current_frame < (max_trials * frame_dur) and not resp:
 		draw_dividers()
 		dot.pos = [x[current_frame], 0]
@@ -73,6 +79,7 @@ def do_trial(mean):
 		resp = event.getKeys(keyList=['x', 'm', 'escape'])
 
 		if 'escape' in resp:
+			
 			return None, 'Abort', None
 		elif resp:
 			break
