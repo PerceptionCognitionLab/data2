@@ -36,7 +36,8 @@ def trial():
 	c=visual.TextStim(window,text="+",
                         pos=(0,0),
                         height=20)
-	c.draw()
+	dot = visual.Circle(window, radius=5, units="pix", fillColor=[1, 1, 1])
+	dot.draw()
 	window.flip()
 	core.wait(1)
 	message.draw()
@@ -50,7 +51,7 @@ def trial():
 
 [rt,response,present]=trial()
 all_resp=[]
-for i in range(5):
+for i in range(1):
 	trial()
 	cresp=(response,rt)
 	all_resp.append(cresp)
