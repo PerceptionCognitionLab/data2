@@ -854,7 +854,7 @@ def trainBuffer(exp):
         color = [0,1,0]
     )
     if exp != 0:
-        frameTimes=[30,1]  #at 60hz
+        frameTimes=[1]  #at 60hz
         txt1= visual.TextStim(
             win = win,
             text = "Well done so far!",
